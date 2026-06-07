@@ -305,12 +305,12 @@ FIELDS = {
     "name":        ("Setting: {world}\n"
                     "There was once a {gender} {species} named",
                     ["\n", ".", ",", ";", " who", " that", " which", " from", " lived", " was"], 12),
-    "appearance":  ("Setting: {world}\nSpecies: {species}\nCharacter: {name}\n"
+    "appearance":  ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
                     "In one sentence, {name}'s physical appearance:", ["\n"], 64),
-    "personality": ("Setting: {world}\nSpecies: {species}\nCharacter: {name}\n"
+    "personality": ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
                     "Appearance: {appearance}\n"
                     "In one sentence, {name}'s personality:", ["\n"], 64),
-    "backstory":   ("Setting: {world}\nSpecies: {species}\nCharacter: {name}\n"
+    "backstory":   ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
                     "Personality: {personality}\n"
                     "In one sentence, {name}'s backstory:", ["\n"], 96),
 }
@@ -363,6 +363,7 @@ def gen_field(server, field, ctx, examples=None, tries=5):
 
 def char_prefix(d) -> str:
     return (f"Setting: {d['world']}\nCharacter: {d['name']}\nSpecies: {d['species']}\n"
+            f"Gender: {d['gender']}\n"
             f"Appearance: {d['appearance']}\nPersonality: {d['personality']}\n"
             f"Backstory: {d['backstory']}")
 
