@@ -61,7 +61,8 @@ def load_world(world_id):
     recs = _records(world_id)
     if not recs:
         return None
-    world = {"id": world_id, "prompt": None, "created": None, "characters": [], "locations": []}
+    world = {"id": world_id, "prompt": None, "created": None,
+             "characters": [], "locations": [], "npc_totals": {}, "objects": {}}
     for r in recs:
         t = r.get("type")
         if t == "world":
@@ -70,6 +71,10 @@ def load_world(world_id):
             world["characters"].append(r)
         elif t == "locations":
             world["locations"] = r["kept"]
+        elif t == "npc_total":
+            world["npc_totals"][r["location"]] = {"count": r["count"], "lo": r.get("lo"), "hi": r.get("hi")}
+        elif t == "objects":
+            world["objects"][r["location"]] = {"items": r["items"], "prompt": r.get("prompt")}
     return world
 
 

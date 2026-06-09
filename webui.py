@@ -140,6 +140,64 @@ def api_world_locations(wid):
     return Response(gen(), mimetype="text/event-stream")
 
 
+# ------------------------------------------- per-location NPC counts over the day (gen_number)
+@app.route("/api/world/<wid>/npccounts")
+def api_npc_counts(wid):
+    w = store.load_world(wid)
+    loc = request.args.get("loc", "").strip()
+    samples = int(request.args.get("samples", "10"))
+
+    @stream_with_context
+    def gen():
+        if not w:
+            yield sse({"type": "error", "message": "World not found."}); return
+        if not loc:
+            yield sse({"type": "error", "message": "No location."}); return
+        try:
+            q = wr.npc_count_prompt(w["prompt"], loc)         # distinct NPCs over a full day
+            res = SERVER.gen_number_median(q, samples=samples)   # sample 10x, take the median
+            if res:
+                count, lo, hi = round(res["median"]), round(res["lo"]), round(res["hi"])
+                store.append(wid, {"type": "npc_total", "location": loc, "count": count,
+                                   "lo": lo, "hi": hi, "n": res["n"]})
+                yield sse({"type": "npc", "location": loc, "count": count, "lo": lo, "hi": hi,
+                           "n": res["n"], "samples": [s["raw"] for s in res["samples"]], "prompt": q})
+            else:
+                yield sse({"type": "npc", "location": loc, "count": None, "prompt": q})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+# ------------------------------------------------ per-location object types (re-sample + dedup)
+@app.route("/api/world/<wid>/objects")
+def api_objects(wid):
+    w = store.load_world(wid)
+    loc = request.args.get("loc", "").strip()
+    n = int(request.args.get("n", "12"))
+
+    @stream_with_context
+    def gen():
+        if not w:
+            yield sse({"type": "error", "message": "World not found."}); return
+        if not loc:
+            yield sse({"type": "error", "message": "No location."}); return
+        try:
+            q = wr.objects_prompt(w["prompt"], loc)
+            items = []
+            for obj in wr.iter_objects(SERVER, w["prompt"], loc, n=n):
+                items.append(obj)
+                yield sse({"type": "object", "value": obj, "prompt": q})
+            store.append(wid, {"type": "objects", "location": loc, "items": items, "prompt": q})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
 # --------------------------------------------------- per-character analysis (uses world locations)
 @app.route("/api/world/<wid>/char/<cid>/sleep")
 def api_char_sleep(wid, cid):
