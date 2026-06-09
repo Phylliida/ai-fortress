@@ -30,11 +30,12 @@ HOURS_PER_TICK = 1.0 / TICKS_PER_HOUR
 
 
 class Agent:
-    def __init__(self, name, species, x, y, needs, decay):
+    def __init__(self, name, species, x, y, needs, decay, thresholds=None):
         self.name, self.species = name, species
         self.x, self.y = x, y
         self.needs = dict(needs)      # {need: level 0..1}
         self.decay = dict(decay)      # {need: drop per HOUR} (step scales by dt)
+        self.thresholds = dict(thresholds or {})  # {need: deadband fullness} <- needs.bake_thresholds
         self.action = None            # {"kind", "target": (x,y), "obj": Obj} | None — current goal
         self.busy = 0                 # ticks left in the in-progress activity
         self.busy_obj = None          # the Obj being used right now
@@ -60,19 +61,21 @@ def _dist(ax, ay, bx, by):
     return abs(ax - bx) + abs(ay - by)
 
 
-LOW_WATER = 0.35   # a need only "demands" attention once it drops below this; above it the agent
-#                    leaves it alone. Deadband on the NEED LEVEL — gates WHEN she acts, independent
-#                    of how big an object's refill is, so a high-refill bed can't lure her into a
-#                    full night's sleep when she's only 10% tired. (Not an urgency curve — a
-#                    thermostat: act below low-water, stop when full.)
+DEFAULT_LOW_WATER = 0.35   # fallback deadband for a need with no baked threshold. A need only
+#                            "demands" attention once it drops below its threshold; above it the agent
+#                            leaves it alone. Per-need (needs.bake_thresholds) so survival needs trigger
+#                            proactively (health ~0.85) and tolerable ones get deferred (hygiene ~0.15).
+#                            Gates WHEN she acts, independent of refill size — not an urgency curve, a
+#                            thermostat: act below threshold, stop when full.
 
 
 def object_value(agent, obj):
     """Sims advertise: sum over the needs this object serves of refill x urgency (1 - level), but
-    ONLY needs that have dropped below LOW_WATER count — a comfortable need advertises nothing."""
+    ONLY needs that have dropped below their per-need deadband count — a comfortable need advertises
+    nothing. Each need's threshold comes from agent.thresholds (baked), else DEFAULT_LOW_WATER."""
     return sum(r * (1.0 - agent.needs.get(n, 1.0))
                for n, r in obj.affords.items()
-               if agent.needs.get(n, 1.0) < LOW_WATER)
+               if agent.needs.get(n, 1.0) < agent.thresholds.get(n, DEFAULT_LOW_WATER))
 
 
 def choose_action(agent, colony, threshold=0.05, dist_discount=0.04):
@@ -140,7 +143,8 @@ if __name__ == "__main__":
     # hand-set so the demo is fast + deterministic. Decay PER HOUR; durations in MINUTES.
     maria = Agent("Maria", "human", 4, 4,
                   needs={"food": 0.9, "sleep": 0.95, "social": 0.7},
-                  decay={"food": 0.12, "sleep": 0.06, "social": 0.20})
+                  decay={"food": 0.12, "sleep": 0.06, "social": 0.20},
+                  thresholds={"food": 0.55, "sleep": 0.25, "social": 0.80})  # <- bake_thresholds-style
     objects = [
         Obj("hearth", 0, 0, {"food": 0.94},   duration_min=20),   # a meal: 20 min
         Obj("bed",    7, 7, {"sleep": 0.89},  duration_min=480),  # a night: 8 h
