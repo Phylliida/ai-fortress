@@ -51,3 +51,38 @@ def discover_needs(server, species, n_extra=6, threshold=0.5):
         max_len=20, seed=UNIVERSAL_CORE,
         reject=lambda x: len(x.split()) != 1 or not x.replace("-", "").replace("'", "").isalpha())]
     return {"species": species, "core": core, "have": have, "extra": extra}
+
+
+# --- rates: PER-PERSON, since some people need more of a thing than others (a gregarious person
+#     socializes more). Which needs a species has is per-species (above); how fast each drains is
+#     per-person. Linear decay: N satisfactions across W waking hours => the bar empties every W/N
+#     hours, i.e. decays N/W of full per hour.
+
+def rate_prompt(person, need):
+    """`person` is a description string — the richer it is, the more individuated the rate."""
+    return (f"{person}\n"
+            f"On a typical day, how many times does this person need to satisfy their {need} need?\n"
+            f"Answer:")
+
+
+def wake_hours_prompt(person):
+    return (f"{person}\n"
+            f"On a typical day, how many hours is this person awake (not asleep)?\nAnswer:")
+
+
+def discover_rates(server, person, need_list, wake_hours=None, samples=5):
+    """Per-person rates for each need in `need_list`. times/day via gen_number_median (robust),
+    then linear decay over wake_hours/N hours. `wake_hours` is asked (gen_number) if not given.
+    Returns {wake_hours, rates: {need: {per_day, hours_to_empty, decay_per_hour}}}."""
+    w = wake_hours
+    if w is None:
+        r = server.gen_number_median(wake_hours_prompt(person), samples=samples)
+        w = min(max(round(r["median"]), 1), 24) if r else 16
+    rates = {}
+    for need in need_list:
+        r = server.gen_number_median(rate_prompt(person, need), samples=samples)
+        n = max(r["median"], 0.1) if r else 1.0           # guard against 0 (no div-by-zero)
+        rates[need] = {"per_day": round(n, 2),
+                       "hours_to_empty": round(w / n, 2),
+                       "decay_per_hour": round(n / w, 4)}
+    return {"wake_hours": w, "rates": rates}
