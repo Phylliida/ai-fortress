@@ -58,11 +58,26 @@ def discover_needs(server, species, n_extra=6, threshold=0.5):
 #     per-person. Linear decay: N satisfactions across W waking hours => the bar empties every W/N
 #     hours, i.e. decays N/W of full per hour.
 
+# Few-shot frame for rate extraction. The exemplars (a) SPAN the frequency range — once-daily sleep=1
+# up to high-frequency water=8 — so a base model doesn't plant a wrong magnitude prior on a need it
+# hasn't seen (zero-shot gave sleep 3x/day, and the recluse MORE social than the baker — both wrong),
+# and (b) vary the PERSON so person-dependence is reinforced, not flattened (baker social 8 vs hermit
+# 1). Verified: few-shot fixes both the magnitude AND the per-person spread vs zero-shot.
+RATE_FEWSHOT = (
+    "On a typical day, how many times does a person satisfy a given need? It varies by person and need.\n\n"
+    "Person: a weary laborer at the end of a long day\nNeed: sleep\nAnswer: 1\n\n"
+    "Person: an active child running around outside\nNeed: water\nAnswer: 8\n\n"
+    "Person: a hardworking farmhand\nNeed: food\nAnswer: 4\n\n"
+    "Person: a content hermit who treasures solitude\nNeed: social\nAnswer: 1\n\n"
+    "Person: {person}\nNeed: {need}\nAnswer:"
+)
+
+
 def rate_prompt(person, need):
-    """`person` is a description string — the richer it is, the more individuated the rate."""
-    return (f"{person}\n"
-            f"On a typical day, how many times does this person need to satisfy their {need} need?\n"
-            f"Answer:")
+    """`person` is a description string — the richer it is, the more individuated the rate. Few-shot
+    (RATE_FEWSHOT): exemplars span the frequency range (sleep 1 .. water 8) so the model doesn't carry
+    a wrong magnitude prior onto an unseen need, and vary the person so individuation is reinforced."""
+    return RATE_FEWSHOT.format(person=person, need=need)
 
 
 def wake_hours_prompt(person):
