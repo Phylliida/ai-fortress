@@ -39,12 +39,9 @@
   /* map */
   .mapwrap { flex:1; overflow:hidden; position:relative; cursor:grab; background:#120f0b; }
   .mapwrap.grabbing { cursor:grabbing; }
-  .map { position:absolute; top:0; left:0; transform-origin:0 0; will-change:transform;
-         background-image:
-           linear-gradient(var(--grid) 1px, transparent 1px),
-           linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-           linear-gradient(var(--line) 1px, transparent 1px),
-           linear-gradient(90deg, var(--line) 1px, transparent 1px); }
+  /* grid is a NON-transformed overlay sized to the map, so its lines stay 1px at every zoom */
+  .grid { position:absolute; top:0; left:0; pointer-events:none; background-color:#15110d; }
+  .map { position:absolute; top:0; left:0; transform-origin:0 0; will-change:transform; }
   .map .mapfig { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:2; }
   .map .mapfig svg.stick { width:auto; height:16px; }
   .map .mapfig .nm { position:absolute; top:17px; left:50%; transform:translateX(-50%); display:none; font-size:11px; color:var(--accent); background:rgba(20,16,11,.85); padding:0 4px; border-radius:4px; white-space:nowrap; z-index:6; }
@@ -84,6 +81,7 @@
 <div class="roster" id="roster"><span class="empty">No world yet — create one above.</span></div>
 
 <div class="mapwrap" id="mapwrap">
+  <div class="grid" id="grid"></div>
   <div class="map" id="map"></div>
 </div>
 <div class="minimap" id="minimap" style="display:none"><div class="mmviewport" id="mmviewport"></div></div>
@@ -220,9 +218,6 @@ function renderMap() {
   const map = document.getElementById("map");
   document.querySelectorAll("[data-hint]").forEach(h => h.remove());   // clear stale hint(s)
   map.style.width = map.style.height = (MAP * SCALE) + "px";
-  map.style.backgroundSize =
-    `${GRID_MINOR*SCALE}px ${GRID_MINOR*SCALE}px, ${GRID_MINOR*SCALE}px ${GRID_MINOR*SCALE}px,` +
-    `${GRID_MAJOR*SCALE}px ${GRID_MAJOR*SCALE}px, ${GRID_MAJOR*SCALE}px ${GRID_MAJOR*SCALE}px`;
   map.innerHTML = "";
   const placements = state.world.placements || {};
   const byId = Object.fromEntries((state.world.characters || []).map(c => [c.cid, c]));
@@ -263,11 +258,29 @@ function focusChar(cid) {
 // ---- view: pan (translate) + zoom (scale) on the map, no scrollbars ----
 const mapwrap = document.getElementById("mapwrap");
 const mapEl = document.getElementById("map");
+const gridEl = document.getElementById("grid");
 let panX = 0, panY = 0, zoom = 0.1;        // screen = translate(panX,panY) then scale(zoom) of map-px
 const ZMIN = 0.02, ZMAX = 4;
 function applyView() {
   mapEl.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+  drawGrid();
   updateViewport();
+}
+function drawGrid() {                        // overlay sized to the map; lines are a constant 1px
+  const w = MAPPX * zoom, minor = SCALE * zoom, major = GRID_MAJOR * SCALE * zoom;
+  gridEl.style.left = panX + "px"; gridEl.style.top = panY + "px";
+  gridEl.style.width = w + "px"; gridEl.style.height = w + "px";
+  const imgs = [], sizes = [];
+  if (minor >= 6) {                          // hide the fine grid once cells get too small to read
+    imgs.push("linear-gradient(var(--grid) 1px, transparent 1px)",
+              "linear-gradient(90deg, var(--grid) 1px, transparent 1px)");
+    sizes.push(`${minor}px ${minor}px`, `${minor}px ${minor}px`);
+  }
+  imgs.push("linear-gradient(var(--line) 1px, transparent 1px)",
+            "linear-gradient(90deg, var(--line) 1px, transparent 1px)");
+  sizes.push(`${major}px ${major}px`, `${major}px ${major}px`);
+  gridEl.style.backgroundImage = imgs.join(",");
+  gridEl.style.backgroundSize = sizes.join(",");
 }
 function clampPan() {                       // center if the map is smaller than the viewport, else clamp
   const vw = mapwrap.clientWidth, vh = mapwrap.clientHeight, w = MAPPX * zoom, m = 80;
