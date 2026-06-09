@@ -86,3 +86,45 @@ def discover_rates(server, person, need_list, wake_hours=None, samples=5):
                        "hours_to_empty": round(w / n, 2),
                        "decay_per_hour": round(n / w, 4)}
     return {"wake_hours": w, "rates": rates}
+
+
+# --- affordances: how much an OBJECT-KIND refills a NEED (the Sims "advertise" values), baked per
+#     (species, object-kind, need). Two steps: a yes/no GATE ("does it affect this need at all?")
+#     filters irrelevant pairs (painting -> hunger), so gen_percent only runs on real affordances
+#     (and never sees the fat-tail leak it has on irrelevant inputs).
+
+def affordance_applies_prompt(species, obj_kind, need):
+    # "relevant to satisfying" separates real affordances from irrelevant pairs far better than
+    # "affect ... at all" (which biased to no — gated meal->food at 0.32); calibrated 9/9.
+    return (f"For a {species}, is a {obj_kind} relevant to satisfying their {need} need? "
+            f"Answer yes or no.\nAnswer:")
+
+
+def affordance_amount_prompt(species, obj_kind, need):
+    """Framed so a degree phrase is the natural continuation (for gen_percent)."""
+    return (f"Q: How much does using a {obj_kind} satisfy a {species}'s {need} need?\n"
+            f"A: It satisfies their {need} need")
+
+
+def bake_affordance(server, species, obj_kind, need, gate_threshold=0.5):
+    """One (species, obj_kind, need): gate (yes_no) then degree (gen_percent). Returns
+    {applies, p_applies, refill} — refill 0.0 when the gate fails (no gen_percent call)."""
+    p = server.yes_no_prob(affordance_applies_prompt(species, obj_kind, need))
+    if p < gate_threshold:
+        return {"applies": False, "p_applies": round(p, 3), "refill": 0.0}
+    pct = server.gen_percent(affordance_amount_prompt(species, obj_kind, need))
+    return {"applies": True, "p_applies": round(p, 3), "refill": round(pct["value"], 3) if pct else 0.0}
+
+
+def bake_affordances(server, species, obj_kinds, need_list, gate_threshold=0.5):
+    """Full advertise table for a species: {obj_kind: {need: refill}} keeping only pairs that pass
+    the gate with refill > 0. This is exactly what an agent reads to choose its next action."""
+    table = {}
+    for kind in obj_kinds:
+        served = {}
+        for need in need_list:
+            r = bake_affordance(server, species, kind, need, gate_threshold)
+            if r["applies"] and r["refill"] > 0:
+                served[need] = r["refill"]
+        table[kind] = served
+    return table
