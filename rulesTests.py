@@ -57,6 +57,10 @@ SAT_CASES = [
 ]
 
 
+def _fmt_reasons(rs, k=3):
+    return "\n        ↳ ".join(r for r in (rs or [])[:k])
+
+
 def run_need_cases():
     print("NEED-APPLIES  (yes_no_prob, threshold 0.5)")
     passed = 0
@@ -64,8 +68,9 @@ def run_need_cases():
         prompt = needs.need_applies_prompt(sp, nd)
         why = None
         if REASON_ALL:
-            r = S.yes_no_prob(prompt, reasoning=True)
-            p, why = r["p"], r["why"]
+            r = S.yes_no_prob(prompt, explain=True, explain_n=3)
+            p = r["p"]
+            why = _fmt_reasons(r["reasons_yes"] if r["yes"] else r["reasons_no"])
         else:
             p = S.yes_no_prob(prompt)
         got = p >= 0.5
@@ -74,7 +79,8 @@ def run_need_cases():
         print(f"  {'OK ' if ok else 'XX '} {sp + '/' + nd:26s} "
               f"exp={'yes' if exp else 'no':3s} got={'yes' if got else 'no':3s} p={p:.2f}")
         if not ok and why is None:
-            why = S.yes_no_prob(prompt, reasoning=True)["why"]
+            r = S.yes_no_prob(prompt, explain=True, explain_n=3)
+            why = _fmt_reasons(r["reasons_yes"] if r["yes"] else r["reasons_no"])
         if why:
             print(f"        ↳ {why}")
     print(f"  {passed}/{len(NEED_CASES)} passed\n")
@@ -86,14 +92,14 @@ def run_sat_cases():
     passed = 0
     for act, nd, lo, hi in SAT_CASES:
         prompt = sat_prompt(act, nd)
-        r = S.gen_percent(prompt, reasoning=REASON_ALL)
+        r = S.gen_percent(prompt, explain=REASON_ALL, explain_n=3)
         v = r["value"]
         ok = lo <= v <= hi
         passed += ok
         print(f"  {'OK ' if ok else 'XX '} {act[:34]:34s} -> {nd:10s} {v:.2f} in [{lo:.2f},{hi:.2f}]")
-        why = r.get("why")
-        if not ok and why is None:
-            why = S.gen_percent(prompt, reasoning=True)["why"]
+        why = _fmt_reasons(r.get("reasons"))
+        if not ok and not why:
+            why = _fmt_reasons(S.gen_percent(prompt, explain=True, explain_n=3)["reasons"])
         if why:
             print(f"        ↳ {why}")
     print(f"  {passed}/{len(SAT_CASES)} passed\n")

@@ -159,6 +159,7 @@ def bake_durations(server, species, affordance_table, samples=7, floor_min=0.5):
         action = server.gen_text(action_prompt(species, item, need), stop=["\n", "."], n_predict=12)
         if not action:
             continue
-        r = server.gen_duration(duration_for_action_prompt(species, action), samples=samples)
+        r = server.gen_duration(duration_for_action_prompt(species, action), samples=samples,
+                                check_subject=action)   # yes/no-validate the median, resample if not
         out[item] = max(round(r["minutes"], 1), floor_min) if r else None
     return out
