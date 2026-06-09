@@ -94,6 +94,7 @@ def load_world(world_id):
             world["npc_totals"][r["location"]] = {"count": r["count"], "lo": r.get("lo"), "hi": r.get("hi")}
         elif t == "objects":
             world["objects"][r["location"]] = {"items": r["items"], "prompt": r.get("prompt")}
+    world["species"] = sorted({c.get("species", "human") for c in world["characters"]})
     return world
 
 

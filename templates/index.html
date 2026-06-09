@@ -109,6 +109,8 @@
 
 <div class="stage">
   <div class="palette" id="palette">
+    <label>World species</label>
+    <div id="speciesLine" class="itf" style="margin-bottom:12px">—</div>
     <label>Items</label>
     <input id="itemInput" placeholder="loaf of bread, stovetop…" autocomplete="off">
     <button id="addItemBtn" class="additem">+ add item</button>
@@ -487,15 +489,30 @@ document.addEventListener("mousedown", e => {
 });
 
 // ----------------------------------------------------------------- items
+function affordsBySpecies(item) {              // normalize: {species:{need:refill}}; wrap legacy flat
+  const a = item.affords || {}, vals = Object.values(a);
+  if (vals.length && typeof vals[0] === "number") return { "": a };
+  return a;
+}
+function itemSummary(item) {
+  const bysp = affordsBySpecies(item), multi = Object.keys(bysp).length > 1, parts = [];
+  for (const sp in bysp) {
+    const ks = Object.keys(bysp[sp]); if (!ks.length) continue;
+    const f = ks.map(n => `${n} ${Math.round(bysp[sp][n] * 100)}%`).join(", ");
+    parts.push(multi && sp ? `${sp}: ${f}` : f);
+  }
+  return parts.length ? parts.join(" · ") : "fills no needs";
+}
 function renderPalette() {
+  document.getElementById("speciesLine").textContent = (state.world.species || []).join(", ") || "—";
   const list = document.getElementById("itemList"); list.innerHTML = "";
   const items = state.world.items || {}, ids = Object.keys(items);
   if (!ids.length) { list.appendChild(el("div", { class: "empty", style: "font-size:12px;margin-top:10px", text: "No items yet." })); return; }
   for (const iid of ids) {
-    const it = items[iid], fills = Object.keys(it.affords || {});
+    const it = items[iid];
     const pi = el("div", { class: "paletteItem", draggable: "true", title: "drag onto the map to place" },
       el("div", { class: "itn", text: it.name }),
-      el("div", { class: "itf", text: fills.length ? fills.map(n => `${n} ${Math.round(it.affords[n] * 100)}%`).join(", ") : "fills no needs" }));
+      el("div", { class: "itf", text: itemSummary(it) }));
     pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
     list.appendChild(pi);
   }
@@ -507,7 +524,7 @@ function addItem() {
   btn.disabled = true; st.className = "status"; st.textContent = "discovering affordances…";
   const found = [];
   stream(`/api/world/${state.wid}/item?name=` + encodeURIComponent(name), d => {
-    if (d.type === "afford") { found.push(`${d.need} ${Math.round(d.refill * 100)}%`); st.textContent = "fills: " + found.join(", "); }
+    if (d.type === "afford") { found.push((d.species ? d.species + " " : "") + `${d.need} ${Math.round(d.refill * 100)}%`); st.textContent = "fills: " + found.join(", "); }
   }, (ok, msg) => {
     btn.disabled = false;
     st.textContent = ok ? (found.length ? "✓ fills " + found.join(", ") : "✓ fills no needs") : "⚠ " + msg;
@@ -543,17 +560,20 @@ function openItemDetail(pid, item) {
   const pop = el("div", { class: "pop det", "data-pop": "1" },
     el("span", { class: "x", text: "✕", onclick: closePops }),
     el("div", { class: "nmh", text: item.name }), el("div", { class: "meta", text: "item" }));
-  const fills = Object.keys(item.affords || {});
-  pop.appendChild(el("div", { class: "k", text: "fills" }));
-  if (fills.length) {
-    const nd = el("div", { class: "needs" });
-    for (const n of fills) {
-      const v = item.affords[n], fill = el("i");
-      fill.style.width = Math.round(v * 100) + "%"; fill.style.background = "var(--ok)";
-      nd.appendChild(el("div", { class: "needbar" }, el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill), el("span", { class: "np", text: Math.round(v * 100) + "%" })));
-    }
-    pop.appendChild(nd);
-  } else pop.appendChild(el("div", { class: "v", text: "no needs" }));
+  const bysp = affordsBySpecies(item);
+  for (const sp in bysp) {
+    const fills = bysp[sp], ks = Object.keys(fills);
+    pop.appendChild(el("div", { class: "k", text: sp ? `fills · ${sp}` : "fills" }));
+    if (ks.length) {
+      const nd = el("div", { class: "needs" });
+      for (const n of ks) {
+        const v = fills[n], fill = el("i");
+        fill.style.width = Math.round(v * 100) + "%"; fill.style.background = "var(--ok)";
+        nd.appendChild(el("div", { class: "needbar" }, el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill), el("span", { class: "np", text: Math.round(v * 100) + "%" })));
+      }
+      pop.appendChild(nd);
+    } else pop.appendChild(el("div", { class: "v", text: "no needs" }));
+  }
   pop.appendChild(el("button", { class: "ghost sm", style: "margin-top:12px", text: "remove from map", onclick: () => { removeItem(pid); closePops(); } }));
   pop.style.position = "fixed"; pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
   document.body.appendChild(pop);
