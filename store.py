@@ -10,6 +10,9 @@ Record types:
   {"type":"locations",  "kept":[ ...top-5... ]}
   {"type":"place",      "cid", "x", "y"}   # position on the 500x500 world map; last write wins
                                             # (x or y null = removed from the map)
+  {"type":"item",       "iid", "name", "species", "affords":{need:refill}}  # an item TEMPLATE (palette)
+  {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
+                                                   # last write wins per pid; x or y null = removed)
 """
 import os
 import json
@@ -64,7 +67,8 @@ def load_world(world_id):
     if not recs:
         return None
     world = {"id": world_id, "prompt": None, "created": None,
-             "characters": [], "locations": [], "npc_totals": {}, "objects": {}, "placements": {}}
+             "characters": [], "locations": [], "npc_totals": {}, "objects": {}, "placements": {},
+             "items": {}, "item_placements": {}}
     for r in recs:
         t = r.get("type")
         if t == "world":
@@ -78,6 +82,14 @@ def load_world(world_id):
                 world["placements"].pop(r["cid"], None)        # null coords = taken off the map
             else:
                 world["placements"][r["cid"]] = {"x": r["x"], "y": r["y"]}
+        elif t == "item":
+            world["items"][r["iid"]] = {"name": r["name"], "species": r.get("species"),
+                                        "affords": r.get("affords", {})}
+        elif t == "item_place":
+            if r.get("x") is None or r.get("y") is None:
+                world["item_placements"].pop(r["pid"], None)
+            else:
+                world["item_placements"][r["pid"]] = {"iid": r["iid"], "x": r["x"], "y": r["y"]}
         elif t == "npc_total":
             world["npc_totals"][r["location"]] = {"count": r["count"], "lo": r.get("lo"), "hi": r.get("hi")}
         elif t == "objects":

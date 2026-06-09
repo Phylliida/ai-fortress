@@ -36,6 +36,23 @@
   .figbtn .tag { font-size:9px; color:var(--muted); font-family:ui-monospace,monospace; }
   svg.stick { width:30px; height:42px; display:block; }
 
+  /* stage = item palette (left) + map */
+  .stage { flex:1; display:flex; min-height:0; }
+  .palette { flex:0 0 198px; border-right:1px solid var(--line); background:var(--panel); padding:13px; overflow-y:auto; }
+  .palette label { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+  .palette input { width:100%; background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:6px 8px; font:inherit; }
+  .palette .additem { width:100%; margin-top:7px; }
+  .paletteItem { display:flex; flex-direction:column; gap:1px; border:1px solid var(--line); border-radius:8px; padding:7px 9px; margin-top:9px; background:#15110d; cursor:grab; }
+  .paletteItem:hover { border-color:var(--accent); }
+  .paletteItem .itn { font-size:13px; color:var(--ink); }
+  .paletteItem .itf { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* item instances on the map (under the colonists) */
+  .map .mapitem { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:1; }
+  .map .mapitem .box { width:13px; height:13px; border-radius:2px; background:var(--accent); border:1px solid #15110d; }
+  .map .mapitem .nm { position:absolute; top:17px; left:50%; transform:translateX(-50%); display:none; font-size:11px; color:var(--ink); background:rgba(20,16,11,.85); padding:0 4px; border-radius:4px; white-space:nowrap; z-index:6; }
+  .map .mapitem:hover { z-index:5; } .map .mapitem:hover .nm { display:block; }
+  .minimap .mmitem { border-radius:1px; background:var(--accent); width:4px; height:4px; }
+
   /* map */
   .mapwrap { flex:1; overflow:hidden; position:relative; cursor:grab; background:#120f0b; }
   .mapwrap.grabbing { cursor:grabbing; }
@@ -90,9 +107,18 @@
 
 <div class="roster" id="roster"><span class="empty">No world yet — create one above.</span></div>
 
-<div class="mapwrap" id="mapwrap">
-  <div class="grid" id="grid"></div>
-  <div class="map" id="map"></div>
+<div class="stage">
+  <div class="palette" id="palette">
+    <label>Items</label>
+    <input id="itemInput" placeholder="loaf of bread, stovetop…" autocomplete="off">
+    <button id="addItemBtn" class="additem">+ add item</button>
+    <div id="itemStatus" class="status"></div>
+    <div id="itemList"></div>
+  </div>
+  <div class="mapwrap" id="mapwrap">
+    <div class="grid" id="grid"></div>
+    <div class="map" id="map"></div>
+  </div>
 </div>
 <div class="minimap" id="minimap" style="display:none"><div class="mmviewport" id="mmviewport"></div></div>
 
@@ -186,7 +212,7 @@ async function refreshWorld() {            // re-fetch + re-render, KEEP the cur
   document.getElementById("worldId").textContent = state.world.prompt + " · " + state.wid;
   await loadWorlds();
   initNeeds();
-  renderRoster(); renderMap();
+  renderRoster(); renderPalette(); renderMap();
 }
 async function openWorld(wid) {            // switch worlds -> also reset the view to fit
   closePops();
@@ -258,13 +284,18 @@ function renderMap() {
   map.innerHTML = "";
   const placements = state.world.placements || {};
   const byId = Object.fromEntries((state.world.characters || []).map(c => [c.cid, c]));
+  const items = state.world.items || {}, iplace = state.world.item_placements || {};
+  for (const pid in iplace) {                       // items first, so colonists draw on top
+    const ip = iplace[pid], it = items[ip.iid]; if (!it) continue;
+    map.appendChild(mapItem(pid, ip, it));
+  }
   for (const cid in placements) {
     const ch = byId[cid]; if (!ch) continue;
     map.appendChild(mapFig(ch, placements[cid]));
   }
-  if (!Object.keys(placements).length)
+  if (!Object.keys(placements).length && !Object.keys(iplace).length)
     document.getElementById("mapwrap").appendChild(
-      el("div", { class: "hint", "data-hint": "1", text: "drag a colonist from the roster onto the map" }));
+      el("div", { class: "hint", "data-hint": "1", text: "drag a colonist or item onto the map" }));
   renderMinimap();
 }
 
@@ -339,17 +370,22 @@ function centerOn(mx, my) {                  // put map-px (mx,my) at the viewpo
 mapwrap.addEventListener("dragover", e => { e.preventDefault(); });
 mapwrap.addEventListener("drop", e => {
   e.preventDefault();
-  const cid = e.dataTransfer.getData("text/cid"); if (!cid) return;
+  const cid = e.dataTransfer.getData("text/cid"),
+        iid = e.dataTransfer.getData("text/iid"),
+        pid = e.dataTransfer.getData("text/pid");
+  if (!cid && !iid && !pid) return;
   const r = mapEl.getBoundingClientRect();   // transformed (scaled) box; per-cell = SCALE*zoom px
   const x = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientX - r.left) / (SCALE * zoom))));
   const y = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientY - r.top) / (SCALE * zoom))));
-  placeChar(cid, x, y);
+  if (cid) placeChar(cid, x, y);             // colonist from roster
+  else if (pid) moveItem(pid, x, y);         // existing item instance -> reposition
+  else if (iid) placeItem(iid, x, y);        // palette item -> new instance (stamp)
 });
 
 // drag-to-pan (ignore when starting on a figure, so HTML5 drag handles those)
 let panning = false, sx = 0, sy = 0, p0x = 0, p0y = 0;
 mapwrap.addEventListener("mousedown", e => {
-  if (e.target.closest(".mapfig")) return;
+  if (e.target.closest(".mapfig") || e.target.closest(".mapitem")) return;
   panning = true; sx = e.clientX; sy = e.clientY; p0x = panX; p0y = panY;
   mapwrap.classList.add("grabbing");
 });
@@ -385,6 +421,13 @@ function renderMinimap() {
     dot.style.left = (p.x / MAP * MM) + "px";
     dot.style.top = (p.y / MAP * MM) + "px";
     dot.style.background = gcolor(ch);
+    mm.appendChild(dot);
+  }
+  const iplace = state.world.item_placements || {};
+  for (const pid in iplace) {
+    const ip = iplace[pid];
+    const dot = el("div", { class: "mmdot mmitem" });
+    dot.style.left = (ip.x / MAP * MM) + "px"; dot.style.top = (ip.y / MAP * MM) + "px";
     mm.appendChild(dot);
   }
   updateViewport();
@@ -440,8 +483,83 @@ function closePops() {
   state.openNeeds = null; state.openDetailCid = null; syncHash();
 }
 document.addEventListener("mousedown", e => {
-  if (!e.target.closest("[data-pop]") && !e.target.closest(".figbtn") && !e.target.closest(".mapfig")) closePops();
+  if (!e.target.closest("[data-pop]") && !e.target.closest(".figbtn") && !e.target.closest(".mapfig") && !e.target.closest(".mapitem")) closePops();
 });
+
+// ----------------------------------------------------------------- items
+function renderPalette() {
+  const list = document.getElementById("itemList"); list.innerHTML = "";
+  const items = state.world.items || {}, ids = Object.keys(items);
+  if (!ids.length) { list.appendChild(el("div", { class: "empty", style: "font-size:12px;margin-top:10px", text: "No items yet." })); return; }
+  for (const iid of ids) {
+    const it = items[iid], fills = Object.keys(it.affords || {});
+    const pi = el("div", { class: "paletteItem", draggable: "true", title: "drag onto the map to place" },
+      el("div", { class: "itn", text: it.name }),
+      el("div", { class: "itf", text: fills.length ? fills.map(n => `${n} ${Math.round(it.affords[n] * 100)}%`).join(", ") : "fills no needs" }));
+    pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
+    list.appendChild(pi);
+  }
+}
+function addItem() {
+  const inp = document.getElementById("itemInput"), name = inp.value.trim();
+  if (!name || !state.wid) return;
+  const st = document.getElementById("itemStatus"), btn = document.getElementById("addItemBtn");
+  btn.disabled = true; st.className = "status"; st.textContent = "discovering affordances…";
+  const found = [];
+  stream(`/api/world/${state.wid}/item?name=` + encodeURIComponent(name), d => {
+    if (d.type === "afford") { found.push(`${d.need} ${Math.round(d.refill * 100)}%`); st.textContent = "fills: " + found.join(", "); }
+  }, (ok, msg) => {
+    btn.disabled = false;
+    st.textContent = ok ? (found.length ? "✓ fills " + found.join(", ") : "✓ fills no needs") : "⚠ " + msg;
+    st.className = "status" + (ok ? " ok" : " err");
+    if (ok) { inp.value = ""; refreshWorld().then(() => setTimeout(() => { st.textContent = ""; }, 2500)); }
+  });
+}
+function mapItem(pid, pos, item) {
+  const fig = el("div", { class: "mapitem", draggable: "true", title: item.name },
+    el("div", { class: "box" }), el("div", { class: "nm", text: item.name }));
+  fig.style.left = (pos.x * SCALE) + "px"; fig.style.top = (pos.y * SCALE) + "px";
+  fig.dataset.pid = pid;
+  fig.addEventListener("dragstart", e => e.dataTransfer.setData("text/pid", pid));
+  fig.addEventListener("click", e => { e.stopPropagation(); openItemDetail(pid, item); });
+  return fig;
+}
+async function placeItem(iid, x, y) {
+  await fetch(`/api/world/${state.wid}/item_place`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ iid, x, y }) });
+  await refreshWorld();
+}
+async function moveItem(pid, x, y) {
+  const ip = (state.world.item_placements || {})[pid]; if (!ip) return;
+  await fetch(`/api/world/${state.wid}/item_place`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pid, iid: ip.iid, x, y }) });
+  await refreshWorld();
+}
+async function removeItem(pid) {
+  const ip = (state.world.item_placements || {})[pid]; if (!ip) return;
+  await fetch(`/api/world/${state.wid}/item_place`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pid, iid: ip.iid, x: null, y: null }) });
+  await refreshWorld();
+}
+function openItemDetail(pid, item) {
+  closePops();
+  const pop = el("div", { class: "pop det", "data-pop": "1" },
+    el("span", { class: "x", text: "✕", onclick: closePops }),
+    el("div", { class: "nmh", text: item.name }), el("div", { class: "meta", text: "item" }));
+  const fills = Object.keys(item.affords || {});
+  pop.appendChild(el("div", { class: "k", text: "fills" }));
+  if (fills.length) {
+    const nd = el("div", { class: "needs" });
+    for (const n of fills) {
+      const v = item.affords[n], fill = el("i");
+      fill.style.width = Math.round(v * 100) + "%"; fill.style.background = "var(--ok)";
+      nd.appendChild(el("div", { class: "needbar" }, el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill), el("span", { class: "np", text: Math.round(v * 100) + "%" })));
+    }
+    pop.appendChild(nd);
+  } else pop.appendChild(el("div", { class: "v", text: "no needs" }));
+  pop.appendChild(el("button", { class: "ghost sm", style: "margin-top:12px", text: "remove from map", onclick: () => { removeItem(pid); closePops(); } }));
+  pop.style.position = "fixed"; pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
+  document.body.appendChild(pop);
+}
+document.getElementById("addItemBtn").onclick = addItem;
+document.getElementById("itemInput").addEventListener("keydown", e => { if (e.key === "Enter") addItem(); });
 
 // ----------------------------------------------------------------- needs + clock
 function byCid(cid) { return ((state.world && state.world.characters) || []).find(c => c.cid === cid); }

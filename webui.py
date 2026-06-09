@@ -85,6 +85,70 @@ def api_place(wid):
     return {"ok": True, "cid": cid, "x": x, "y": y}
 
 
+def _world_species_needs(w):
+    """Representative species (most common character species, default human) + the need-list to test
+    an item against (union of the world's characters' needs, else the universal core minus excludes)."""
+    chars = w.get("characters", [])
+    from collections import Counter
+    species = Counter(c.get("species", "human") for c in chars).most_common(1)[0][0] if chars else "human"
+    nset = sorted({n for c in chars for n in c.get("needs", [])})
+    if not nset:
+        nset = [n for n in needs.UNIVERSAL_CORE if n not in needs.EXCLUDE_NEEDS]
+    return species, nset
+
+
+@app.route("/api/world/<wid>/item")
+def api_create_item(wid):
+    """Create an item TEMPLATE from a free-text name. Streams which needs it can fill (affordance
+    gate + gen_percent refill), then stores it for the palette."""
+    w = store.load_world(wid)
+    name = request.args.get("name", "").strip()
+
+    @stream_with_context
+    def gen():
+        if not w:
+            yield sse({"type": "error", "message": "World not found."}); return
+        if not name:
+            yield sse({"type": "error", "message": "No item name."}); return
+        try:
+            species, need_list = _world_species_needs(w)
+            affords = {}
+            for need in need_list:
+                r = needs.bake_affordance(SERVER, species, name, need)
+                if r["applies"] and r["refill"] > 0:
+                    affords[need] = round(r["refill"], 3)
+                    yield sse({"type": "afford", "need": need, "refill": affords[need]})
+                else:
+                    yield sse({"type": "checked", "need": need})
+            iid = store.new_id(8)
+            store.append(wid, {"type": "item", "iid": iid, "name": name,
+                               "species": species, "affords": affords})
+            yield sse({"type": "saved", "iid": iid, "affords": affords})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+@app.route("/api/world/<wid>/item_place", methods=["POST"])
+def api_item_place(wid):
+    """Place/move/remove an item instance on the map. Body: {iid, x, y, pid?} — omit pid to create a
+    new instance (palette stamp); pass pid to move it; pass x/y null to remove it."""
+    if not store.load_world(wid):
+        return {"error": "not found"}, 404
+    d = request.json or {}
+    iid, pid = d.get("iid"), d.get("pid") or store.new_id(8)
+    x, y = d.get("x"), d.get("y")
+    if x is not None and y is not None:
+        x = max(0.0, min(500.0, float(x)))
+        y = max(0.0, min(500.0, float(y)))
+    else:
+        x = y = None
+    store.append(wid, {"type": "item_place", "pid": pid, "iid": iid, "x": x, "y": y})
+    return {"ok": True, "pid": pid, "iid": iid, "x": x, "y": y}
+
+
 # ------------------------------------------------------ character generation (seed / at a place)
 @app.route("/api/world/<wid>/character")
 def api_world_character(wid):
