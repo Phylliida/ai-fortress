@@ -25,3 +25,7 @@ embeddinggemma-300M-Q8_0\.gguf
 # Secrets / environment
 .env
 .env.*
+
+# Python
+__pycache__/
+*.pyc
