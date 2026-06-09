@@ -8,6 +8,8 @@ Record types:
   {"type":"character",  "cid", "role":"seed"|"location", "at":<loc|null>, "world",
                         "species", "gender", "name", "appearance", "personality", "backstory"}
   {"type":"locations",  "kept":[ ...top-5... ]}
+  {"type":"place",      "cid", "x", "y"}   # position on the 500x500 world map; last write wins
+                                            # (x or y null = removed from the map)
 """
 import os
 import json
@@ -62,7 +64,7 @@ def load_world(world_id):
     if not recs:
         return None
     world = {"id": world_id, "prompt": None, "created": None,
-             "characters": [], "locations": [], "npc_totals": {}, "objects": {}}
+             "characters": [], "locations": [], "npc_totals": {}, "objects": {}, "placements": {}}
     for r in recs:
         t = r.get("type")
         if t == "world":
@@ -71,6 +73,11 @@ def load_world(world_id):
             world["characters"].append(r)
         elif t == "locations":
             world["locations"] = r["kept"]
+        elif t == "place":
+            if r.get("x") is None or r.get("y") is None:
+                world["placements"].pop(r["cid"], None)        # null coords = taken off the map
+            else:
+                world["placements"][r["cid"]] = {"x": r["x"], "y": r["y"]}
         elif t == "npc_total":
             world["npc_totals"][r["location"]] = {"count": r["count"], "lo": r.get("lo"), "hi": r.get("hi")}
         elif t == "objects":
