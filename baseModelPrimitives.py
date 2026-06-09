@@ -75,6 +75,20 @@ DURATION_GRAMMAR = (
     r'| "hours" | "hour" | "hrs" | "hr" | "days" | "day" | "weeks" | "week"'
 )
 
+# Few-shot frame for gen_duration's sanity check. The MIXED Yes/No exemplars break the base model's
+# reflexive-'No' default on bare "Does X take Y?" questions — which pinned even CORRECT durations at
+# P(yes)~0.3 (its 'No' rationales would even recite the facts supporting Yes). With the exemplars,
+# good durations land ~0.9 and bad ~0.05, so a 0.5 accept threshold works. Examples are accurate and
+# don't overlap typical colony items.
+DURATION_CHECK_FEWSHOT = (
+    "Answer each question Yes or No.\n"
+    "Question: Does watching a movie take about 2 hours?\nAnswer: Yes\n"
+    "Question: Does tying your shoelaces take about 30 minutes?\nAnswer: No\n"
+    "Question: Does boiling an egg take about 10 minutes?\nAnswer: Yes\n"
+    "Question: Does brushing your teeth take about 4 hours?\nAnswer: No\n"
+    "Question: Does {subject} take about {phrase}?\nAnswer:"
+)
+
 
 # ---------------------------------------------------------------------------
 # llama-server client
@@ -190,13 +204,15 @@ class LlamaServer:
         return raw.strip().lower().startswith("y")
 
     # --- yes/no probability (the old yesVsNo), done rigorously via first-token logprobs ---
-    def yes_no_prob(self, prompt, n_probs=40, reasoning=False):
+    def yes_no_prob(self, prompt, n_probs=40, explain=False, explain_n=5):
         """P(yes) from the first answer token: sum the probability mass of all case/space
         variants of 'yes' vs 'no' — every token whose `.strip().lower()` is exactly 'yes' or
         'no' (' Yes', ' yes', ' YES', ... ; NOT 'yesterday'/'never'). n_predict=1; neutral
         sampling keeps the probs calibrated. (No grammar: llama.cpp reports the raw pre-grammar
         distribution in top_logprobs, so a grammar is a no-op here — the summing does the work.)
-        reasoning=True (DEBUG ONLY) returns {p, yes, why} with a generated rationale."""
+        explain=True (DEBUG ONLY) returns {p, yes, reasons_yes, reasons_no} with explain_n sampled
+        rationales for BOTH sides — necessary because the No-mass is often reflexive/pedantic and one
+        rationale is noise; the recurring theme across samples is the real story."""
         out = self.complete(prompt, n_predict=1, n_probs=n_probs)
         yes = no = 0.0
         for tok, p in first_token_probs(out).items():
@@ -206,8 +222,10 @@ class LlamaServer:
             elif t == "no":
                 no += p
         p = yes / (yes + no) if (yes + no) > 0 else 0.5
-        if reasoning:
-            return {"p": p, "yes": p >= 0.5, "why": self._why(prompt, "Yes" if p >= 0.5 else "No")}
+        if explain:
+            return {"p": p, "yes": p >= 0.5,
+                    "reasons_yes": self._reasons(prompt, "Yes", explain_n),
+                    "reasons_no": self._reasons(prompt, "No", explain_n)}
         return p
 
     def _why(self, prompt, answer):
@@ -216,6 +234,13 @@ class LlamaServer:
         this just narrates a plausible reason for it — handy for understanding miscalibrations."""
         r = self.gen_text(prompt + f" {answer}, because", stop=["\n"], n_predict=48)
         return f"{answer}, because {r}".strip()
+
+    def _reasons(self, prompt, answer, n=5):
+        """Sample `n` independent rationales for `answer` (each a fresh `_why`). Sampling several is
+        the whole point: ONE rationale is noise — one-off flukes and occasional garbage — and the REAL
+        reason is the theme that recurs across samples (e.g. a reflexive 'No' whose rationales keep
+        reciting the very facts that support 'Yes'). Backs the `explain=` param on every primitive."""
+        return [self._why(prompt, answer) for _ in range(max(1, n))]
 
     # --- integer ---
     def gen_int(self, prompt, temperature=None):
@@ -248,11 +273,12 @@ class LlamaServer:
         except Exception:
             return None
 
-    def gen_number_median(self, prompt, samples=10):
+    def gen_number_median(self, prompt, samples=10, explain=False, explain_n=5):
         """Sample the number `samples` times (grammar-constrained) and take the MEDIAN of the
         per-sample midpoints — robust to outliers (a stray '20.000'->20, or a wild 331, won't
         skew it the way a mean would). Returns {median, lo, hi, n, samples:[{raw, value}]} or
-        None if nothing parses. cache_prompt makes the repeated samples cheap."""
+        None if nothing parses. cache_prompt makes the repeated samples cheap. explain=True
+        (DEBUG) adds `reasons`: explain_n sampled rationales for the median value."""
         out = []
         for _ in range(samples):
             raw = self.gen_text(prompt, stop=GRAMMAR_STOP, n_predict=32,
@@ -266,26 +292,51 @@ class LlamaServer:
         vals = [o["value"] for o in out if o["value"] is not None]
         if not vals:
             return None
-        return {"median": statistics.median(vals), "lo": min(vals), "hi": max(vals),
-                "n": len(vals), "samples": out}
+        med = statistics.median(vals)
+        result = {"median": med, "lo": min(vals), "hi": max(vals), "n": len(vals), "samples": out}
+        if explain:
+            result["reasons"] = self._reasons(prompt, f"{med:g}", explain_n)
+        return result
 
     # --- duration -> minutes (fourth primitive): natural-unit, normalized, median over samples ---
-    def gen_duration(self, prompt, samples=5):
+    def gen_duration(self, prompt, samples=5, check_subject=None, check_threshold=0.5, max_rounds=3,
+                     explain=False, explain_n=5):
         """Robust activity DURATION in MINUTES. A "<number> <unit>" grammar (DURATION_GRAMMAR) lets
         the model answer in whatever unit is natural — a meal in minutes, a night in hours — which is
         then normalized to minutes and median-aggregated over `samples`. This sidesteps the failure of
-        forcing 'minutes' (it lowballs anything it conceives of in hours, e.g. reading 'a bed' as a
-        nap). Returns {minutes, lo, hi, n, samples:[{raw, minutes}]} or None if nothing parses."""
-        out = []
-        for _ in range(samples):
-            raw = self.gen_text(prompt, stop=GRAMMAR_STOP, n_predict=16,
-                               grammar=DURATION_GRAMMAR if self.use_grammar else None)
-            out.append({"raw": raw, "minutes": duration_to_minutes(raw)})
+        forcing 'minutes' (it lowballs anything it conceives of in hours, e.g. reading 'a bed' as a nap).
+
+        If `check_subject` is given, after each batch we SANITY-CHECK the running median with a yes/no
+        'Does it make sense that {check_subject} takes about {readable}?' and RESAMPLE (pooling more
+        samples, up to max_rounds) whenever P(yes) < check_threshold — so a confidently-wrong MEDIAN
+        (the whole batch misreading the action, not just a stray outlier — e.g. timing cooking instead
+        of eating) doesn't slip through. Pooling means each extra round only sharpens the estimate.
+        Returns {minutes, lo, hi, n, rounds, p_makes_sense, samples} or None if nothing parses."""
+        out, p_ok = [], None
+        for rnd in range(max(1, max_rounds)):
+            for _ in range(samples):
+                raw = self.gen_text(prompt, stop=GRAMMAR_STOP, n_predict=16,
+                                   grammar=DURATION_GRAMMAR if self.use_grammar else None)
+                out.append({"raw": raw, "minutes": duration_to_minutes(raw)})
+            vals = [o["minutes"] for o in out if o["minutes"] is not None]
+            if not vals:
+                continue                                   # nothing parsed yet — draw another batch
+            med = statistics.median(vals)
+            if check_subject is None:
+                break                                      # no validation requested
+            p_ok = self.yes_no_prob(DURATION_CHECK_FEWSHOT.format(
+                subject=check_subject, phrase=minutes_to_phrase(med)))
+            if p_ok >= check_threshold:
+                break                                      # the model endorses this median
         vals = [o["minutes"] for o in out if o["minutes"] is not None]
         if not vals:
             return None
-        return {"minutes": statistics.median(vals), "lo": min(vals), "hi": max(vals),
-                "n": len(vals), "samples": out}
+        med = statistics.median(vals)
+        result = {"minutes": med, "lo": min(vals), "hi": max(vals),
+                  "n": len(vals), "rounds": rnd + 1, "p_makes_sense": p_ok, "samples": out}
+        if explain:
+            result["reasons"] = self._reasons(prompt, minutes_to_phrase(med), explain_n)
+        return result
 
     # --- verbalized magnitude -> calibrated percent (third primitive, next to yes_no_prob/number) ---
     def tokenize_pieces(self, text):
@@ -325,13 +376,14 @@ class LlamaServer:
             prefix += piece
         return total
 
-    def gen_percent(self, prompt, scale=None, reasoning=False):
+    def gen_percent(self, prompt, scale=None, explain=False, explain_n=5):
         """Verbalized magnitude -> calibrated [0,1]. `prompt` is framed so a degree phrase is the
         natural next words (e.g. "...satisfies their hunger"); we score each rung of the ordinal
         `scale` [(phrase, value)...] by its raw sequence-logprob, softmax over the rungs, and
         return the probability-weighted expected value. Reads the model's *ordering* of degree
         words (which it's good at) rather than asking for a percent (which clusters on round
-        numbers); a single distribution read, no sampling. Returns {value, dist:[(phrase,prob,val)]}."""
+        numbers); a single distribution read, no sampling. Returns {value, dist:[(phrase,prob,val)]}.
+        explain=True (DEBUG) adds `reasons`: explain_n sampled rationales for the top-ranked phrase."""
         scale = scale or PERCENT_SCALE
         scored = []
         for ph, v in scale:
@@ -346,8 +398,8 @@ class LlamaServer:
         value = sum(v * w for _, v, w in ws) / z
         dist = sorted(((ph, w / z, v) for ph, v, w in ws), key=lambda x: -x[1])
         result = {"value": value, "dist": dist}
-        if reasoning:
-            result["why"] = self._why(prompt, dist[0][0])
+        if explain:
+            result["reasons"] = self._reasons(prompt, dist[0][0], explain_n)
         return result
 
     # --- list of items ---
@@ -389,6 +441,19 @@ def duration_to_minutes(text):
     u = m.group(3).rstrip("s")                          # hours->hour, mins->min, secs->sec, hrs->hr
     per = _DUR_UNIT_MIN.get(u) or _DUR_UNIT_MIN.get(u[:3])
     return (a + b) / 2.0 * per if per else None
+
+
+def minutes_to_phrase(m):
+    """Human-readable duration for the sanity-check question (480 -> '8 hours', 1.5 -> '2 minutes')."""
+    if m < 1:
+        return "less than a minute"
+    if m < 90:
+        return f"{round(m)} minutes"
+    if m < 1440:
+        h = m / 60.0
+        return f"{int(h)} hours" if abs(h - round(h)) < 1e-9 else f"{round(h, 1)} hours"
+    d = m / 1440.0
+    return f"{int(d)} days" if abs(d - round(d)) < 1e-9 else f"{round(d, 1)} days"
 
 
 def first_token_probs(completion_json) -> dict:
