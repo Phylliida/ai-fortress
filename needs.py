@@ -128,3 +128,37 @@ def bake_affordances(server, species, obj_kinds, need_list, gate_threshold=0.5):
                 served[need] = r["refill"]
         table[kind] = served
     return table
+
+
+# --- durations: how long the ACTION of using an item takes (gen_duration -> minutes), baked PER
+#     ITEM. Durations belong to actions, not needs: "eating a loaf of bread" is minutes, "sleeping on
+#     a bed" is hours; how much each action RECOVERS the need is the affordance refill already baked.
+#     The model can only time an action when it's named as a gerund EVENT ("eating a loaf of bread") —
+#     a bare object ("a loaf of bread") yields near-zero/bimodal junk. So we NAME the action from
+#     (item, need) first, then time it; gen_duration's median absorbs the occasional wild outlier.
+
+def action_prompt(species, item, need):
+    return (f"A {species} uses a {item} to satisfy their {need} need.\n"
+            f"In two or three words, the action they are doing is:")
+
+
+def duration_for_action_prompt(species, action):
+    return f"How long does {action} usually take for a {species}?\nAnswer:"
+
+
+def bake_durations(server, species, affordance_table, samples=7, floor_min=0.5):
+    """Per-item action duration in MINUTES: {item: minutes}. For each item, first NAME the gerund
+    action from item + the need it serves (its primary/highest-refill need), then time that action —
+    a bare object can't be timed stably. floor_min keeps an action committable (a 0-length activity is
+    instantaneous, which reintroduces frantic topping-up). Items serving no need are skipped."""
+    out = {}
+    for item, served in affordance_table.items():
+        if not served:
+            continue
+        need = max(served, key=served.get)                 # the item's primary activity
+        action = server.gen_text(action_prompt(species, item, need), stop=["\n", "."], n_predict=12)
+        if not action:
+            continue
+        r = server.gen_duration(duration_for_action_prompt(species, action), samples=samples)
+        out[item] = max(round(r["minutes"], 1), floor_min) if r else None
+    return out
