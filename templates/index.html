@@ -84,8 +84,9 @@
   .needs { margin-top:4px; }
   .needbar { display:flex; align-items:center; gap:7px; margin-top:4px; }
   .needbar .nl { flex:0 0 86px; font-size:11px; color:var(--muted); text-transform:capitalize; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .needbar .nb { flex:1; height:9px; background:#15110d; border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .needbar .nb { position:relative; flex:1; height:9px; background:#15110d; border:1px solid var(--line); border-radius:5px; overflow:hidden; }
   .needbar .nb > i { display:block; height:100%; transition:width .15s linear; }
+  .needbar .nb .th { position:absolute; top:0; bottom:0; width:2px; background:var(--ink); opacity:.55; }  /* threshold line */
   .needbar .np { flex:0 0 32px; text-align:right; font:10px ui-monospace,monospace; color:var(--muted); }
   .hint { position:absolute; left:50%; top:14px; transform:translateX(-50%); color:var(--muted); font-size:12px; background:rgba(20,16,11,.7); padding:4px 10px; border-radius:8px; pointer-events:none; z-index:1; }
   /* minimap */
@@ -169,7 +170,7 @@ function stick(color) {
 }
 const gcolor = ch => GCOLOR[ch.gender] || "var(--accent)";
 
-let state = { wid: null, world: null, needLevels: {}, openNeeds: null, openDetailCid: null };
+let state = { wid: null, world: null, needLevels: {}, openNeeds: null, openDetailCid: null, sim: null };
 
 // persist world / open-character / zoom / pan in the URL hash (replaceState = no history spam)
 let syncTimer = null;
@@ -185,9 +186,10 @@ function writeHash() {
 async function restoreFromHash() {
   const p = new URLSearchParams(location.hash.replace(/^#/, ""));
   const wid = p.get("w"); if (!wid) return;
-  state.wid = wid; state.needLevels = {};
+  state.wid = wid; state.needLevels = {}; state.sim = null;
   await refreshWorld();
   if (!state.world || state.world.error) { state.wid = null; return; }   // stale/deleted world
+  fetch(`/api/world/${wid}/sim/reset`, { method: "POST" });
   const z = parseFloat(p.get("z")), px = parseFloat(p.get("x")), py = parseFloat(p.get("y"));
   if (!isNaN(z) && !isNaN(px) && !isNaN(py)) { zoom = Math.max(ZMIN, Math.min(ZMAX, z)); panX = px; panY = py; clampPan(); applyView(); }
   else resetView();
@@ -222,7 +224,8 @@ async function refreshWorld() {            // re-fetch + re-render, KEEP the cur
 async function openWorld(wid) {            // switch worlds -> also reset the view to fit
   closePops();
   state.wid = wid;
-  state.needLevels = {};                   // fresh sim state for the new world
+  state.needLevels = {}; state.sim = null;  // fresh sim state for the new world
+  fetch(`/api/world/${wid}/sim/reset`, { method: "POST" });
   await refreshWorld();
   resetView();
 }
@@ -296,7 +299,7 @@ function renderMap() {
   }
   for (const cid in placements) {
     const ch = byId[cid]; if (!ch) continue;
-    map.appendChild(mapFig(ch, placements[cid]));
+    map.appendChild(mapFig(ch, agentPos(cid) || placements[cid]));   // live sim position if running
   }
   if (!Object.keys(placements).length && !Object.keys(iplace).length)
     document.getElementById("mapwrap").appendChild(
@@ -421,7 +424,7 @@ function renderMinimap() {
   const byId = Object.fromEntries(((state.world && state.world.characters) || []).map(c => [c.cid, c]));
   for (const cid in placements) {
     const ch = byId[cid]; if (!ch) continue;
-    const p = placements[cid];
+    const p = agentPos(cid) || placements[cid];
     const dot = el("div", { class: "mmdot" });
     dot.style.left = (p.x / MAP * MM) + "px";
     dot.style.top = (p.y / MAP * MM) + "px";
@@ -592,46 +595,66 @@ function initNeeds() {                       // start every character's needs fu
       state.needLevels[ch.cid] = Object.fromEntries(ch.needs.map(n => [n, 1.0]));
 }
 function needColor(v) { return v > 0.5 ? "var(--ok)" : v > 0.25 ? "var(--accent)" : "var(--err)"; }
+function thresholdFor(cid, need) {
+  const ch = byCid(cid);
+  return (ch && ch.thresholds && ch.thresholds[need] != null) ? ch.thresholds[need] : 0.35;
+}
 function renderNeedBars(cid, container) {
   container.innerHTML = "";
   const lv = state.needLevels[cid] || {}, ch = byCid(cid);
   for (const n of ((ch && ch.needs) || Object.keys(lv))) {
     const v = lv[n] != null ? lv[n] : 1;
     const fill = el("i"); fill.style.width = Math.round(v * 100) + "%"; fill.style.background = needColor(v);
+    const mark = el("div", { class: "th" }); mark.style.left = Math.round(thresholdFor(cid, n) * 100) + "%";
     container.appendChild(el("div", { class: "needbar" },
-      el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill),
+      el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill, mark),
       el("span", { class: "np", text: Math.round(v * 100) + "%" })));
   }
 }
 
-let playing = false, speed = 1, gameMin = 8 * 60, tickTimer = null;
-const TICKS_PER_HOUR = 300, GAME_MIN_PER_TICK = 0.2, BASE_MS = 200;   // 1× = 5 ticks/sec (5/game-min)
+let playing = false, speed = 1, gameMin = 8 * 60, simBusy = false;
+const BASE_MS = 200;   // wall cadence of sim/step calls; `speed` = ticks advanced per call (1/2/4)
 function fmtClock() {
   const h = Math.floor(gameMin / 60) % 24, m = Math.floor(gameMin % 60);
   return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
 }
 function updateClock() { document.getElementById("clock").textContent = fmtClock(); }
-function tick() {
-  gameMin += GAME_MIN_PER_TICK;
-  for (const cid in state.needLevels) {
-    const ch = byCid(cid); if (!ch || !ch.rates) continue;
-    const lv = state.needLevels[cid];
-    for (const n in lv) lv[n] = Math.max(0, lv[n] - (ch.rates[n] || 0) / TICKS_PER_HOUR);
+function agentPos(cid) { return (state.sim && state.sim.agents[cid]) || ((state.world && state.world.placements) || {})[cid]; }
+function applySim() {                          // render the latest sim state: positions, bars, clock
+  const s = state.sim; if (!s) return;
+  gameMin = s.game_min; updateClock();
+  for (const cid in s.agents) {
+    const a = s.agents[cid];
+    const fig = document.querySelector(`.mapfig[data-cid="${cid}"]`);
+    if (fig) { fig.style.left = (a.x * SCALE) + "px"; fig.style.top = (a.y * SCALE) + "px"; }
+    state.needLevels[cid] = a.needs;
   }
-  updateClock();
   if (state.openNeeds) renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
+  renderMinimap();
 }
-function restartTimer() { clearInterval(tickTimer); if (playing) tickTimer = setInterval(tick, BASE_MS / speed); }
+async function simLoop() {
+  if (!playing || simBusy || !state.wid) return;
+  simBusy = true;
+  try {
+    const r = await fetch(`/api/world/${state.wid}/sim/step`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ticks: speed }) });
+    state.sim = await r.json();
+    applySim();
+  } catch (e) {}
+  simBusy = false;
+  if (playing) setTimeout(simLoop, BASE_MS);
+}
 function updateSpeedUI() {
   document.getElementById("playBtn").textContent = playing ? "⏸" : "▶";
   document.getElementById("ff2Btn").classList.toggle("active", speed === 2);
   document.getElementById("ff4Btn").classList.toggle("active", speed === 4);
 }
-function togglePlay() { playing = !playing; restartTimer(); updateSpeedUI(); }
-function setSpeed(s) {                          // a fast-forward button always plays; click it again -> 1×
+function togglePlay() { const was = playing; playing = !playing; updateSpeedUI(); if (playing && !was) simLoop(); }
+function setSpeed(s) {                          // a fast-forward button always plays; click the active one -> 1×
+  const was = playing;
   if (playing && speed === s) speed = 1;
   else { speed = s; playing = true; }
-  restartTimer(); updateSpeedUI();
+  updateSpeedUI();
+  if (playing && !was) simLoop();              // only kick off a loop on paused -> playing
 }
 document.getElementById("playBtn").onclick = togglePlay;
 document.getElementById("ff2Btn").onclick = () => setSpeed(2);
