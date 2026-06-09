@@ -64,12 +64,16 @@ def discover_needs(server, species, n_extra=6, threshold=0.5):
 # and (b) vary the PERSON so person-dependence is reinforced, not flattened (baker social 8 vs hermit
 # 1). Verified: few-shot fixes both the magnitude AND the per-person spread vs zero-shot.
 RATE_FEWSHOT = (
-    "On a typical day, how many times does a person satisfy a given need? It varies by person and need.\n\n"
-    "Person: a weary laborer at the end of a long day\nNeed: sleep\nAnswer: 1\n\n"
-    "Person: an active child running around outside\nNeed: water\nAnswer: 8\n\n"
-    "Person: a hardworking farmhand\nNeed: food\nAnswer: 4\n\n"
-    "Person: a content hermit who treasures solitude\nNeed: social\nAnswer: 1\n\n"
-    "Person: {person}\nNeed: {need}\nAnswer:"
+    "Person: a weary laborer at the end of a long day\n"
+    "On a typical day, how many times does this person satisfy their sleep need?\nAnswer: 1\n\n"
+    "Person: an active child running around outside\n"
+    "On a typical day, how many times does this person satisfy their water need?\nAnswer: 8\n\n"
+    "Person: a hardworking farmhand\n"
+    "On a typical day, how many times does this person satisfy their food need?\nAnswer: 4\n\n"
+    "Person: a content hermit who treasures solitude\n"
+    "On a typical day, how many times does this person satisfy their social need?\nAnswer: 1\n\n"
+    "Person: {person}\n"
+    "On a typical day, how many times does this person satisfy their {need} need?\nAnswer:"
 )
 
 
