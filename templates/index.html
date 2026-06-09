@@ -45,10 +45,12 @@
            linear-gradient(90deg, var(--grid) 1px, transparent 1px),
            linear-gradient(var(--line) 1px, transparent 1px),
            linear-gradient(90deg, var(--line) 1px, transparent 1px); }
-  .map .mapfig { position:absolute; transform:translate(-50%,-100%); display:flex; flex-direction:column; align-items:center; cursor:grab; z-index:2; }
-  .map .mapfig .nm { font-size:11px; color:var(--accent); background:rgba(20,16,11,.78); padding:0 4px; border-radius:4px; white-space:nowrap; margin-top:-2px; }
-  .map .mapfig:hover { z-index:3; }
-  .map .mapfig.focus svg.stick { filter:drop-shadow(0 0 6px var(--accent)); }
+  .map .mapfig { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:2; }
+  .map .mapfig svg.stick { width:auto; height:16px; }
+  .map .mapfig .nm { position:absolute; top:17px; left:50%; transform:translateX(-50%); display:none; font-size:11px; color:var(--accent); background:rgba(20,16,11,.85); padding:0 4px; border-radius:4px; white-space:nowrap; z-index:6; }
+  .map .mapfig:hover { z-index:5; }
+  .map .mapfig:hover .nm { display:block; }
+  .map .mapfig.focus svg.stick { filter:drop-shadow(0 0 7px var(--accent)); }
 
   /* generate popover + detail popover */
   .pop { position:absolute; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.5); z-index:50; width:300px; }
@@ -82,9 +84,9 @@
 </div>
 
 <script>
-const MAP = 500;            // world is MAP x MAP units
-const SCALE = 3;           // pixels per unit -> 1500px map
-const GRID_MINOR = 10, GRID_MAJOR = 50;   // grid lines every N units
+const MAP = 500;            // world is MAP x MAP cells
+const SCALE = 18;          // pixels per cell -> 9000px map (pannable both axes; a person = one cell)
+const GRID_MINOR = 1, GRID_MAJOR = 10;    // grid lines every N cells
 const GCOLOR = { female:"#e6a4c4", male:"#7fb4e6", nonbinary:"#c9a6e0" };
 
 function el(tag, props={}, ...kids) {
@@ -243,7 +245,8 @@ async function placeChar(cid, x, y) {
 function focusChar(cid) {
   const pos = state.world.placements[cid]; if (!pos) return;
   const wrap = document.getElementById("mapwrap");
-  wrap.scrollTo({ left: pos.x * SCALE - wrap.clientWidth / 2, top: pos.y * SCALE - wrap.clientHeight / 2, behavior: "smooth" });
+  wrap.scrollTo({ left: pos.x * SCALE - wrap.clientWidth / 2 + SCALE / 2,
+                  top: pos.y * SCALE - wrap.clientHeight / 2 + SCALE / 2, behavior: "smooth" });
   const f = [...document.querySelectorAll(".mapfig")].find(e => e.dataset.cid === cid);
   if (f) { f.classList.add("focus"); setTimeout(() => f.classList.remove("focus"), 1400); }
 }
@@ -256,8 +259,8 @@ mapwrap.addEventListener("drop", e => {
   const cid = e.dataTransfer.getData("text/cid"); if (!cid) return;
   const map = document.getElementById("map");
   const rect = map.getBoundingClientRect();
-  const x = Math.max(0, Math.min(MAP, (e.clientX - rect.left) / SCALE));
-  const y = Math.max(0, Math.min(MAP, (e.clientY - rect.top) / SCALE));
+  const x = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientX - rect.left) / SCALE)));   // snap to a cell
+  const y = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientY - rect.top) / SCALE)));
   placeChar(cid, x, y);
 });
 
