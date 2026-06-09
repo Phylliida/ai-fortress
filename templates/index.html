@@ -14,9 +14,15 @@
   h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:21px; color:var(--accent); }
   h1 small { color:var(--muted); font-size:12px; font-weight:400; font-family:ui-monospace,monospace; }
   header { padding:14px 20px; border-bottom:1px solid var(--line); }
-  .wrap { display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 52px); }
+  .wrap { display:grid; grid-template-columns:260px minmax(0,1fr) 360px; min-height:calc(100vh - 52px); }
   .sidebar { border-right:1px solid var(--line); background:var(--panel); padding:16px; }
-  .main { padding:22px 26px; max-width:920px; }
+  .main { padding:22px 26px; }
+  .gridpanel { border-left:1px solid var(--line); padding:18px; background:var(--panel); }
+  .gridpanel .gs { position:sticky; top:18px; }
+  .gridpanel .gridhead { color:var(--accent); font:600 14px Georgia,serif; margin-bottom:10px; }
+  .locgrid { display:grid; grid-template-columns:repeat(10,1fr); gap:2px; }
+  .locgrid .cell { background:#15110d; border:1px solid var(--line); aspect-ratio:1; }
+  .locgrid .cell:hover { border-color:var(--accent); }
   label { display:block; font-size:11px; color:var(--muted); margin:10px 0 4px; text-transform:uppercase; letter-spacing:.04em; }
   input, select, textarea { width:100%; background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:7px 9px; font:inherit; }
   textarea { resize:vertical; min-height:46px; }
@@ -39,7 +45,7 @@
   .field .v { margin-top:1px; font-size:14px; }
   .pending { color:var(--muted); font-style:italic; }
   .locblock { border:1px solid var(--line); border-radius:9px; padding:12px 14px; margin-bottom:12px; }
-  .locblock > .lh { color:var(--accent); font:600 14px Georgia,serif; margin-bottom:8px; }
+  .locblock > .lh { color:var(--accent); font:600 14px Georgia,serif; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; }
   .chip { background:#15110d; border:1px solid var(--line); color:var(--accent); border-radius:13px; padding:3px 10px; font-size:12px; }
   .status { font:12px ui-monospace,monospace; color:var(--muted); margin:8px 0; min-height:16px; }
@@ -77,6 +83,7 @@
     <div id="worldList"></div>
   </div>
   <div class="main" id="main"><div class="empty">Create or pick a world.</div></div>
+  <div class="gridpanel" id="gridPanel"><div class="empty">Click a location's ▦ grid.</div></div>
 </div>
 
 <script>
@@ -143,10 +150,10 @@ function charForm(at) {
     stream(`/api/world/${state.wid}/character?` + q, d => {
       if (d.type === "field" && d.field === "name") nm.textContent = d.value;
       else if (d.type === "field") {
-        const f = el("div", { class: "field" }, el("div", { class: "k", text: d.field }), el("div", { class: "v", text: d.value }), promptDet(d.prompt));
+        const f = el("div", { class: "field" }, el("div", { class: "k", text: d.field }), el("div", { class: "v", text: d.value }), promptDet(d.prompt, d.value));
         card.appendChild(f);
       } else if (d.type === "nocturnal") {
-        card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(d.value*100) + "% likely" }), promptDet(d.prompt)));
+        card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(d.value*100) + "% likely" }), promptDet(d.prompt, Math.round(d.value*100) + "% P(yes)")));
       }
     }, (ok, msg) => {
       btn.disabled = false;
@@ -161,22 +168,23 @@ function charForm(at) {
   return el("div", {}, formRow, status, out);
 }
 
-function promptDet(p) {
+function promptDet(p, output) {
   if (!p) return null;
-  const d = el("details", { class: "dbg" }, el("summary"), el("pre", { text: p }));
-  return d;
+  let text = p;
+  if (output != null && output !== "") text += "\n\n─── model output ───\n" + output;
+  return el("details", { class: "dbg" }, el("summary"), el("pre", { text }));
 }
 
 function charCard(ch) {
   const p = ch.prompts || {};
   const card = el("div", { class: "card" });
   card.appendChild(el("div", { class: "nm", text: ch.name }));
-  if (p.name) card.appendChild(promptDet(p.name));
+  if (p.name) card.appendChild(promptDet(p.name, ch.name));
   card.appendChild(el("div", { class: "meta", text: `${ch.gender} ${ch.species}` }));
   for (const f of ["appearance", "personality", "backstory"])
-    if (ch[f]) card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: f }), el("div", { class: "v", text: ch[f] }), promptDet(p[f])));
+    if (ch[f]) card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: f }), el("div", { class: "v", text: ch[f] }), promptDet(p[f], ch[f])));
   if (ch.nocturnal != null)
-    card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal*100) + "% likely" }), promptDet(p.nocturnal)));
+    card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal*100) + "% likely" }), promptDet(p.nocturnal, Math.round(ch.nocturnal*100) + "% P(yes)")));
   // analysis
   const box = el("div", { class: "analyzeBox", hidden: "" });
   const out = el("div");
@@ -208,7 +216,12 @@ function renderWorld() {
   if (w.locations.length) {
     for (const loc of w.locations) {
       const here = w.characters.filter(c => c.at === loc);
-      const block = el("div", { class: "locblock" }, el("div", { class: "lh", text: loc }));
+      const lh = el("div", { class: "lh" },
+        el("span", { text: loc }),
+        el("button", { class: "ghost sm", text: "▦ grid", onclick: () => viewGrid(loc) }),
+        el("button", { class: "ghost sm", text: "👥 NPCs", onclick: () => viewNpcCounts(loc) }),
+        el("button", { class: "ghost sm", text: "📦 objects", onclick: () => viewObjects(loc) }));
+      const block = el("div", { class: "locblock" }, lh);
       here.forEach(c => block.appendChild(charCard(c)));
       block.appendChild(charForm(loc));
       lsec.appendChild(block);
@@ -231,6 +244,60 @@ function renderWorld() {
   main.appendChild(lsec);
 }
 
+function viewGrid(loc) {
+  const panel = document.getElementById("gridPanel");
+  panel.innerHTML = "";
+  const gs = el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc }));
+  const grid = el("div", { class: "locgrid" });
+  for (let i = 0; i < 100; i++) grid.appendChild(el("div", { class: "cell", "data-i": String(i) }));
+  gs.appendChild(grid);
+  panel.appendChild(gs);
+}
+
+function viewNpcCounts(loc) {
+  const panel = document.getElementById("gridPanel"); panel.innerHTML = "";
+  const status = el("div", { class: "status", text: "sampling 10×…" });
+  const result = el("div");
+  const gs = el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc + " — distinct NPCs / day" }), status, result);
+  panel.appendChild(gs);
+  stream(`/api/world/${state.wid}/npccounts?loc=${encodeURIComponent(loc)}`, d => {
+    if (d.type !== "npc") return;
+    result.innerHTML = "";
+    result.appendChild(el("div", { style: "font:600 30px Georgia,serif; color:var(--accent); margin:4px 0", text: d.count == null ? "?" : "~" + d.count }));
+    if (d.lo != null) result.appendChild(el("div", { class: "meta", style: "color:var(--muted)", text: `${d.n} samples ranged ${d.lo}–${d.hi}` }));
+    const out = d.samples ? `samples: ${d.samples.join(", ")}\n→ median ${d.count}` : String(d.count);
+    if (d.prompt) result.appendChild(promptDet(d.prompt, out));
+  }, (ok, msg) => { status.textContent = ok ? "" : "⚠ " + msg; });
+}
+
+function viewObjects(loc) {
+  const panel = document.getElementById("gridPanel"); panel.innerHTML = "";
+  const existing = (state.world.objects || {})[loc];
+  const status = el("div", { class: "status" });
+  const chips = el("div", { class: "chips" });
+  const detWrap = el("div");
+  const btn = el("button", { class: "ghost sm", style: "margin-top:10px", text: existing ? "↻ regenerate" : "generate object types" });
+  panel.appendChild(el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc + " — object types" }), chips, detWrap, btn, status));
+  function show(items, prompt) {
+    chips.innerHTML = ""; detWrap.innerHTML = "";
+    items.forEach(o => chips.appendChild(el("span", { class: "chip", text: o })));
+    if (prompt) { const det = promptDet(prompt, items.join(", ")); if (det) detWrap.appendChild(det); }
+  }
+  if (existing) show(existing.items || [], existing.prompt);
+  function run() {
+    btn.disabled = true; status.textContent = "generating (re-sample + dedup)…";
+    const items = []; let prompt = null; show(items, null);
+    stream(`/api/world/${state.wid}/objects?loc=${encodeURIComponent(loc)}`, d => {
+      if (d.type === "object") { items.push(d.value); prompt = d.prompt; show(items, prompt); }
+    }, (ok, msg) => {
+      btn.disabled = false; status.textContent = ok ? "" : "⚠ " + msg;
+      if (ok) (state.world.objects = state.world.objects || {})[loc] = { items, prompt };
+    });
+  }
+  btn.onclick = run;
+  if (!existing) run();
+}
+
 // ---- analysis renderers (reused prob bars / grid / schedule) ----
 function probRow(r, top, marker, dim) {
   const entry = el("div", { class: "homeEntry" });
@@ -240,7 +307,7 @@ function probRow(r, top, marker, dim) {
     el("div", { class: "hl", text: (top ? marker : "") + r.location }),
     el("div", { class: "bar" }, fill),
     el("div", { class: "hp", text: (r.prob*100).toFixed(0) + "%" })));
-  if (r.prompt) entry.appendChild(promptDet(r.prompt));
+  if (r.prompt) entry.appendChild(promptDet(r.prompt, "P(yes) = " + (r.prob != null ? r.prob.toFixed(3) : "?")));
   return entry;
 }
 function renderProbList(container, rows, keptSet) {
@@ -273,7 +340,7 @@ function runSchedule(ch, out) {
   out.innerHTML = ""; const tb = el("tbody"); out.appendChild(el("table", {}, tb));
   stream(`/api/world/${state.wid}/char/${ch.cid}/schedule?steps=12`, d => {
     if (d.type !== "slot") return;
-    const det = promptDet(`── action ──\n${d.action_prompt}\n\n── location ──\n${d.loc_prompt}`);
+    const det = promptDet(`── action prompt ──\n${d.action_prompt}\n→ ${d.action || ""}\n\n── location prompt ──\n${d.loc_prompt}\n→ ${d.location || ""}`);
     tb.appendChild(el("tr", {},
       el("td", { class: "t", text: d.time }),
       el("td", {}, el("div", { text: d.action || "" }), det),

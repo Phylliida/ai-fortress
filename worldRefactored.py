@@ -31,6 +31,7 @@ import json
 import math
 import time
 import datetime
+import statistics
 import requests
 
 import numbers_parse as nums   # number parsing copied wholesale from worldcode.py
@@ -81,13 +82,28 @@ GRAMMAR_STOP = ["\n"]
 YES_NO_GRAMMAR = 'root ::= (" Yes" | " No") "\\n"'
 INT_GRAMMAR = 'root ::= "-"? [0-9]+ "\\n"'
 INT_OR_RANGE_GRAMMAR = 'root ::= int (" - " int)? "\\n"\nint ::= "-"? [0-9]+'
-# A location: any run of characters EXCEPT  /  "  ,  .  -  (and newline), then the terminator.
-LOCATION_GRAMMAR = r'root ::= [^/",.\n-]+ "\n"'
+# A location/object: any run of characters EXCEPT  /  "  ;  ,  .  -  (and newline), then terminator.
+LOCATION_GRAMMAR = r'root ::= [^/";,.\n-]+ "\n"'
 
 
 # ---------------------------------------------------------------------------
 # llama-server client
 # ---------------------------------------------------------------------------
+
+# Ordinal degree scale for gen_percent (the 7 rungs we settled on). Each rung is scored by the
+# raw sequence-logprob of the phrase as a continuation; softmax over rungs -> prob-weighted
+# expected value. Phrases, not single tokens, so "a little"/"a lot" — the model's *most* common
+# degree continuations — are captured properly (the probe showed " a" outranks " completely").
+PERCENT_SCALE = [
+    ("not at all",        0.00),
+    ("barely",            0.12),
+    ("a little",          0.30),
+    ("moderately",        0.50),
+    ("a lot",             0.70),
+    ("almost completely", 0.88),
+    ("completely",        1.00),
+]
+
 
 class LlamaServer:
     def __init__(self, url=SERVER_URL, sampling=None, seed=-1, timeout=120,
@@ -230,6 +246,67 @@ class LlamaServer:
             return nums.parseIntRangeFromText(raw)
         except Exception:
             return None
+
+    def gen_number_median(self, prompt, samples=10):
+        """Sample the number `samples` times (grammar-constrained) and take the MEDIAN of the
+        per-sample midpoints — robust to outliers (a stray '20.000'->20, or a wild 331, won't
+        skew it the way a mean would). Returns {median, lo, hi, n, samples:[{raw, value}]} or
+        None if nothing parses. cache_prompt makes the repeated samples cheap."""
+        out = []
+        for _ in range(samples):
+            raw = self.gen_text(prompt, stop=GRAMMAR_STOP, n_predict=32,
+                               grammar=nums.NUMBER_GRAMMAR if self.use_grammar else None)
+            try:
+                rng = nums.parseIntRangeFromText(raw)
+                val = (rng.minVal + rng.maxVal) / 2.0
+            except Exception:
+                val = None
+            out.append({"raw": raw, "value": val})
+        vals = [o["value"] for o in out if o["value"] is not None]
+        if not vals:
+            return None
+        return {"median": statistics.median(vals), "lo": min(vals), "hi": max(vals),
+                "n": len(vals), "samples": out}
+
+    # --- verbalized magnitude -> calibrated percent (third primitive, next to yes_no_prob/number) ---
+    def _phrase_logprob(self, prompt, phrase):
+        """Raw sequence logprob of `phrase` (already leading-spaced) as a forced continuation: a
+        single-literal grammar forces the exact string, and each step's `logprob` is that forced
+        token's raw (pre-grammar) logprob. Sum them, skipping the "\\n" terminator. None if empty."""
+        g = 'root ::= ' + json.dumps(phrase) + ' "\\n"'
+        out = self.complete(prompt, grammar=g, stop=GRAMMAR_STOP, n_predict=16, n_probs=1)
+        cp = out.get("completion_probabilities") or out.get("logprobs") or []
+        total, n = 0.0, 0
+        for step in cp:
+            tok = step.get("token", step.get("text", ""))
+            lp = step.get("logprob")
+            if lp is None or tok.strip() == "":
+                continue
+            total += lp
+            n += 1
+        return total if n else None
+
+    def gen_percent(self, prompt, scale=None):
+        """Verbalized magnitude -> calibrated [0,1]. `prompt` is framed so a degree phrase is the
+        natural next words (e.g. "...satisfies their hunger"); we score each rung of the ordinal
+        `scale` [(phrase, value)...] by its raw sequence-logprob, softmax over the rungs, and
+        return the probability-weighted expected value. Reads the model's *ordering* of degree
+        words (which it's good at) rather than asking for a percent (which clusters on round
+        numbers); a single distribution read, no sampling. Returns {value, dist:[(phrase,prob,val)]}."""
+        scale = scale or PERCENT_SCALE
+        scored = []
+        for ph, v in scale:
+            lp = self._phrase_logprob(prompt, " " + ph)
+            if lp is not None:
+                scored.append((ph, v, lp))
+        if not scored:
+            return None
+        hi = max(lp for _, _, lp in scored)
+        ws = [(ph, v, math.exp(lp - hi)) for ph, v, lp in scored]
+        z = sum(w for _, _, w in ws)
+        value = sum(v * w for _, v, w in ws) / z
+        dist = sorted(((ph, w / z, v) for ph, v, w in ws), key=lambda x: -x[1])
+        return {"value": value, "dist": dist}
 
     # --- list of items ---
     # NB: JSON-schema also compiles to a grammar and would hit the same special-token
@@ -444,6 +521,49 @@ def gen_locations(server, character, n=12, **kwargs):
     return list(iter_locations(server, character, n, **kwargs))
 
 
+def objects_prompt(world, location):
+    """Fixed one-item prompt for the types of objects found in a location (re-sampled like
+    locations: minecarts/tracks/debris for a mine, tables/chairs/wares for a storefront)."""
+    return (f"Setting: {world}\nLocation: {location}\n"
+            f"List the types of objects found in {location} (each 1-5 words):\n"
+            f"In {location} you would find the following objects:\n-")
+
+
+def iter_objects(server, world, location, n=12, max_attempts=None,
+                 sim_threshold=0.78, embed_url=EMBED_URL):
+    """Generate the types of objects present at a location — same one-bullet-at-a-time re-sample
+    + semantic dedup (embeddinggemma) as iter_locations, seeded with the world + location."""
+    prompt = objects_prompt(world, location)
+    embs, seen, count = [], set(), 0
+    for _ in range(max_attempts or n * 5):
+        if count >= n:
+            break
+        raw = server.gen_text(prompt, stop=["\n"], n_predict=16,
+                             grammar=LOCATION_GRAMMAR if server.use_grammar else None)
+        item = clean_item(re.sub(r"\s*\(.*?\)", "", raw))
+        words = item.split()
+        if words and words[0].lower() in ("the", "a", "an"):
+            item = " ".join(words[1:])
+        if not item or len(item) > 40 or item.lower() in seen or non_english(item):
+            continue
+        try:
+            e = embed_texts([item], embed_url)[0]
+            if embs and max(cosine(e, pe) for pe in embs) >= sim_threshold:
+                continue
+        except Exception:
+            e = None
+        seen.add(item.lower())
+        if e is not None:
+            embs.append(e)
+        count += 1
+        yield item
+
+
+def gen_objects(server, world, location, n=12, **kwargs):
+    """List form of iter_objects."""
+    return list(iter_objects(server, world, location, n, **kwargs))
+
+
 def sleep_prompt(character, location):
     """The yes/no question scoring whether the character sleeps at `location`."""
     return character.prefix + f"\n\nQuestion: Does {character.name} sleep at {location}? Answer:"
@@ -483,6 +603,14 @@ def ever_prob(server, character, location):
     """P(the character ever goes to this location at all), via yes_no_prob. Used to pre-filter
     the locations down to the few worth scoring hour-by-hour."""
     return server.yes_no_prob(ever_prompt(character, location))
+
+
+def npc_count_prompt(world, location):
+    """Number question: over a full day, how many different NPCs are present in `location`?
+    ("NPCs", not "people", so it fits non-human settings; "different ... over a full day" =
+    distinct individuals across the day.) Sampled via gen_number_median + the copied parser."""
+    return (f"Setting: {world}\nLocation: {location}\n"
+            f"Question: Over a full day, how many different NPCs are present in {location}?\nAnswer:")
 
 
 def gen_schedule(server: LlamaServer, character: Character, times, locations=None):
