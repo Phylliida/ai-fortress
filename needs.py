@@ -182,3 +182,37 @@ def bake_durations(server, species, affordance_table, samples=7, floor_min=0.5):
                                 check_subject=action)   # yes/no-validate the median, resample if not
         out[item] = max(round(r["minutes"], 1), floor_min) if r else None
     return out
+
+
+# --- thresholds: the fullness level at which a need DEMANDS attention — the deadband the colony agent
+#     acts on (seek the need once its level drops below this). Per-need. Few-shot (range-spanning +
+#     question-repeated) because zero-shot was extreme/inconsistent (hygiene 1%, sleep 60%). The
+#     extracted profile is sensible: survival needs come out PROACTIVE (water/health/safety ~0.8-0.9),
+#     tolerable ones DEFERRED (hygiene 0.15, sleep 0.25). Returned as a fraction in [0,1].
+
+THRESHOLD_FEWSHOT = (
+    "A person's needs slowly run low. At what fullness do they stop and take care of each one? "
+    "(100 = fully satisfied, 0 = empty — lower means they tolerate it longer.)\n\n"
+    "Need: hygiene\nAt what percent full do they deal with it?\nAnswer: 15\n\n"
+    "Need: sleep\nAt what percent full do they deal with it?\nAnswer: 25\n\n"
+    "Need: hunger\nAt what percent full do they deal with it?\nAnswer: 35\n\n"
+    "Need: thirst\nAt what percent full do they deal with it?\nAnswer: 50\n\n"
+    "Need: safety\nAt what percent full do they deal with it?\nAnswer: 80\n\n"
+    "Need: {need}\nAt what percent full do they deal with it?\nAnswer:"
+)
+
+
+def threshold_prompt(need):
+    return THRESHOLD_FEWSHOT.format(need=need)
+
+
+def bake_thresholds(server, need_list, samples=7, floor=0.05, cap=0.95):
+    """Per-need deadband: {need: fullness-fraction at which the agent stops to satisfy it}. Median over
+    the range-spanning, question-repeated few-shot (zero-shot was extreme: hygiene 1%, sleep 60%).
+    Clamped to [floor, cap] so a need always eventually triggers yet never demands a literally-full bar."""
+    out = {}
+    for need in need_list:
+        r = server.gen_number_median(threshold_prompt(need), samples=samples)
+        v = (r["median"] / 100.0) if r else 0.35
+        out[need] = round(min(max(v, floor), cap), 2)
+    return out
