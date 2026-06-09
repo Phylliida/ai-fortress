@@ -17,6 +17,11 @@ UNIVERSAL_CORE = [
     "safety", "shelter", "social", "love", "respect", "purpose", "novelty", "movement",
 ]
 
+# Manual exclude list: needs dropped from discovery results for now. 'air' (+ gas synonyms) is too
+# frequent an action to model usefully yet — gasses get their own treatment later. The core sweep
+# still RECORDS these (for transparency); they're just filtered out of the actionable have/extra.
+EXCLUDE_NEEDS = {"air", "oxygen", "breathing"}
+
 
 def need_applies_prompt(species, need):
     # "if it were real" sidesteps the model refusing needs to fictional beings (it fixated on
@@ -41,15 +46,19 @@ def discover_core(server, species, threshold=0.5):
 
 
 def discover_needs(server, species, n_extra=6, threshold=0.5):
-    """Full hybrid discovery: core sweep + dedup-suggested single-word species-specific extras."""
+    """Full hybrid discovery: core sweep + dedup-suggested single-word species-specific extras.
+    EXCLUDE_NEEDS are dropped from the returned have/extra (the prompt still sees them so the model
+    doesn't re-suggest them; the core sweep still records them)."""
     core = discover_core(server, species, threshold)
-    have = [c["need"] for c in core if c["applies"]]
+    have_all = [c["need"] for c in core if c["applies"]]
+    have = [n for n in have_all if n not in EXCLUDE_NEEDS]
     # extras dedup against the FULL core (not just the applying ones) so a dropped-but-borderline
-    # core word can't resurface as an "extra"; reject non-single-word / non-alphabetic junk.
+    # core word can't resurface as an "extra"; reject non-single-word / non-alphabetic junk / excludes.
     extra = [e.lower() for e in iter_unique(
-        server, extra_needs_prompt(species, have), n=n_extra, grammar=LOCATION_GRAMMAR,
+        server, extra_needs_prompt(species, have_all), n=n_extra, grammar=LOCATION_GRAMMAR,
         max_len=20, seed=UNIVERSAL_CORE,
-        reject=lambda x: len(x.split()) != 1 or not x.replace("-", "").replace("'", "").isalpha())]
+        reject=lambda x: len(x.split()) != 1 or not x.replace("-", "").replace("'", "").isalpha()
+                         or x.lower() in EXCLUDE_NEEDS)]
     return {"species": species, "core": core, "have": have, "extra": extra}
 
 
