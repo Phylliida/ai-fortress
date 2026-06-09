@@ -50,7 +50,7 @@
   .map .mapfig.focus svg.stick { filter:drop-shadow(0 0 7px var(--accent)); }
 
   /* generate popover + detail popover */
-  .pop { position:absolute; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.5); z-index:50; width:300px; }
+  .pop { position:absolute; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.5); z-index:50; width:300px; max-height:calc(100vh - 84px); overflow-y:auto; }
   .pop label { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:8px 0 3px; }
   .pop .row { display:flex; gap:8px; } .pop .row > * { flex:1; }
   .pop input, .pop select { width:100%; }
@@ -430,10 +430,8 @@ function openDetail(ch, ev) {
   const remove = el("button", { class: "ghost sm", text: "remove from map", style: "margin-top:12px",
     onclick: () => { placeChar(ch.cid, null, null); closePops(); } });
   pop.appendChild(remove);
-  if (ev) {
-    pop.style.left = Math.min(ev.clientX + 12, window.innerWidth - 320) + "px";
-    pop.style.top = Math.min(ev.clientY + 8, window.innerHeight - 260) + "px";
-  } else { pop.style.left = "20px"; pop.style.top = "84px"; }   // restored from hash (no click point)
+  pop.style.position = "fixed";                 // pinned top-right, regardless of where they are
+  pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
   document.body.appendChild(pop);
   syncHash();
 }
