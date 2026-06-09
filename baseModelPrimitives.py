@@ -65,6 +65,16 @@ INT_OR_RANGE_GRAMMAR = 'root ::= int (" - " int)? "\\n"\nint ::= "-"? [0-9]+'
 # A location/object: any run of characters EXCEPT  /  "  ;  ,  .  -  (and newline), then terminator.
 LOCATION_GRAMMAR = r'root ::= [^/";,.\n-]+ "\n"'
 
+# A DURATION: "<number>[-<number>] <unit>" so the model answers in its NATURAL unit (a meal in
+# minutes, a night in hours) instead of being forced into minutes (which makes it lowball things it
+# thinks of in hours). gen_duration normalizes the unit to minutes. Terminator + stop=["\n"] as ever.
+DURATION_GRAMMAR = (
+    r'root ::= " "? num " "? unit "\n"' "\n"
+    r'num ::= [0-9]+ ("." [0-9]+)? ( " "? "-" " "? [0-9]+ ("." [0-9]+)? )?' "\n"
+    r'unit ::= "seconds" | "second" | "minutes" | "minute" | "mins" | "min" '
+    r'| "hours" | "hour" | "hrs" | "hr" | "days" | "day" | "weeks" | "week"'
+)
+
 
 # ---------------------------------------------------------------------------
 # llama-server client
@@ -259,6 +269,24 @@ class LlamaServer:
         return {"median": statistics.median(vals), "lo": min(vals), "hi": max(vals),
                 "n": len(vals), "samples": out}
 
+    # --- duration -> minutes (fourth primitive): natural-unit, normalized, median over samples ---
+    def gen_duration(self, prompt, samples=5):
+        """Robust activity DURATION in MINUTES. A "<number> <unit>" grammar (DURATION_GRAMMAR) lets
+        the model answer in whatever unit is natural — a meal in minutes, a night in hours — which is
+        then normalized to minutes and median-aggregated over `samples`. This sidesteps the failure of
+        forcing 'minutes' (it lowballs anything it conceives of in hours, e.g. reading 'a bed' as a
+        nap). Returns {minutes, lo, hi, n, samples:[{raw, minutes}]} or None if nothing parses."""
+        out = []
+        for _ in range(samples):
+            raw = self.gen_text(prompt, stop=GRAMMAR_STOP, n_predict=16,
+                               grammar=DURATION_GRAMMAR if self.use_grammar else None)
+            out.append({"raw": raw, "minutes": duration_to_minutes(raw)})
+        vals = [o["minutes"] for o in out if o["minutes"] is not None]
+        if not vals:
+            return None
+        return {"minutes": statistics.median(vals), "lo": min(vals), "hi": max(vals),
+                "n": len(vals), "samples": out}
+
     # --- verbalized magnitude -> calibrated percent (third primitive, next to yes_no_prob/number) ---
     def tokenize_pieces(self, text):
         """[(token_id, piece_str), ...] for `text` via /tokenize?with_pieces. The pieces are the
@@ -340,6 +368,27 @@ def clean_item(item: str) -> str:
     item = re.sub(r"\s+", " ", item.strip())
     item = re.sub(r"[.]$", "", item).strip()
     return item
+
+
+_DUR_UNIT_MIN = {"sec": 1.0 / 60, "min": 1.0, "hour": 60.0, "hr": 60.0,
+                 "day": 1440.0, "week": 10080.0}
+
+
+def duration_to_minutes(text):
+    """Parse '<number>[-<number>] <unit>' (' 8 hours', '20-30 min', '90 seconds') -> minutes; a
+    range is averaged. Returns None if no number+unit is present. Backs gen_duration."""
+    if not text:
+        return None
+    t = text.strip().lower().replace("–", "-")     # en-dash -> hyphen
+    m = re.search(r"(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?\s*"
+                  r"(seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?)", t)
+    if not m:
+        return None
+    a = float(m.group(1))
+    b = float(m.group(2)) if m.group(2) else a
+    u = m.group(3).rstrip("s")                          # hours->hour, mins->min, secs->sec, hrs->hr
+    per = _DUR_UNIT_MIN.get(u) or _DUR_UNIT_MIN.get(u[:3])
+    return (a + b) / 2.0 * per if per else None
 
 
 def first_token_probs(completion_json) -> dict:
