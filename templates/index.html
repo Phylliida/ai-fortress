@@ -138,7 +138,31 @@ function stick(color) {
 }
 const gcolor = ch => GCOLOR[ch.gender] || "var(--accent)";
 
-let state = { wid: null, world: null, needLevels: {}, openNeeds: null };
+let state = { wid: null, world: null, needLevels: {}, openNeeds: null, openDetailCid: null };
+
+// persist world / open-character / zoom / pan in the URL hash (replaceState = no history spam)
+let syncTimer = null;
+function syncHash() { clearTimeout(syncTimer); syncTimer = setTimeout(writeHash, 200); }
+function writeHash() {
+  if (!state.wid) return;
+  const p = new URLSearchParams();
+  p.set("w", state.wid);
+  p.set("z", zoom.toFixed(4)); p.set("x", Math.round(panX)); p.set("y", Math.round(panY));
+  if (state.openDetailCid) p.set("c", state.openDetailCid);
+  history.replaceState(null, "", "#" + p.toString());
+}
+async function restoreFromHash() {
+  const p = new URLSearchParams(location.hash.replace(/^#/, ""));
+  const wid = p.get("w"); if (!wid) return;
+  state.wid = wid; state.needLevels = {};
+  await refreshWorld();
+  if (!state.world || state.world.error) { state.wid = null; return; }   // stale/deleted world
+  const z = parseFloat(p.get("z")), px = parseFloat(p.get("x")), py = parseFloat(p.get("y"));
+  if (!isNaN(z) && !isNaN(px) && !isNaN(py)) { zoom = Math.max(ZMIN, Math.min(ZMAX, z)); panX = px; panY = py; clampPan(); applyView(); }
+  else resetView();
+  const ch = p.get("c") && byCid(p.get("c"));
+  if (ch) openDetail(ch);
+}
 
 // ----------------------------------------------------------------- worlds
 async function loadWorlds() {
@@ -278,6 +302,7 @@ function applyView() {
   mapEl.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
   drawGrid();
   updateViewport();
+  syncHash();
 }
 function drawGrid() {                        // overlay sized to the map; lines are a constant 1px
   const w = MAPPX * zoom, minor = SCALE * zoom, major = GRID_MAJOR * SCALE * zoom;
@@ -386,6 +411,7 @@ window.addEventListener("resize", () => { clampPan(); applyView(); });
 // ----------------------------------------------------------------- detail popover
 function openDetail(ch, ev) {
   closePops();
+  state.openDetailCid = ch.cid;
   const pop = el("div", { class: "pop det", "data-pop": "1" },
     el("span", { class: "x", text: "✕", onclick: closePops }),
     el("div", { class: "nmh", text: ch.name }),
@@ -404,11 +430,17 @@ function openDetail(ch, ev) {
   const remove = el("button", { class: "ghost sm", text: "remove from map", style: "margin-top:12px",
     onclick: () => { placeChar(ch.cid, null, null); closePops(); } });
   pop.appendChild(remove);
-  pop.style.left = Math.min(ev.clientX + 12, window.innerWidth - 320) + "px";
-  pop.style.top = Math.min(ev.clientY + 8, window.innerHeight - 260) + "px";
+  if (ev) {
+    pop.style.left = Math.min(ev.clientX + 12, window.innerWidth - 320) + "px";
+    pop.style.top = Math.min(ev.clientY + 8, window.innerHeight - 260) + "px";
+  } else { pop.style.left = "20px"; pop.style.top = "84px"; }   // restored from hash (no click point)
   document.body.appendChild(pop);
+  syncHash();
 }
-function closePops() { document.querySelectorAll("[data-pop]").forEach(p => p.remove()); state.openNeeds = null; }
+function closePops() {
+  document.querySelectorAll("[data-pop]").forEach(p => p.remove());
+  state.openNeeds = null; state.openDetailCid = null; syncHash();
+}
 document.addEventListener("mousedown", e => {
   if (!e.target.closest("[data-pop]") && !e.target.closest(".figbtn") && !e.target.closest(".mapfig")) closePops();
 });
@@ -458,7 +490,7 @@ function togglePlay() {
 document.getElementById("playBtn").onclick = togglePlay;
 updateClock();
 
-loadWorlds();
+loadWorlds().then(restoreFromHash);
 </script>
 </body>
 </html>
