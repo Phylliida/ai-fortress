@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from flask import Flask, render_template, request, Response, stream_with_context
 
 import worldRefactored as wr
+import needs
 import store
 
 app = Flask(__name__)
@@ -111,12 +112,25 @@ def api_world_character(wid):
             prompts["nocturnal"] = wr.nocturnal_prompt(char)
             noc = wr.nocturnal_prob(SERVER, char)
             yield sse({"type": "nocturnal", "value": noc, "prompt": prompts["nocturnal"]})
+
+            # needs (per-species discovery) + per-person decay rates, so they drain over sim time
+            yield sse({"type": "status", "message": "discovering needs…"})
+            disc = needs.discover_needs(SERVER, species, n_extra=3)
+            need_list = disc["have"] + disc["extra"]
+            yield sse({"type": "needs", "needs": need_list})
+            yield sse({"type": "status", "message": "timing needs…"})
+            person_desc = f"{nm}, a {gender} {species}. {ctx['personality']}"
+            rr = needs.discover_rates(SERVER, person_desc, need_list, samples=3)
+            rates = {n: rr["rates"][n]["decay_per_hour"] for n in need_list}
+            yield sse({"type": "rates", "rates": rates, "wake_hours": rr["wake_hours"]})
+
             cid = store.new_id(8)
             store.append(wid, {"type": "character", "cid": cid, "role": "location" if at else "seed",
                                "at": at, "world": setting, "species": species, "gender": gender,
                                "name": nm, "appearance": ctx["appearance"],
                                "personality": ctx["personality"], "backstory": ctx["backstory"],
-                               "nocturnal": noc, "prompts": prompts})
+                               "nocturnal": noc, "needs": need_list, "rates": rates,
+                               "wake_hours": rr["wake_hours"], "prompts": prompts})
             yield sse({"type": "saved", "cid": cid})
             yield sse({"type": "done"})
         except Exception as e:

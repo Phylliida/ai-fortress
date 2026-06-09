@@ -61,6 +61,14 @@
   .det .nmh { font-family:Georgia,serif; font-size:18px; color:var(--accent); }
   .det .meta { font-size:11px; color:var(--muted); font-family:ui-monospace,monospace; }
   .det .x { position:absolute; top:8px; right:10px; color:var(--muted); cursor:pointer; font-size:16px; }
+  .clock { font:600 17px ui-monospace,monospace; color:var(--accent); min-width:54px; }
+  #playBtn { padding:5px 11px; font-size:13px; }
+  .needs { margin-top:4px; }
+  .needbar { display:flex; align-items:center; gap:7px; margin-top:4px; }
+  .needbar .nl { flex:0 0 86px; font-size:11px; color:var(--muted); text-transform:capitalize; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .needbar .nb { flex:1; height:9px; background:#15110d; border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .needbar .nb > i { display:block; height:100%; transition:width .15s linear; }
+  .needbar .np { flex:0 0 32px; text-align:right; font:10px ui-monospace,monospace; color:var(--muted); }
   .hint { position:absolute; left:50%; top:14px; transform:translateX(-50%); color:var(--muted); font-size:12px; background:rgba(20,16,11,.7); padding:4px 10px; border-radius:8px; pointer-events:none; z-index:1; }
   /* minimap */
   .minimap { position:fixed; bottom:18px; right:18px; width:150px; height:150px; background:rgba(18,15,11,.92); border:1px solid var(--accent); border-radius:6px; cursor:crosshair; z-index:40; box-shadow:0 4px 18px rgba(0,0,0,.55); }
@@ -71,6 +79,8 @@
 <body>
 <header>
   <h1>ai-fortress <small>· colony map</small></h1>
+  <span id="clock" class="clock">08:00</span>
+  <button id="playBtn" class="ghost" title="play / pause time">▶</button>
   <select id="worldSel" title="switch world"></select>
   <input id="newPrompt" placeholder="new world: a neon cyberpunk megacity…" style="width:280px">
   <button id="newWorldBtn">+ world</button>
@@ -128,7 +138,7 @@ function stick(color) {
 }
 const gcolor = ch => GCOLOR[ch.gender] || "var(--accent)";
 
-let state = { wid: null, world: null };
+let state = { wid: null, world: null, needLevels: {}, openNeeds: null };
 
 // ----------------------------------------------------------------- worlds
 async function loadWorlds() {
@@ -151,11 +161,13 @@ async function refreshWorld() {            // re-fetch + re-render, KEEP the cur
   state.world = await (await fetch("/api/world/" + state.wid)).json();
   document.getElementById("worldId").textContent = state.world.prompt + " · " + state.wid;
   await loadWorlds();
+  initNeeds();
   renderRoster(); renderMap();
 }
 async function openWorld(wid) {            // switch worlds -> also reset the view to fit
   closePops();
   state.wid = wid;
+  state.needLevels = {};                   // fresh sim state for the new world
   await refreshWorld();
   resetView();
 }
@@ -204,6 +216,7 @@ function openGenPop(anchor) {
     let nm = "";
     stream(`/api/world/${state.wid}/character?` + q, d => {
       if (d.type === "field" && d.field === "name") { nm = d.value; status.textContent = "summoning " + nm + "…"; }
+      else if (d.type === "status") status.textContent = d.message;
     }, (ok, msg) => {
       status.textContent = ok ? "✓ " + nm : "⚠ " + msg; status.className = "status" + (ok ? " ok" : " err");
       go.disabled = false;
@@ -381,6 +394,13 @@ function openDetail(ch, ev) {
     if (ch[f]) pop.appendChild(el("div", {}, el("div", { class: "k", text: f }), el("div", { class: "v", text: ch[f] })));
   if (ch.nocturnal != null)
     pop.appendChild(el("div", {}, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal * 100) + "% likely" })));
+  if (ch.needs && ch.needs.length) {
+    pop.appendChild(el("div", { class: "k", text: "needs" }));
+    const needsDiv = el("div", { class: "needs" });
+    renderNeedBars(ch.cid, needsDiv);
+    pop.appendChild(needsDiv);
+    state.openNeeds = { cid: ch.cid, el: needsDiv };       // live-update while time plays
+  }
   const remove = el("button", { class: "ghost sm", text: "remove from map", style: "margin-top:12px",
     onclick: () => { placeChar(ch.cid, null, null); closePops(); } });
   pop.appendChild(remove);
@@ -388,10 +408,55 @@ function openDetail(ch, ev) {
   pop.style.top = Math.min(ev.clientY + 8, window.innerHeight - 260) + "px";
   document.body.appendChild(pop);
 }
-function closePops() { document.querySelectorAll("[data-pop]").forEach(p => p.remove()); }
+function closePops() { document.querySelectorAll("[data-pop]").forEach(p => p.remove()); state.openNeeds = null; }
 document.addEventListener("mousedown", e => {
   if (!e.target.closest("[data-pop]") && !e.target.closest(".figbtn") && !e.target.closest(".mapfig")) closePops();
 });
+
+// ----------------------------------------------------------------- needs + clock
+function byCid(cid) { return ((state.world && state.world.characters) || []).find(c => c.cid === cid); }
+function initNeeds() {                       // start every character's needs full (1.0); keep existing
+  for (const ch of (state.world.characters || []))
+    if (ch.needs && !(ch.cid in state.needLevels))
+      state.needLevels[ch.cid] = Object.fromEntries(ch.needs.map(n => [n, 1.0]));
+}
+function needColor(v) { return v > 0.5 ? "var(--ok)" : v > 0.25 ? "var(--accent)" : "var(--err)"; }
+function renderNeedBars(cid, container) {
+  container.innerHTML = "";
+  const lv = state.needLevels[cid] || {}, ch = byCid(cid);
+  for (const n of ((ch && ch.needs) || Object.keys(lv))) {
+    const v = lv[n] != null ? lv[n] : 1;
+    const fill = el("i"); fill.style.width = Math.round(v * 100) + "%"; fill.style.background = needColor(v);
+    container.appendChild(el("div", { class: "needbar" },
+      el("span", { class: "nl", text: n }), el("div", { class: "nb" }, fill),
+      el("span", { class: "np", text: Math.round(v * 100) + "%" })));
+  }
+}
+
+let playing = false, gameMin = 8 * 60, tickTimer = null;
+const TICKS_PER_HOUR = 300, GAME_MIN_PER_TICK = 0.2;   // 5 ticks/game-min; wall clock = 5 ticks/sec
+function fmtClock() {
+  const h = Math.floor(gameMin / 60) % 24, m = Math.floor(gameMin % 60);
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+}
+function updateClock() { document.getElementById("clock").textContent = fmtClock(); }
+function tick() {
+  gameMin += GAME_MIN_PER_TICK;
+  for (const cid in state.needLevels) {
+    const ch = byCid(cid); if (!ch || !ch.rates) continue;
+    const lv = state.needLevels[cid];
+    for (const n in lv) lv[n] = Math.max(0, lv[n] - (ch.rates[n] || 0) / TICKS_PER_HOUR);
+  }
+  updateClock();
+  if (state.openNeeds) renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
+}
+function togglePlay() {
+  playing = !playing;
+  document.getElementById("playBtn").textContent = playing ? "⏸" : "▶";
+  if (playing) tickTimer = setInterval(tick, 200); else clearInterval(tickTimer);
+}
+document.getElementById("playBtn").onclick = togglePlay;
+updateClock();
 
 loadWorlds();
 </script>
