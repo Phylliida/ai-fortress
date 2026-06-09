@@ -86,15 +86,15 @@ def api_place(wid):
 
 
 def _world_species_needs(w):
-    """Representative species (most common character species, default human) + the need-list to test
-    an item against (union of the world's characters' needs, else the universal core minus excludes)."""
-    chars = w.get("characters", [])
-    from collections import Counter
-    species = Counter(c.get("species", "human") for c in chars).most_common(1)[0][0] if chars else "human"
-    nset = sorted({n for c in chars for n in c.get("needs", [])})
-    if not nset:
-        nset = [n for n in needs.UNIVERSAL_CORE if n not in needs.EXCLUDE_NEEDS]
-    return species, nset
+    """Map EVERY species present in the world (default {human}) to the need-list to test items
+    against — the union of that species' characters' needs, else the universal core minus excludes."""
+    bysp = {}
+    for c in w.get("characters", []):
+        bysp.setdefault(c.get("species", "human"), set()).update(c.get("needs", []))
+    if not bysp:
+        bysp["human"] = set()
+    core = [n for n in needs.UNIVERSAL_CORE if n not in needs.EXCLUDE_NEEDS]
+    return {sp: (sorted(ns) if ns else core) for sp, ns in bysp.items()}
 
 
 @app.route("/api/world/<wid>/item")
@@ -111,18 +111,17 @@ def api_create_item(wid):
         if not name:
             yield sse({"type": "error", "message": "No item name."}); return
         try:
-            species, need_list = _world_species_needs(w)
-            affords = {}
-            for need in need_list:
-                r = needs.bake_affordance(SERVER, species, name, need)
-                if r["applies"] and r["refill"] > 0:
-                    affords[need] = round(r["refill"], 3)
-                    yield sse({"type": "afford", "need": need, "refill": affords[need]})
-                else:
-                    yield sse({"type": "checked", "need": need})
+            affords = {}                                   # {species: {need: refill}}
+            for sp, need_list in _world_species_needs(w).items():
+                sp_aff = {}
+                for need in need_list:
+                    r = needs.bake_affordance(SERVER, sp, name, need)
+                    if r["applies"] and r["refill"] > 0:
+                        sp_aff[need] = round(r["refill"], 3)
+                        yield sse({"type": "afford", "species": sp, "need": need, "refill": sp_aff[need]})
+                affords[sp] = sp_aff
             iid = store.new_id(8)
-            store.append(wid, {"type": "item", "iid": iid, "name": name,
-                               "species": species, "affords": affords})
+            store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords})
             yield sse({"type": "saved", "iid": iid, "affords": affords})
             yield sse({"type": "done"})
         except Exception as e:
