@@ -16,6 +16,7 @@ from flask import Flask, render_template, request, Response, stream_with_context
 
 import worldRefactored as wr
 import needs
+import sim
 import store
 
 app = Flask(__name__)
@@ -146,6 +147,23 @@ def api_item_place(wid):
         x = y = None
     store.append(wid, {"type": "item_place", "pid": pid, "iid": iid, "x": x, "y": y})
     return {"ok": True, "pid": pid, "iid": iid, "x": x, "y": y}
+
+
+@app.route("/api/world/<wid>/sim/step", methods=["POST"])
+def api_sim_step(wid):
+    """Advance the live colony sim by `ticks` ticks and return the new state (agent positions +
+    need levels + what each is doing). In-memory; reconciles placed characters/items each call."""
+    w = store.load_world(wid)
+    if not w:
+        return {"error": "not found"}, 404
+    ticks = max(1, min(int((request.json or {}).get("ticks", 1)), 240))
+    return sim.step_world(w, ticks)
+
+
+@app.route("/api/world/<wid>/sim/reset", methods=["POST"])
+def api_sim_reset(wid):
+    sim.reset(wid)
+    return {"ok": True}
 
 
 # ------------------------------------------------------ character generation (seed / at a place)
