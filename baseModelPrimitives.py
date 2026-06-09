@@ -260,22 +260,42 @@ class LlamaServer:
                 "n": len(vals), "samples": out}
 
     # --- verbalized magnitude -> calibrated percent (third primitive, next to yes_no_prob/number) ---
-    def _phrase_logprob(self, prompt, phrase):
-        """Raw sequence logprob of `phrase` (already leading-spaced) as a forced continuation: a
-        single-literal grammar forces the exact string, and each step's `logprob` is that forced
-        token's raw (pre-grammar) logprob. Sum them, skipping the "\\n" terminator. None if empty."""
-        g = 'root ::= ' + json.dumps(phrase) + ' "\\n"'
-        out = self.complete(prompt, grammar=g, stop=GRAMMAR_STOP, n_predict=16, n_probs=1)
-        cp = out.get("completion_probabilities") or out.get("logprobs") or []
-        total, n = 0.0, 0
-        for step in cp:
-            tok = step.get("token", step.get("text", ""))
-            lp = step.get("logprob")
-            if lp is None or tok.strip() == "":
-                continue
-            total += lp
-            n += 1
-        return total if n else None
+    def tokenize_pieces(self, text):
+        """[(token_id, piece_str), ...] for `text` via /tokenize?with_pieces. The pieces are the
+        literal substrings, so ''.join(pieces) == text — used to rebuild a growing prefix."""
+        r = requests.post(self.url + "/tokenize", json={"content": text, "with_pieces": True},
+                          timeout=self.timeout)
+        r.raise_for_status()
+        return [(t["id"], t["piece"]) for t in r.json()["tokens"]]
+
+    @staticmethod
+    def _probs_by_id(out):
+        """{token_id: prob} for the first generated token, from top_logprobs (which carries the
+        token id — the `probs` list does NOT, so id-lookups against it silently miss)."""
+        cp = out.get("completion_probabilities") or out.get("logprobs")
+        if not cp:
+            return {}
+        d = {}
+        for c in (cp[0].get("top_logprobs") or []):
+            if c.get("id") is not None and "logprob" in c:
+                d[c["id"]] = math.exp(c["logprob"])
+        return d
+
+    def _phrase_logprob(self, prompt, phrase, n_probs=200, floor=1e-7):
+        """Deterministic raw sequence logprob of `phrase` (already leading-spaced) as a
+        continuation, via TEACHER-FORCING through the stable no-grammar reads.
+
+        Forcing the exact string with a GBNF grammar made llama.cpp non-deterministically
+        mis-report the chosen token's logprob (bimodal junk reads). The no-grammar first-token
+        distribution is stable, so instead we tokenize `phrase` to its canonical tokens and sum
+        logP(token_i | prompt + pieces[:i]), looking each token up BY ID in top_logprobs. A token
+        below the top-`n_probs` cutoff is floored. cache_prompt keeps the growing-prefix reads cheap."""
+        total, prefix = 0.0, prompt
+        for tid, piece in self.tokenize_pieces(phrase):
+            d = self._probs_by_id(self.complete(prefix, n_predict=1, n_probs=n_probs))
+            total += math.log(max(d.get(tid, floor), 1e-12))
+            prefix += piece
+        return total
 
     def gen_percent(self, prompt, scale=None, reasoning=False):
         """Verbalized magnitude -> calibrated [0,1]. `prompt` is framed so a degree phrase is the
