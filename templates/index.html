@@ -37,9 +37,9 @@
   svg.stick { width:30px; height:42px; display:block; }
 
   /* map */
-  .mapwrap { flex:1; overflow:auto; position:relative; cursor:grab; background:#120f0b; }
+  .mapwrap { flex:1; overflow:hidden; position:relative; cursor:grab; background:#120f0b; }
   .mapwrap.grabbing { cursor:grabbing; }
-  .map { position:relative;
+  .map { position:absolute; top:0; left:0; transform-origin:0 0; will-change:transform;
          background-image:
            linear-gradient(var(--grid) 1px, transparent 1px),
            linear-gradient(90deg, var(--grid) 1px, transparent 1px),
@@ -90,7 +90,8 @@
 
 <script>
 const MAP = 500;            // world is MAP x MAP cells
-const SCALE = 18;          // pixels per cell -> 9000px map (pannable both axes; a person = one cell)
+const SCALE = 18;          // BASE pixels per cell; the map is transformed by `zoom` on top of this
+const MAPPX = MAP * SCALE;  // 9000px untransformed map
 const GRID_MINOR = 1, GRID_MAJOR = 10;    // grid lines every N cells
 const GCOLOR = { female:"#e6a4c4", male:"#7fb4e6", nonbinary:"#c9a6e0" };
 
@@ -148,13 +149,17 @@ document.getElementById("newWorldBtn").onclick = async () => {
   document.getElementById("newPrompt").value = "";
   await loadWorlds(); openWorld(id);
 };
-async function openWorld(wid) {
-  closePops();
-  state.wid = wid;
-  state.world = await (await fetch("/api/world/" + wid)).json();
-  document.getElementById("worldId").textContent = state.world.prompt + " · " + wid;
+async function refreshWorld() {            // re-fetch + re-render, KEEP the current pan/zoom
+  state.world = await (await fetch("/api/world/" + state.wid)).json();
+  document.getElementById("worldId").textContent = state.world.prompt + " · " + state.wid;
   await loadWorlds();
   renderRoster(); renderMap();
+}
+async function openWorld(wid) {            // switch worlds -> also reset the view to fit
+  closePops();
+  state.wid = wid;
+  await refreshWorld();
+  resetView();
 }
 
 // ----------------------------------------------------------------- roster
@@ -204,7 +209,7 @@ function openGenPop(anchor) {
     }, (ok, msg) => {
       status.textContent = ok ? "✓ " + nm : "⚠ " + msg; status.className = "status" + (ok ? " ok" : " err");
       go.disabled = false;
-      if (ok) openWorld(state.wid).then(() => setTimeout(closePops, 700));
+      if (ok) refreshWorld().then(() => setTimeout(closePops, 700));
     });
   };
   document.body.appendChild(pop);
@@ -245,48 +250,77 @@ function mapFig(ch, pos) {
 async function placeChar(cid, x, y) {
   await fetch(`/api/world/${state.wid}/place`, { method: "POST",
     headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cid, x, y }) });
-  await openWorld(state.wid);
+  await refreshWorld();                    // keep the view; just update data
 }
 
 function focusChar(cid) {
   const pos = state.world.placements[cid]; if (!pos) return;
-  const wrap = document.getElementById("mapwrap");
-  wrap.scrollTo({ left: pos.x * SCALE - wrap.clientWidth / 2 + SCALE / 2,
-                  top: pos.y * SCALE - wrap.clientHeight / 2 + SCALE / 2, behavior: "smooth" });
+  centerOn((pos.x + 0.5) * SCALE, (pos.y + 0.5) * SCALE);
   const f = [...document.querySelectorAll(".mapfig")].find(e => e.dataset.cid === cid);
   if (f) { f.classList.add("focus"); setTimeout(() => f.classList.remove("focus"), 1400); }
 }
 
-// drop onto the map -> place at those world coords
+// ---- view: pan (translate) + zoom (scale) on the map, no scrollbars ----
 const mapwrap = document.getElementById("mapwrap");
+const mapEl = document.getElementById("map");
+let panX = 0, panY = 0, zoom = 0.1;        // screen = translate(panX,panY) then scale(zoom) of map-px
+const ZMIN = 0.02, ZMAX = 4;
+function applyView() {
+  mapEl.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+  updateViewport();
+}
+function clampPan() {                       // center if the map is smaller than the viewport, else clamp
+  const vw = mapwrap.clientWidth, vh = mapwrap.clientHeight, w = MAPPX * zoom, m = 80;
+  panX = w <= vw ? (vw - w) / 2 : Math.min(m, Math.max(vw - w - m, panX));
+  panY = w <= vh ? (vh - w) / 2 : Math.min(m, Math.max(vh - w - m, panY));
+}
+function resetView() {                       // fit the whole world, centered
+  zoom = Math.max(ZMIN, Math.min(1, Math.min(mapwrap.clientWidth, mapwrap.clientHeight) / MAPPX * 0.95));
+  clampPan(); applyView();
+}
+function centerOn(mx, my) {                  // put map-px (mx,my) at the viewport center
+  panX = mapwrap.clientWidth / 2 - mx * zoom;
+  panY = mapwrap.clientHeight / 2 - my * zoom;
+  clampPan(); applyView();
+}
+
+// drop onto the map -> place at that cell (account for pan+zoom)
 mapwrap.addEventListener("dragover", e => { e.preventDefault(); });
 mapwrap.addEventListener("drop", e => {
   e.preventDefault();
   const cid = e.dataTransfer.getData("text/cid"); if (!cid) return;
-  const map = document.getElementById("map");
-  const rect = map.getBoundingClientRect();
-  const x = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientX - rect.left) / SCALE)));   // snap to a cell
-  const y = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientY - rect.top) / SCALE)));
+  const r = mapEl.getBoundingClientRect();   // transformed (scaled) box; per-cell = SCALE*zoom px
+  const x = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientX - r.left) / (SCALE * zoom))));
+  const y = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientY - r.top) / (SCALE * zoom))));
   placeChar(cid, x, y);
 });
 
-// drag-to-pan the map (ignore when starting on a figure, so HTML5 drag handles those)
-let panning = false, sx = 0, sy = 0, sl = 0, st = 0;
+// drag-to-pan (ignore when starting on a figure, so HTML5 drag handles those)
+let panning = false, sx = 0, sy = 0, p0x = 0, p0y = 0;
 mapwrap.addEventListener("mousedown", e => {
   if (e.target.closest(".mapfig")) return;
-  panning = true; sx = e.clientX; sy = e.clientY; sl = mapwrap.scrollLeft; st = mapwrap.scrollTop;
+  panning = true; sx = e.clientX; sy = e.clientY; p0x = panX; p0y = panY;
   mapwrap.classList.add("grabbing");
 });
 window.addEventListener("mousemove", e => {
   if (!panning) return;
-  mapwrap.scrollLeft = sl - (e.clientX - sx);
-  mapwrap.scrollTop = st - (e.clientY - sy);
+  panX = p0x + (e.clientX - sx); panY = p0y + (e.clientY - sy);
+  clampPan(); applyView();
 });
 window.addEventListener("mouseup", () => { panning = false; mapwrap.classList.remove("grabbing"); });
 
+// wheel = zoom toward the cursor (not scroll)
+mapwrap.addEventListener("wheel", e => {
+  e.preventDefault();
+  const r = mapwrap.getBoundingClientRect(), cx = e.clientX - r.left, cy = e.clientY - r.top;
+  const z2 = Math.max(ZMIN, Math.min(ZMAX, zoom * Math.exp(-e.deltaY * 0.0015)));
+  panX = cx - (cx - panX) * (z2 / zoom);     // keep the map-px under the cursor fixed
+  panY = cy - (cy - panY) * (z2 / zoom);
+  zoom = z2; clampPan(); applyView();
+}, { passive: false });
+
 // ----------------------------------------------------------------- minimap
 const MM = 150;                                  // minimap is MM x MM px = the whole MAP x MAP world
-const mmScale = () => MM / (MAP * SCALE);        // minimap px per main-map px
 function renderMinimap() {
   const mm = document.getElementById("minimap");
   mm.style.display = "block";
@@ -304,25 +338,24 @@ function renderMinimap() {
   }
   updateViewport();
 }
-function updateViewport() {
+function updateViewport() {                       // the rect = the visible map region, in minimap px
   const vp = document.getElementById("mmviewport"); if (!vp) return;
-  const s = mmScale();
-  vp.style.left = (mapwrap.scrollLeft * s) + "px";
-  vp.style.top = (mapwrap.scrollTop * s) + "px";
-  vp.style.width = Math.min(MM, mapwrap.clientWidth * s) + "px";
-  vp.style.height = Math.min(MM, mapwrap.clientHeight * s) + "px";
+  const s = MM / MAPPX;                           // minimap px per map-px
+  vp.style.left = (-panX / zoom * s) + "px";
+  vp.style.top = (-panY / zoom * s) + "px";
+  vp.style.width = (mapwrap.clientWidth / zoom * s) + "px";
+  vp.style.height = (mapwrap.clientHeight / zoom * s) + "px";
 }
 function mmJump(e) {                              // click/drag the minimap -> center the main map there
   const r = document.getElementById("minimap").getBoundingClientRect();
-  const mainX = (e.clientX - r.left) / mmScale(), mainY = (e.clientY - r.top) / mmScale();
-  mapwrap.scrollTo({ left: mainX - mapwrap.clientWidth / 2, top: mainY - mapwrap.clientHeight / 2 });
+  const s = MM / MAPPX;
+  centerOn((e.clientX - r.left) / s, (e.clientY - r.top) / s);   // minimap px -> map-px, then center
 }
 let mmDrag = false;
 document.getElementById("minimap").addEventListener("mousedown", e => { mmDrag = true; mmJump(e); e.stopPropagation(); e.preventDefault(); });
 window.addEventListener("mousemove", e => { if (mmDrag) mmJump(e); });
 window.addEventListener("mouseup", () => { mmDrag = false; });
-mapwrap.addEventListener("scroll", updateViewport);
-window.addEventListener("resize", updateViewport);
+window.addEventListener("resize", () => { clampPan(); applyView(); });
 
 // ----------------------------------------------------------------- detail popover
 function openDetail(ch, ev) {
