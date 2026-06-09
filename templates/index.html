@@ -21,6 +21,7 @@
   input::placeholder { color:var(--muted); }
   button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:7px 11px; font-weight:600; font-size:13px; cursor:pointer; }
   button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  button.ghost.active { background:var(--accent); color:#1b1410; }
   button.sm { padding:4px 8px; font-size:12px; }
   button:disabled { opacity:.4; cursor:not-allowed; }
 
@@ -98,6 +99,8 @@
   <h1>ai-fortress <small>· colony map</small></h1>
   <span id="clock" class="clock">08:00</span>
   <button id="playBtn" class="ghost" title="play / pause time">▶</button>
+  <button id="ff2Btn" class="ghost" title="2× speed">⏩</button>
+  <button id="ff4Btn" class="ghost" title="4× speed">⏩⏩</button>
   <select id="worldSel" title="switch world"></select>
   <input id="newPrompt" placeholder="new world: a neon cyberpunk megacity…" style="width:280px">
   <button id="newWorldBtn">+ world</button>
@@ -601,8 +604,8 @@ function renderNeedBars(cid, container) {
   }
 }
 
-let playing = false, gameMin = 8 * 60, tickTimer = null;
-const TICKS_PER_HOUR = 300, GAME_MIN_PER_TICK = 0.2;   // 5 ticks/game-min; wall clock = 5 ticks/sec
+let playing = false, speed = 1, gameMin = 8 * 60, tickTimer = null;
+const TICKS_PER_HOUR = 300, GAME_MIN_PER_TICK = 0.2, BASE_MS = 200;   // 1× = 5 ticks/sec (5/game-min)
 function fmtClock() {
   const h = Math.floor(gameMin / 60) % 24, m = Math.floor(gameMin % 60);
   return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
@@ -618,12 +621,21 @@ function tick() {
   updateClock();
   if (state.openNeeds) renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
 }
-function togglePlay() {
-  playing = !playing;
+function restartTimer() { clearInterval(tickTimer); if (playing) tickTimer = setInterval(tick, BASE_MS / speed); }
+function updateSpeedUI() {
   document.getElementById("playBtn").textContent = playing ? "⏸" : "▶";
-  if (playing) tickTimer = setInterval(tick, 200); else clearInterval(tickTimer);
+  document.getElementById("ff2Btn").classList.toggle("active", speed === 2);
+  document.getElementById("ff4Btn").classList.toggle("active", speed === 4);
+}
+function togglePlay() { playing = !playing; restartTimer(); updateSpeedUI(); }
+function setSpeed(s) {                          // a fast-forward button always plays; click it again -> 1×
+  if (playing && speed === s) speed = 1;
+  else { speed = s; playing = true; }
+  restartTimer(); updateSpeedUI();
 }
 document.getElementById("playBtn").onclick = togglePlay;
+document.getElementById("ff2Btn").onclick = () => setSpeed(2);
+document.getElementById("ff4Btn").onclick = () => setSpeed(4);
 updateClock();
 
 loadWorlds().then(restoreFromHash);
