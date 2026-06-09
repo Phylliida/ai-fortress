@@ -3,91 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ai-fortress · world builder</title>
+<title>ai-fortress · colony map</title>
 <style>
   :root {
     --bg:#1b1714; --panel:#262019; --ink:#ece3d4; --muted:#a99c86;
-    --accent:#d8a657; --line:#3a3128; --ok:#8ab368; --err:#d77a61;
+    --accent:#d8a657; --line:#3a3128; --ok:#8ab368; --err:#d77a61; --grid:#2c2520;
   }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif; }
-  h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:21px; color:var(--accent); }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif; display:flex; flex-direction:column; }
+  h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:20px; color:var(--accent); white-space:nowrap; }
   h1 small { color:var(--muted); font-size:12px; font-weight:400; font-family:ui-monospace,monospace; }
-  header { padding:14px 20px; border-bottom:1px solid var(--line); }
-  .wrap { display:grid; grid-template-columns:260px minmax(0,1fr) 360px; min-height:calc(100vh - 52px); }
-  .sidebar { border-right:1px solid var(--line); background:var(--panel); padding:16px; }
-  .main { padding:22px 26px; }
-  .gridpanel { border-left:1px solid var(--line); padding:18px; background:var(--panel); }
-  .gridpanel .gs { position:sticky; top:18px; }
-  .gridpanel .gridhead { color:var(--accent); font:600 14px Georgia,serif; margin-bottom:10px; }
-  .locgrid { display:grid; grid-template-columns:repeat(10,1fr); gap:2px; }
-  .locgrid .cell { background:#15110d; border:1px solid var(--line); aspect-ratio:1; }
-  .locgrid .cell:hover { border-color:var(--accent); }
-  label { display:block; font-size:11px; color:var(--muted); margin:10px 0 4px; text-transform:uppercase; letter-spacing:.04em; }
-  input, select, textarea { width:100%; background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:7px 9px; font:inherit; }
-  textarea { resize:vertical; min-height:46px; }
-  .row { display:flex; gap:8px; } .row > * { flex:1; }
-  button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:8px 10px; font:600 13px/1 inherit; cursor:pointer; }
+  header { padding:11px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  header .spacer { flex:1; }
+  input, select, textarea, button { font:inherit; }
+  input, select { background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:6px 9px; }
+  input::placeholder { color:var(--muted); }
+  button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:7px 11px; font-weight:600; font-size:13px; cursor:pointer; }
   button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
-  button.sm { padding:5px 9px; font-size:12px; }
+  button.sm { padding:4px 8px; font-size:12px; }
   button:disabled { opacity:.4; cursor:not-allowed; }
-  .worldItem { padding:9px 11px; border:1px solid var(--line); border-radius:8px; margin-top:8px; cursor:pointer; background:#15110d; }
-  .worldItem:hover { border-color:var(--accent); }
-  .worldItem.active { border-color:var(--accent); }
-  .worldItem .wp { font-size:13px; }
-  .worldItem .wm { font-size:11px; color:var(--muted); margin-top:2px; }
-  .sec { margin:22px 0; }
-  .sec > h2 { font:600 13px/1 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 12px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:15px 17px; margin-bottom:14px; }
-  .card .nm { font-family:Georgia,serif; font-size:19px; color:var(--accent); }
-  .card .meta { font-size:11px; color:var(--muted); font-family:ui-monospace,monospace; margin-bottom:6px; }
-  .field { margin-top:8px; } .field .k { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
-  .field .v { margin-top:1px; font-size:14px; }
-  .pending { color:var(--muted); font-style:italic; }
-  .locblock { border:1px solid var(--line); border-radius:9px; padding:12px 14px; margin-bottom:12px; }
-  .locblock > .lh { color:var(--accent); font:600 14px Georgia,serif; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
-  .chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .chip { background:#15110d; border:1px solid var(--line); color:var(--accent); border-radius:13px; padding:3px 10px; font-size:12px; }
-  .status { font:12px ui-monospace,monospace; color:var(--muted); margin:8px 0; min-height:16px; }
+
+  /* roster strip */
+  .roster { display:flex; align-items:center; gap:10px; padding:9px 16px; border-bottom:1px solid var(--line); background:var(--panel); overflow-x:auto; min-height:78px; }
+  .roster .empty { color:var(--muted); font-style:italic; }
+  .figbtn { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; width:62px; padding:5px 3px; border:1px solid transparent; border-radius:9px; cursor:pointer; user-select:none; }
+  .figbtn:hover { border-color:var(--line); background:#15110d; }
+  .figbtn .nm { font-size:11px; color:var(--ink); max-width:58px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .figbtn.placed { opacity:.5; }
+  .figbtn.placed .nm { color:var(--muted); }
+  .figbtn.unplaced { cursor:grab; }
+  .figbtn .tag { font-size:9px; color:var(--muted); font-family:ui-monospace,monospace; }
+  svg.stick { width:30px; height:42px; display:block; }
+
+  /* map */
+  .mapwrap { flex:1; overflow:auto; position:relative; cursor:grab; background:#120f0b; }
+  .mapwrap.grabbing { cursor:grabbing; }
+  .map { position:relative;
+         background-image:
+           linear-gradient(var(--grid) 1px, transparent 1px),
+           linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+           linear-gradient(var(--line) 1px, transparent 1px),
+           linear-gradient(90deg, var(--line) 1px, transparent 1px); }
+  .map .mapfig { position:absolute; transform:translate(-50%,-100%); display:flex; flex-direction:column; align-items:center; cursor:grab; z-index:2; }
+  .map .mapfig .nm { font-size:11px; color:var(--accent); background:rgba(20,16,11,.78); padding:0 4px; border-radius:4px; white-space:nowrap; margin-top:-2px; }
+  .map .mapfig:hover { z-index:3; }
+  .map .mapfig.focus svg.stick { filter:drop-shadow(0 0 6px var(--accent)); }
+
+  /* generate popover + detail popover */
+  .pop { position:absolute; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.5); z-index:50; width:300px; }
+  .pop label { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:8px 0 3px; }
+  .pop .row { display:flex; gap:8px; } .pop .row > * { flex:1; }
+  .pop input, .pop select { width:100%; }
+  .status { font:12px ui-monospace,monospace; color:var(--muted); margin-top:8px; min-height:15px; }
   .status.err { color:var(--err); } .status.ok { color:var(--ok); }
-  .empty { color:var(--muted); font-style:italic; }
-  /* prob bars (analysis) */
-  .homeEntry { margin-bottom:2px; }
-  .homeRow { display:flex; align-items:center; gap:9px; padding:2px 0; }
-  .homeRow .hl { flex:0 0 165px; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .homeRow .bar { flex:1; height:12px; background:#15110d; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
-  .homeRow .bar > i { display:block; height:100%; background:var(--accent); }
-  .homeRow .hp { flex:0 0 44px; text-align:right; font:11px ui-monospace,monospace; color:var(--muted); }
-  .homeRow.top .hl { color:var(--accent); font-weight:600; }
-  table { width:100%; border-collapse:collapse; font:12px/1.4 ui-monospace,monospace; }
-  td { padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top; }
-  td.t { color:var(--muted); white-space:nowrap; width:1%; } td.l { color:var(--accent); white-space:nowrap; width:1%; text-align:right; }
-  .gridHour { margin-bottom:10px; padding-bottom:7px; border-bottom:1px solid var(--line); }
-  .gridHour .ghr { color:var(--accent); font:600 12px ui-monospace,monospace; margin-bottom:3px; }
-  details.dbg { margin-top:4px; } details.dbg > summary { color:var(--muted); font-size:11px; cursor:pointer; list-style:none; }
-  details.dbg > summary::-webkit-details-marker { display:none; }
-  details.dbg > summary::before { content:"\25B8 prompt"; } details.dbg[open] > summary::before { content:"\25BE prompt"; }
-  details.dbg pre { background:#15110d; border:1px solid var(--line); border-radius:6px; padding:7px 9px; margin:5px 0 0; font:11px/1.4 ui-monospace,monospace; color:var(--muted); white-space:pre-wrap; word-break:break-word; max-height:260px; overflow:auto; }
-  .analyzeBox { margin-top:10px; border-top:1px solid var(--line); padding-top:10px; }
-  .analyzeBtns { display:flex; gap:8px; margin-bottom:8px; }
+  .det .k { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:8px; }
+  .det .v { font-size:13px; margin-top:1px; }
+  .det .nmh { font-family:Georgia,serif; font-size:18px; color:var(--accent); }
+  .det .meta { font-size:11px; color:var(--muted); font-family:ui-monospace,monospace; }
+  .det .x { position:absolute; top:8px; right:10px; color:var(--muted); cursor:pointer; font-size:16px; }
+  .hint { position:absolute; left:50%; top:14px; transform:translateX(-50%); color:var(--muted); font-size:12px; background:rgba(20,16,11,.7); padding:4px 10px; border-radius:8px; pointer-events:none; z-index:1; }
 </style>
 </head>
 <body>
-<header><h1>ai-fortress <small>· world builder · {{ server_url }}</small></h1></header>
-<div class="wrap">
-  <div class="sidebar">
-    <label>New world</label>
-    <textarea id="newPrompt" placeholder="A neon cyberpunk megacity…"></textarea>
-    <button id="newWorldBtn" style="width:100%; margin-top:8px;">+ Create world</button>
-    <label style="margin-top:18px">Worlds</label>
-    <div id="worldList"></div>
-  </div>
-  <div class="main" id="main"><div class="empty">Create or pick a world.</div></div>
-  <div class="gridpanel" id="gridPanel"><div class="empty">Click a location's ▦ grid.</div></div>
+<header>
+  <h1>ai-fortress <small>· colony map</small></h1>
+  <select id="worldSel" title="switch world"></select>
+  <input id="newPrompt" placeholder="new world: a neon cyberpunk megacity…" style="width:280px">
+  <button id="newWorldBtn">+ world</button>
+  <span class="spacer"></span>
+  <span id="worldId" class="tag" style="color:var(--muted);font:11px ui-monospace,monospace"></span>
+</header>
+
+<div class="roster" id="roster"><span class="empty">No world yet — create one above.</span></div>
+
+<div class="mapwrap" id="mapwrap">
+  <div class="map" id="map"></div>
 </div>
 
 <script>
-const SPECIES_DEFAULT = "human";
+const MAP = 500;            // world is MAP x MAP units
+const SCALE = 3;           // pixels per unit -> 1500px map
+const GRID_MINOR = 10, GRID_MAJOR = 50;   // grid lines every N units
+const GCOLOR = { female:"#e6a4c4", male:"#7fb4e6", nonbinary:"#c9a6e0" };
+
 function el(tag, props={}, ...kids) {
   const e = document.createElement(tag);
   for (const k in props) {
@@ -109,18 +108,32 @@ function stream(url, onmsg, onend) {
   };
   es.onerror = () => { es.close(); onend(false, "lost connection"); };
 }
+function stick(color) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 38"); svg.setAttribute("class", "stick");
+  svg.innerHTML =
+    `<circle cx="12" cy="6" r="5" fill="${color}"/>` +
+    `<g stroke="${color}" stroke-width="3" stroke-linecap="round">` +
+    `<line x1="12" y1="11" x2="12" y2="25"/><line x1="12" y1="15" x2="5" y2="21"/>` +
+    `<line x1="12" y1="15" x2="19" y2="21"/><line x1="12" y1="25" x2="6" y2="35"/>` +
+    `<line x1="12" y1="25" x2="18" y2="35"/></g>`;
+  return svg;
+}
+const gcolor = ch => GCOLOR[ch.gender] || "var(--accent)";
 
 let state = { wid: null, world: null };
 
+// ----------------------------------------------------------------- worlds
 async function loadWorlds() {
   const { worlds } = await (await fetch("/api/worlds")).json();
-  const list = document.getElementById("worldList"); list.innerHTML = "";
-  for (const w of worlds) {
-    list.appendChild(el("div", { class: "worldItem" + (w.id === state.wid ? " active" : ""), onclick: () => openWorld(w.id) },
-      el("div", { class: "wp", text: w.prompt }),
-      el("div", { class: "wm", text: `${w.n_characters} character${w.n_characters===1?"":"s"}${w.has_locations ? " · locations" : ""}` })));
-  }
+  const sel = document.getElementById("worldSel"); sel.innerHTML = "";
+  sel.appendChild(el("option", { value: "", text: worlds.length ? "— pick a world —" : "— no worlds —" }));
+  for (const w of worlds)
+    sel.appendChild(el("option", { value: w.id, text: `${w.prompt}  (${w.n_characters})`, ...(w.id === state.wid ? { selected: "" } : {}) }));
+  sel.value = state.wid || "";
 }
+document.getElementById("worldSel").onchange = e => { if (e.target.value) openWorld(e.target.value); };
 document.getElementById("newWorldBtn").onclick = async () => {
   const prompt = document.getElementById("newPrompt").value.trim();
   if (!prompt) return;
@@ -129,224 +142,161 @@ document.getElementById("newWorldBtn").onclick = async () => {
   await loadWorlds(); openWorld(id);
 };
 async function openWorld(wid) {
+  closePops();
   state.wid = wid;
   state.world = await (await fetch("/api/world/" + wid)).json();
-  loadWorlds(); renderWorld();
+  document.getElementById("worldId").textContent = state.world.prompt + " · " + wid;
+  await loadWorlds();
+  renderRoster(); renderMap();
 }
 
-function charForm(at) {
+// ----------------------------------------------------------------- roster
+function isPlaced(cid) { return state.world && state.world.placements && cid in state.world.placements; }
+
+function renderRoster() {
+  const r = document.getElementById("roster"); r.innerHTML = "";
+  const chars = (state.world.characters || []);
+  if (!chars.length) r.appendChild(el("span", { class: "empty", text: "No characters yet — generate one →" }));
+  for (const ch of chars) {
+    const placed = isPlaced(ch.cid);
+    const btn = el("div", { class: "figbtn " + (placed ? "placed" : "unplaced"),
+      title: placed ? "click to focus on the map" : "drag onto the map",
+      draggable: placed ? null : "true" },
+      stick(gcolor(ch)),
+      el("div", { class: "nm", text: ch.name }),
+      el("div", { class: "tag", text: placed ? "on map" : "drag →" }));
+    if (placed) btn.onclick = () => focusChar(ch.cid);
+    else btn.addEventListener("dragstart", e => e.dataTransfer.setData("text/cid", ch.cid));
+    r.appendChild(btn);
+  }
+  r.appendChild(genControl());
+}
+
+function genControl() {
+  const wrap = el("div", { style: "flex:0 0 auto; margin-left:8px; position:relative" });
+  const btn = el("button", { class: "ghost", text: "+ generate ▾", disabled: state.wid ? null : "" });
+  btn.onclick = () => { closePops(); openGenPop(wrap); };
+  wrap.appendChild(btn);
+  return wrap;
+}
+
+function openGenPop(anchor) {
   const gender = el("select", {}, ...["female", "male", "nonbinary"].map(g => el("option", { text: g })));
-  const species = el("input", { value: SPECIES_DEFAULT });
-  const btn = el("button", { class: "ghost sm", text: at ? "+ add character here" : "+ generate character" });
+  const species = el("input", { value: "human" });
   const status = el("div", { class: "status" });
-  const out = el("div");
-  btn.onclick = () => {
-    btn.disabled = true; status.textContent = "generating…"; status.className = "status";
-    const q = new URLSearchParams({ gender: gender.value, species: species.value || SPECIES_DEFAULT });
-    if (at) q.set("at", at);
-    const card = el("div", { class: "card" }); out.appendChild(card);
-    const nm = el("div", { class: "nm" }, el("span", { class: "pending", text: "summoning…" })); card.appendChild(nm);
-    const fields = {};
+  const go = el("button", { text: "summon", style: "margin-top:10px; width:100%" });
+  const pop = el("div", { class: "pop", "data-pop": "1", style: "top:64px; left:auto; right:14px" },
+    el("label", { text: "gender" }), gender,
+    el("label", { text: "species" }), species, go, status);
+  go.onclick = () => {
+    go.disabled = true; status.className = "status"; status.textContent = "summoning…";
+    const q = new URLSearchParams({ gender: gender.value, species: species.value.trim() || "human" });
+    let nm = "";
     stream(`/api/world/${state.wid}/character?` + q, d => {
-      if (d.type === "field" && d.field === "name") nm.textContent = d.value;
-      else if (d.type === "field") {
-        const f = el("div", { class: "field" }, el("div", { class: "k", text: d.field }), el("div", { class: "v", text: d.value }), promptDet(d.prompt, d.value));
-        card.appendChild(f);
-      } else if (d.type === "nocturnal") {
-        card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(d.value*100) + "% likely" }), promptDet(d.prompt, Math.round(d.value*100) + "% P(yes)")));
-      }
+      if (d.type === "field" && d.field === "name") { nm = d.value; status.textContent = "summoning " + nm + "…"; }
     }, (ok, msg) => {
-      btn.disabled = false;
-      status.textContent = ok ? "" : "⚠ " + msg; status.className = "status" + (ok ? "" : " err");
-      if (ok) openWorld(state.wid);   // reload to show the persisted character
+      status.textContent = ok ? "✓ " + nm : "⚠ " + msg; status.className = "status" + (ok ? " ok" : " err");
+      go.disabled = false;
+      if (ok) openWorld(state.wid).then(() => setTimeout(closePops, 700));
     });
   };
-  const formRow = el("div", { class: "row", style: "align-items:flex-end; gap:8px; flex-wrap:wrap" },
-    el("div", { style: "flex:0 0 110px" }, el("label", { text: "gender" }), gender),
-    el("div", { style: "flex:1" }, el("label", { text: "species" }), species),
-    el("div", { style: "flex:0 0 auto" }, btn));
-  return el("div", {}, formRow, status, out);
+  document.body.appendChild(pop);
 }
 
-function promptDet(p, output) {
-  if (!p) return null;
-  let text = p;
-  if (output != null && output !== "") text += "\n\n─── model output ───\n" + output;
-  return el("details", { class: "dbg" }, el("summary"), el("pre", { text }));
+// ----------------------------------------------------------------- map
+function renderMap() {
+  const map = document.getElementById("map");
+  document.querySelectorAll("[data-hint]").forEach(h => h.remove());   // clear stale hint(s)
+  map.style.width = map.style.height = (MAP * SCALE) + "px";
+  map.style.backgroundSize =
+    `${GRID_MINOR*SCALE}px ${GRID_MINOR*SCALE}px, ${GRID_MINOR*SCALE}px ${GRID_MINOR*SCALE}px,` +
+    `${GRID_MAJOR*SCALE}px ${GRID_MAJOR*SCALE}px, ${GRID_MAJOR*SCALE}px ${GRID_MAJOR*SCALE}px`;
+  map.innerHTML = "";
+  const placements = state.world.placements || {};
+  const byId = Object.fromEntries((state.world.characters || []).map(c => [c.cid, c]));
+  for (const cid in placements) {
+    const ch = byId[cid]; if (!ch) continue;
+    map.appendChild(mapFig(ch, placements[cid]));
+  }
+  if (!Object.keys(placements).length)
+    document.getElementById("mapwrap").appendChild(
+      el("div", { class: "hint", "data-hint": "1", text: "drag a colonist from the roster onto the map" }));
 }
 
-function charCard(ch) {
-  const p = ch.prompts || {};
-  const card = el("div", { class: "card" });
-  card.appendChild(el("div", { class: "nm", text: ch.name }));
-  if (p.name) card.appendChild(promptDet(p.name, ch.name));
-  card.appendChild(el("div", { class: "meta", text: `${ch.gender} ${ch.species}` }));
+function mapFig(ch, pos) {
+  const fig = el("div", { class: "mapfig", draggable: "true" },
+    stick(gcolor(ch)), el("div", { class: "nm", text: ch.name }));
+  fig.style.left = (pos.x * SCALE) + "px";
+  fig.style.top = (pos.y * SCALE) + "px";
+  fig.dataset.cid = ch.cid;
+  fig.addEventListener("dragstart", e => e.dataTransfer.setData("text/cid", ch.cid));
+  fig.addEventListener("click", e => { e.stopPropagation(); openDetail(ch, e); });
+  return fig;
+}
+
+async function placeChar(cid, x, y) {
+  await fetch(`/api/world/${state.wid}/place`, { method: "POST",
+    headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cid, x, y }) });
+  await openWorld(state.wid);
+}
+
+function focusChar(cid) {
+  const pos = state.world.placements[cid]; if (!pos) return;
+  const wrap = document.getElementById("mapwrap");
+  wrap.scrollTo({ left: pos.x * SCALE - wrap.clientWidth / 2, top: pos.y * SCALE - wrap.clientHeight / 2, behavior: "smooth" });
+  const f = [...document.querySelectorAll(".mapfig")].find(e => e.dataset.cid === cid);
+  if (f) { f.classList.add("focus"); setTimeout(() => f.classList.remove("focus"), 1400); }
+}
+
+// drop onto the map -> place at those world coords
+const mapwrap = document.getElementById("mapwrap");
+mapwrap.addEventListener("dragover", e => { e.preventDefault(); });
+mapwrap.addEventListener("drop", e => {
+  e.preventDefault();
+  const cid = e.dataTransfer.getData("text/cid"); if (!cid) return;
+  const map = document.getElementById("map");
+  const rect = map.getBoundingClientRect();
+  const x = Math.max(0, Math.min(MAP, (e.clientX - rect.left) / SCALE));
+  const y = Math.max(0, Math.min(MAP, (e.clientY - rect.top) / SCALE));
+  placeChar(cid, x, y);
+});
+
+// drag-to-pan the map (ignore when starting on a figure, so HTML5 drag handles those)
+let panning = false, sx = 0, sy = 0, sl = 0, st = 0;
+mapwrap.addEventListener("mousedown", e => {
+  if (e.target.closest(".mapfig")) return;
+  panning = true; sx = e.clientX; sy = e.clientY; sl = mapwrap.scrollLeft; st = mapwrap.scrollTop;
+  mapwrap.classList.add("grabbing");
+});
+window.addEventListener("mousemove", e => {
+  if (!panning) return;
+  mapwrap.scrollLeft = sl - (e.clientX - sx);
+  mapwrap.scrollTop = st - (e.clientY - sy);
+});
+window.addEventListener("mouseup", () => { panning = false; mapwrap.classList.remove("grabbing"); });
+
+// ----------------------------------------------------------------- detail popover
+function openDetail(ch, ev) {
+  closePops();
+  const pop = el("div", { class: "pop det", "data-pop": "1" },
+    el("span", { class: "x", text: "✕", onclick: closePops }),
+    el("div", { class: "nmh", text: ch.name }),
+    el("div", { class: "meta", text: `${ch.gender} ${ch.species}` }));
   for (const f of ["appearance", "personality", "backstory"])
-    if (ch[f]) card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: f }), el("div", { class: "v", text: ch[f] }), promptDet(p[f], ch[f])));
+    if (ch[f]) pop.appendChild(el("div", {}, el("div", { class: "k", text: f }), el("div", { class: "v", text: ch[f] })));
   if (ch.nocturnal != null)
-    card.appendChild(el("div", { class: "field" }, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal*100) + "% likely" }), promptDet(p.nocturnal, Math.round(ch.nocturnal*100) + "% P(yes)")));
-  // analysis
-  const box = el("div", { class: "analyzeBox", hidden: "" });
-  const out = el("div");
-  const mkBtn = (label, fn) => el("button", { class: "ghost sm", text: label, onclick: () => fn(ch, out) });
-  box.appendChild(el("div", { class: "analyzeBtns" },
-    mkBtn("sleep spot", runSleep), mkBtn("24h presence", runPresence), mkBtn("schedule", runSchedule)));
-  box.appendChild(out);
-  const toggle = el("button", { class: "ghost sm", style: "margin-top:8px", text: "▸ analyze", onclick: () => {
-    box.hidden = !box.hidden; toggle.textContent = (box.hidden ? "▸" : "▾") + " analyze";
-  }});
-  card.appendChild(toggle); card.appendChild(box);
-  return card;
+    pop.appendChild(el("div", {}, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal * 100) + "% likely" })));
+  const remove = el("button", { class: "ghost sm", text: "remove from map", style: "margin-top:12px",
+    onclick: () => { placeChar(ch.cid, null, null); closePops(); } });
+  pop.appendChild(remove);
+  pop.style.left = Math.min(ev.clientX + 12, window.innerWidth - 320) + "px";
+  pop.style.top = Math.min(ev.clientY + 8, window.innerHeight - 260) + "px";
+  document.body.appendChild(pop);
 }
-
-function renderWorld() {
-  const w = state.world, main = document.getElementById("main"); main.innerHTML = "";
-  main.appendChild(el("h1", { style: "font-size:24px; margin-bottom:4px" , text: w.prompt }));
-  main.appendChild(el("div", { class: "meta", style: "color:var(--muted); font:11px ui-monospace,monospace; margin-bottom:14px", text: w.id }));
-
-  // characters (seed)
-  const seeds = w.characters.filter(c => c.role === "seed");
-  const csec = el("div", { class: "sec" }, el("h2", { text: "Characters" }));
-  seeds.forEach(c => csec.appendChild(charCard(c)));
-  csec.appendChild(charForm(null));
-  main.appendChild(csec);
-
-  // locations
-  const lsec = el("div", { class: "sec" }, el("h2", { text: "Locations (top 5)" }));
-  if (w.locations.length) {
-    for (const loc of w.locations) {
-      const here = w.characters.filter(c => c.at === loc);
-      const lh = el("div", { class: "lh" },
-        el("span", { text: loc }),
-        el("button", { class: "ghost sm", text: "▦ grid", onclick: () => viewGrid(loc) }),
-        el("button", { class: "ghost sm", text: "👥 NPCs", onclick: () => viewNpcCounts(loc) }),
-        el("button", { class: "ghost sm", text: "📦 objects", onclick: () => viewObjects(loc) }));
-      const block = el("div", { class: "locblock" }, lh);
-      here.forEach(c => block.appendChild(charCard(c)));
-      block.appendChild(charForm(loc));
-      lsec.appendChild(block);
-    }
-  } else {
-    const status = el("div", { class: "status" });
-    const btn = el("button", { class: "ghost", text: "Generate locations (ever-filter → top 5)", disabled: seeds.length ? null : "" });
-    const ever = el("div");
-    btn.onclick = () => {
-      btn.disabled = true; ever.innerHTML = ""; status.textContent = "scoring locations…";
-      const rows = []; let kept = null;
-      stream(`/api/world/${state.wid}/locations`, d => {
-        if (d.type === "ever") { rows.push(d); renderProbList(ever, rows, kept); }
-        else if (d.type === "kept") { kept = new Set(d.locations); renderProbList(ever, rows, kept); }
-      }, (ok, msg) => { status.textContent = ok ? "" : "⚠ " + msg; if (ok) openWorld(state.wid); });
-    };
-    lsec.appendChild(btn); lsec.appendChild(status); lsec.appendChild(ever);
-    if (!seeds.length) lsec.appendChild(el("div", { class: "empty", text: "Generate a seed character first." }));
-  }
-  main.appendChild(lsec);
-}
-
-function viewGrid(loc) {
-  const panel = document.getElementById("gridPanel");
-  panel.innerHTML = "";
-  const gs = el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc }));
-  const grid = el("div", { class: "locgrid" });
-  for (let i = 0; i < 100; i++) grid.appendChild(el("div", { class: "cell", "data-i": String(i) }));
-  gs.appendChild(grid);
-  panel.appendChild(gs);
-}
-
-function viewNpcCounts(loc) {
-  const panel = document.getElementById("gridPanel"); panel.innerHTML = "";
-  const status = el("div", { class: "status", text: "sampling 10×…" });
-  const result = el("div");
-  const gs = el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc + " — distinct NPCs / day" }), status, result);
-  panel.appendChild(gs);
-  stream(`/api/world/${state.wid}/npccounts?loc=${encodeURIComponent(loc)}`, d => {
-    if (d.type !== "npc") return;
-    result.innerHTML = "";
-    result.appendChild(el("div", { style: "font:600 30px Georgia,serif; color:var(--accent); margin:4px 0", text: d.count == null ? "?" : "~" + d.count }));
-    if (d.lo != null) result.appendChild(el("div", { class: "meta", style: "color:var(--muted)", text: `${d.n} samples ranged ${d.lo}–${d.hi}` }));
-    const out = d.samples ? `samples: ${d.samples.join(", ")}\n→ median ${d.count}` : String(d.count);
-    if (d.prompt) result.appendChild(promptDet(d.prompt, out));
-  }, (ok, msg) => { status.textContent = ok ? "" : "⚠ " + msg; });
-}
-
-function viewObjects(loc) {
-  const panel = document.getElementById("gridPanel"); panel.innerHTML = "";
-  const existing = (state.world.objects || {})[loc];
-  const status = el("div", { class: "status" });
-  const chips = el("div", { class: "chips" });
-  const detWrap = el("div");
-  const btn = el("button", { class: "ghost sm", style: "margin-top:10px", text: existing ? "↻ regenerate" : "generate object types" });
-  panel.appendChild(el("div", { class: "gs" }, el("div", { class: "gridhead", text: loc + " — object types" }), chips, detWrap, btn, status));
-  function show(items, prompt) {
-    chips.innerHTML = ""; detWrap.innerHTML = "";
-    items.forEach(o => chips.appendChild(el("span", { class: "chip", text: o })));
-    if (prompt) { const det = promptDet(prompt, items.join(", ")); if (det) detWrap.appendChild(det); }
-  }
-  if (existing) show(existing.items || [], existing.prompt);
-  function run() {
-    btn.disabled = true; status.textContent = "generating (re-sample + dedup)…";
-    const items = []; let prompt = null; show(items, null);
-    stream(`/api/world/${state.wid}/objects?loc=${encodeURIComponent(loc)}`, d => {
-      if (d.type === "object") { items.push(d.value); prompt = d.prompt; show(items, prompt); }
-    }, (ok, msg) => {
-      btn.disabled = false; status.textContent = ok ? "" : "⚠ " + msg;
-      if (ok) (state.world.objects = state.world.objects || {})[loc] = { items, prompt };
-    });
-  }
-  btn.onclick = run;
-  if (!existing) run();
-}
-
-// ---- analysis renderers (reused prob bars / grid / schedule) ----
-function probRow(r, top, marker, dim) {
-  const entry = el("div", { class: "homeEntry" });
-  if (dim) entry.style.opacity = "0.4";
-  const fill = el("i"); fill.style.width = Math.round(r.prob*100) + "%";
-  entry.appendChild(el("div", { class: "homeRow" + (top ? " top" : "") },
-    el("div", { class: "hl", text: (top ? marker : "") + r.location }),
-    el("div", { class: "bar" }, fill),
-    el("div", { class: "hp", text: (r.prob*100).toFixed(0) + "%" })));
-  if (r.prompt) entry.appendChild(promptDet(r.prompt, "P(yes) = " + (r.prob != null ? r.prob.toFixed(3) : "?")));
-  return entry;
-}
-function renderProbList(container, rows, keptSet) {
-  const sorted = rows.slice().sort((a, b) => b.prob - a.prob);
-  container.innerHTML = "";
-  sorted.forEach((r, i) => {
-    const kept = keptSet ? keptSet.has(r.location) : null;
-    container.appendChild(probRow(r, keptSet ? kept : i === 0, keptSet ? "✓ " : "★ ", keptSet ? !kept : false));
-  });
-}
-function runSleep(ch, out) {
-  out.innerHTML = ""; const box = el("div"); out.appendChild(box); const rows = [];
-  stream(`/api/world/${state.wid}/char/${ch.cid}/sleep`, d => { if (d.type === "sleep") { rows.push(d); renderProbList(box, rows, null); } }, () => {});
-}
-function runPresence(ch, out) {
-  out.innerHTML = ""; const secs = {};
-  stream(`/api/world/${state.wid}/char/${ch.cid}/presence`, d => {
-    if (d.type !== "presence") return;
-    if (!secs[d.time]) {
-      const rowsEl = el("div");
-      out.appendChild(el("div", { class: "gridHour" }, el("div", { class: "ghr", text: d.time }), rowsEl));
-      secs[d.time] = { rowsEl, items: [] };
-    }
-    const s = secs[d.time]; s.items.push(d);
-    const sorted = s.items.slice().sort((a, b) => b.prob - a.prob);
-    s.rowsEl.innerHTML = ""; sorted.forEach((r, i) => s.rowsEl.appendChild(probRow(r, i === 0, "📍 ", false)));
-  }, () => {});
-}
-function runSchedule(ch, out) {
-  out.innerHTML = ""; const tb = el("tbody"); out.appendChild(el("table", {}, tb));
-  stream(`/api/world/${state.wid}/char/${ch.cid}/schedule?steps=12`, d => {
-    if (d.type !== "slot") return;
-    const det = promptDet(`── action prompt ──\n${d.action_prompt}\n→ ${d.action || ""}\n\n── location prompt ──\n${d.loc_prompt}\n→ ${d.location || ""}`);
-    tb.appendChild(el("tr", {},
-      el("td", { class: "t", text: d.time }),
-      el("td", {}, el("div", { text: d.action || "" }), det),
-      el("td", { class: "l", text: d.location || "" })));
-  }, () => {});
-}
+function closePops() { document.querySelectorAll("[data-pop]").forEach(p => p.remove()); }
+document.addEventListener("mousedown", e => {
+  if (!e.target.closest("[data-pop]") && !e.target.closest(".figbtn") && !e.target.closest(".mapfig")) closePops();
+});
 
 loadWorlds();
 </script>

@@ -64,6 +64,26 @@ def api_world(wid):
     return w if w else ({"error": "not found"}, 404)
 
 
+@app.route("/api/world/<wid>/place", methods=["POST"])
+def api_place(wid):
+    """Drag-drop a character onto the 500x500 map (or move/remove it). Body: {cid, x, y} — x/y in
+    [0,500]; pass x or y null to take the character off the map."""
+    if not store.load_world(wid):
+        return {"error": "not found"}, 404
+    d = request.json or {}
+    cid = d.get("cid")
+    if not cid or not store.get_character(wid, cid):
+        return {"error": "character not found"}, 400
+    x, y = d.get("x"), d.get("y")
+    if x is not None and y is not None:
+        x = max(0.0, min(500.0, float(x)))
+        y = max(0.0, min(500.0, float(y)))
+    else:
+        x = y = None
+    store.append(wid, {"type": "place", "cid": cid, "x": x, "y": y})
+    return {"ok": True, "cid": cid, "x": x, "y": y}
+
+
 # ------------------------------------------------------ character generation (seed / at a place)
 @app.route("/api/world/<wid>/character")
 def api_world_character(wid):
