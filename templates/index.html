@@ -65,6 +65,10 @@
   .det .meta { font-size:11px; color:var(--muted); font-family:ui-monospace,monospace; }
   .det .x { position:absolute; top:8px; right:10px; color:var(--muted); cursor:pointer; font-size:16px; }
   .hint { position:absolute; left:50%; top:14px; transform:translateX(-50%); color:var(--muted); font-size:12px; background:rgba(20,16,11,.7); padding:4px 10px; border-radius:8px; pointer-events:none; z-index:1; }
+  /* minimap */
+  .minimap { position:fixed; bottom:18px; right:18px; width:150px; height:150px; background:rgba(18,15,11,.92); border:1px solid var(--accent); border-radius:6px; cursor:crosshair; z-index:40; box-shadow:0 4px 18px rgba(0,0,0,.55); }
+  .minimap .mmdot { position:absolute; width:5px; height:5px; border-radius:50%; transform:translate(-50%,-50%); }
+  .minimap .mmviewport { position:absolute; border:1px solid var(--ink); background:rgba(216,166,87,.14); pointer-events:none; }
 </style>
 </head>
 <body>
@@ -82,6 +86,7 @@
 <div class="mapwrap" id="mapwrap">
   <div class="map" id="map"></div>
 </div>
+<div class="minimap" id="minimap" style="display:none"><div class="mmviewport" id="mmviewport"></div></div>
 
 <script>
 const MAP = 500;            // world is MAP x MAP cells
@@ -223,6 +228,7 @@ function renderMap() {
   if (!Object.keys(placements).length)
     document.getElementById("mapwrap").appendChild(
       el("div", { class: "hint", "data-hint": "1", text: "drag a colonist from the roster onto the map" }));
+  renderMinimap();
 }
 
 function mapFig(ch, pos) {
@@ -277,6 +283,46 @@ window.addEventListener("mousemove", e => {
   mapwrap.scrollTop = st - (e.clientY - sy);
 });
 window.addEventListener("mouseup", () => { panning = false; mapwrap.classList.remove("grabbing"); });
+
+// ----------------------------------------------------------------- minimap
+const MM = 150;                                  // minimap is MM x MM px = the whole MAP x MAP world
+const mmScale = () => MM / (MAP * SCALE);        // minimap px per main-map px
+function renderMinimap() {
+  const mm = document.getElementById("minimap");
+  mm.style.display = "block";
+  mm.querySelectorAll(".mmdot").forEach(d => d.remove());
+  const placements = (state.world && state.world.placements) || {};
+  const byId = Object.fromEntries(((state.world && state.world.characters) || []).map(c => [c.cid, c]));
+  for (const cid in placements) {
+    const ch = byId[cid]; if (!ch) continue;
+    const p = placements[cid];
+    const dot = el("div", { class: "mmdot" });
+    dot.style.left = (p.x / MAP * MM) + "px";
+    dot.style.top = (p.y / MAP * MM) + "px";
+    dot.style.background = gcolor(ch);
+    mm.appendChild(dot);
+  }
+  updateViewport();
+}
+function updateViewport() {
+  const vp = document.getElementById("mmviewport"); if (!vp) return;
+  const s = mmScale();
+  vp.style.left = (mapwrap.scrollLeft * s) + "px";
+  vp.style.top = (mapwrap.scrollTop * s) + "px";
+  vp.style.width = Math.min(MM, mapwrap.clientWidth * s) + "px";
+  vp.style.height = Math.min(MM, mapwrap.clientHeight * s) + "px";
+}
+function mmJump(e) {                              // click/drag the minimap -> center the main map there
+  const r = document.getElementById("minimap").getBoundingClientRect();
+  const mainX = (e.clientX - r.left) / mmScale(), mainY = (e.clientY - r.top) / mmScale();
+  mapwrap.scrollTo({ left: mainX - mapwrap.clientWidth / 2, top: mainY - mapwrap.clientHeight / 2 });
+}
+let mmDrag = false;
+document.getElementById("minimap").addEventListener("mousedown", e => { mmDrag = true; mmJump(e); e.stopPropagation(); e.preventDefault(); });
+window.addEventListener("mousemove", e => { if (mmDrag) mmJump(e); });
+window.addEventListener("mouseup", () => { mmDrag = false; });
+mapwrap.addEventListener("scroll", updateViewport);
+window.addEventListener("resize", updateViewport);
 
 // ----------------------------------------------------------------- detail popover
 function openDetail(ch, ev) {
