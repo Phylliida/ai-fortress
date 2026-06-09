@@ -180,12 +180,13 @@ class LlamaServer:
         return raw.strip().lower().startswith("y")
 
     # --- yes/no probability (the old yesVsNo), done rigorously via first-token logprobs ---
-    def yes_no_prob(self, prompt, n_probs=40):
+    def yes_no_prob(self, prompt, n_probs=40, reasoning=False):
         """P(yes) from the first answer token: sum the probability mass of all case/space
         variants of 'yes' vs 'no' — every token whose `.strip().lower()` is exactly 'yes' or
         'no' (' Yes', ' yes', ' YES', ... ; NOT 'yesterday'/'never'). n_predict=1; neutral
         sampling keeps the probs calibrated. (No grammar: llama.cpp reports the raw pre-grammar
-        distribution in top_logprobs, so a grammar is a no-op here — the summing does the work.)"""
+        distribution in top_logprobs, so a grammar is a no-op here — the summing does the work.)
+        reasoning=True (DEBUG ONLY) returns {p, yes, why} with a generated rationale."""
         out = self.complete(prompt, n_predict=1, n_probs=n_probs)
         yes = no = 0.0
         for tok, p in first_token_probs(out).items():
@@ -194,7 +195,17 @@ class LlamaServer:
                 yes += p
             elif t == "no":
                 no += p
-        return yes / (yes + no) if (yes + no) > 0 else 0.5
+        p = yes / (yes + no) if (yes + no) > 0 else 0.5
+        if reasoning:
+            return {"p": p, "yes": p >= 0.5, "why": self._why(prompt, "Yes" if p >= 0.5 else "No")}
+        return p
+
+    def _why(self, prompt, answer):
+        """DEBUG ONLY (never on the prod path): a one-line rationale for `answer`, generated as a
+        continuation of `prompt` (e.g. 'Yes, because ...'). The logprob primitives give the verdict;
+        this just narrates a plausible reason for it — handy for understanding miscalibrations."""
+        r = self.gen_text(prompt + f" {answer}, because", stop=["\n"], n_predict=48)
+        return f"{answer}, because {r}".strip()
 
     # --- integer ---
     def gen_int(self, prompt, temperature=None):
@@ -266,7 +277,7 @@ class LlamaServer:
             n += 1
         return total if n else None
 
-    def gen_percent(self, prompt, scale=None):
+    def gen_percent(self, prompt, scale=None, reasoning=False):
         """Verbalized magnitude -> calibrated [0,1]. `prompt` is framed so a degree phrase is the
         natural next words (e.g. "...satisfies their hunger"); we score each rung of the ordinal
         `scale` [(phrase, value)...] by its raw sequence-logprob, softmax over the rungs, and
@@ -286,7 +297,10 @@ class LlamaServer:
         z = sum(w for _, _, w in ws)
         value = sum(v * w for _, v, w in ws) / z
         dist = sorted(((ph, w / z, v) for ph, v, w in ws), key=lambda x: -x[1])
-        return {"value": value, "dist": dist}
+        result = {"value": value, "dist": dist}
+        if reasoning:
+            result["why"] = self._why(prompt, dist[0][0])
+        return result
 
     # --- list of items ---
     # NB: JSON-schema also compiles to a grammar and would hit the same special-token
@@ -338,3 +352,43 @@ def cosine(a, b):
     na = sum(x * x for x in a) ** 0.5
     nb = sum(y * y for y in b) ** 0.5
     return dot / (na * nb) if na and nb else 0.0
+
+
+def iter_unique(server, prompt, n=12, max_attempts=None, grammar=None, stop=None,
+                sim_threshold=0.78, max_len=40, strip_articles=True, reject=None,
+                seed=None, embed_url=EMBED_URL):
+    """Generate up to `n` unique short items by RE-SAMPLING a fixed `prompt` one line at a time
+    (warm temp) and semantic-deduping with embeddinggemma — an item is skipped if its cosine to
+    any kept item is >= sim_threshold. Yields each kept item. The shared engine behind
+    iter_locations / iter_objects / need generation. `seed` pre-loads the dedup set (so e.g.
+    generated needs don't repeat the universal core); `reject(item)->bool` drops unwanted items
+    (non-English, multi-word, ...); `strip_articles` removes a leading the/a/an."""
+    embs, seen, count = [], set(), 0
+    if seed:
+        for sd in seed:
+            seen.add(sd.strip().lower())
+            try:
+                embs.append(embed_texts([sd], embed_url)[0])
+            except Exception:
+                pass
+    for _ in range(max_attempts or n * 5):
+        if count >= n:
+            break
+        raw = server.gen_text(prompt, stop=stop or ["\n"], n_predict=16, grammar=grammar)
+        item = clean_item(re.sub(r"\s*\(.*?\)", "", raw))
+        words = item.split()
+        if strip_articles and words and words[0].lower() in ("the", "a", "an"):
+            item = " ".join(words[1:])
+        if not item or len(item) > max_len or item.lower() in seen or (reject and reject(item)):
+            continue
+        try:
+            e = embed_texts([item], embed_url)[0]
+            if embs and max(cosine(e, pe) for pe in embs) >= sim_threshold:
+                continue
+        except Exception:
+            e = None
+        seen.add(item.lower())
+        if e is not None:
+            embs.append(e)
+        count += 1
+        yield item
