@@ -138,7 +138,7 @@ def api_create_item(wid):
             prim = next((sp for sp in affords if affords[sp]), None)
             if prim:
                 yield sse({"type": "status", "message": "timing the activity…"})
-                duration_min = needs.bake_durations(SERVER, prim, {name: affords[prim]}, samples=5).get(name)
+                duration_min = needs.bake_durations(SERVER, prim, {name: affords[prim]}, samples=8).get(name)
                 yield sse({"type": "duration", "duration_min": duration_min})
             iid = store.new_id(8)
             store.append(wid, {"type": "item", "iid": iid, "name": name,
