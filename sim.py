@@ -51,27 +51,26 @@ def _items(world):
         it = items.get(ip["iid"])
         if it:
             out.append({"pid": pid, "x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
-                        "affords": it.get("affords", {}), "duration_min": it.get("duration_min"),
+                        "affords": it.get("affords", {}), "durations": it.get("durations", {}),
                         "consumable": bool(it.get("consumable"))})
     return out
 
 
 def _choose(agent, items):
-    """Highest-utility placed item: sum of refill x urgency(1-level) over the needs it serves that are
-    BELOW threshold (deadband), distance-discounted. None if nothing is worth doing."""
-    best, best_score = None, 0.0
+    """Best (item, need) to act on: max over placed items AND the below-threshold needs they serve of
+    refill x urgency(1-level), distance-discounted. Returns (item, need) — the agent uses the item FOR
+    that one need (its duration, its refill), so a multi-need item doesn't borrow another need's time
+    (a royal bed for novelty != an 8h sleep). (None, None) if nothing is worth doing."""
+    best, best_score, best_need = None, 0.0, None
     for it in items:
         af = _affords_for(it, agent["species"])
-        val = sum(r * (1.0 - agent["needs"].get(n, 1.0))
-                  for n, r in af.items()
-                  if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n))
-        if val <= 0:
-            continue
         d = abs(agent["x"] - it["x"]) + abs(agent["y"] - it["y"])
-        score = val / (1.0 + 0.01 * d)
-        if score > best_score:
-            best, best_score = it, score
-    return best
+        for n, r in af.items():
+            if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n):
+                score = (r * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
+                if score > best_score:
+                    best, best_score, best_need = it, score, n
+    return best, best_need
 
 
 def _reconcile(sim, world):
@@ -112,11 +111,13 @@ def step_world(world, ticks=1):
                     a["busy_affords"], a["busy_name"] = {}, ""
                     a["busy_pid"], a["busy_consumable"] = None, False
                 continue                                          # committed to the full duration
-            if a["action"] is None:                               # decide
-                tgt = _choose(a, items)
+            if a["action"] is None:                               # decide: best (item, need)
+                tgt, need = _choose(a, items)
                 if tgt:
+                    af = _affords_for(tgt, a["species"])
                     a["action"] = {"name": tgt["name"], "tx": tgt["x"], "ty": tgt["y"],
-                                   "affords": _affords_for(tgt, a["species"]), "dur": tgt.get("duration_min"),
+                                   "need": need, "refill": af.get(need, 0.0),
+                                   "dur": (tgt.get("durations") or {}).get(need),
                                    "pid": tgt.get("pid"), "consumable": tgt.get("consumable", False)}
                     a["path"] = pathfinding.astar((a["x"], a["y"]), (tgt["x"], tgt["y"]))[1:]
             if a["action"]:                                       # walk; begin the activity on arrival
@@ -126,7 +127,8 @@ def step_world(world, ticks=1):
                 if (a["x"], a["y"]) == (a["action"]["tx"], a["action"]["ty"]):
                     dur = max(1, round((a["action"]["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
                     a["busy"], a["busy_dur"] = dur, dur
-                    a["busy_affords"], a["busy_name"] = a["action"]["affords"], a["action"]["name"]
+                    a["busy_affords"] = {a["action"]["need"]: a["action"]["refill"]}   # refill ONLY the driving need
+                    a["busy_name"] = a["action"]["name"]
                     a["busy_pid"], a["busy_consumable"] = a["action"]["pid"], a["action"]["consumable"]
                     a["action"], a["path"] = None, []
                 elif not a["path"]:                               # unreachable -> give up

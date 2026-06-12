@@ -11,8 +11,8 @@ Record types:
   {"type":"place",      "cid", "x", "y"}   # position on the 500x500 world map; last write wins
                                             # (x or y null = removed from the map)
   {"type":"item",       "iid", "name", "species", "affords":{need:refill},  # an item TEMPLATE (palette)
-                        "duration_min", "duration_ok", "consumable"}  # length + gate conf + used-up?
-  {"type":"item_duration", "iid", "duration_min"}   # manual duration override (trusted)
+                        "durations":{need:min}, "durations_ok":{need:conf}, "consumable"}  # per-need length
+  {"type":"item_duration", "iid", "need", "duration_min"}   # per-need manual duration override
   {"type":"item_delete", "iid"}   # delete an item TEMPLATE from the palette (+ its placed instances)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
@@ -91,13 +91,13 @@ def load_world(world_id):
         elif t == "item":
             world["items"][r["iid"]] = {"name": r["name"], "species": r.get("species"),
                                         "affords": r.get("affords", {}),
-                                        "duration_min": r.get("duration_min"),
-                                        "duration_ok": r.get("duration_ok"),
+                                        "durations": r.get("durations", {}),       # {need: minutes}
+                                        "durations_ok": r.get("durations_ok", {}),  # {need: gate conf}
                                         "consumable": bool(r.get("consumable"))}
         elif t == "item_duration":
-            if r["iid"] in world["items"]:
-                world["items"][r["iid"]]["duration_min"] = r["duration_min"]
-                world["items"][r["iid"]]["duration_ok"] = 1.0        # manually set -> trusted
+            if r.get("need") is not None and r["iid"] in world["items"]:   # skip legacy per-item records
+                world["items"][r["iid"]].setdefault("durations", {})[r["need"]] = r["duration_min"]
+                world["items"][r["iid"]].setdefault("durations_ok", {})[r["need"]] = 1.0  # set -> trusted
         elif t == "item_delete":
             world["items"].pop(r["iid"], None)
             for pid in [p for p, ip in world["item_placements"].items() if ip.get("iid") == r["iid"]]:
