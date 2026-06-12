@@ -128,6 +128,7 @@
   <button id="playBtn" class="ghost" title="play / pause time">▶</button>
   <button id="ff2Btn" class="ghost" title="2× speed">⏩</button>
   <button id="ff4Btn" class="ghost" title="4× speed">⏩⏩</button>
+  <button id="ff8Btn" class="ghost" title="8× speed">⏩⏩⏩</button>
   <select id="worldSel" title="switch world"></select>
   <input id="newPrompt" placeholder="new world: a neon cyberpunk megacity…" style="width:280px">
   <button id="newWorldBtn">+ world</button>
@@ -760,6 +761,7 @@ function updateSpeedUI() {
   document.getElementById("playBtn").textContent = playing ? "⏸" : "▶";
   document.getElementById("ff2Btn").classList.toggle("active", speed === 2);
   document.getElementById("ff4Btn").classList.toggle("active", speed === 4);
+  document.getElementById("ff8Btn").classList.toggle("active", speed === 8);
 }
 function togglePlay() { const was = playing; playing = !playing; updateSpeedUI(); if (playing && !was) simLoop(); }
 function setSpeed(s) {                          // a fast-forward button always plays; click the active one -> 1×
@@ -772,6 +774,7 @@ function setSpeed(s) {                          // a fast-forward button always 
 document.getElementById("playBtn").onclick = togglePlay;
 document.getElementById("ff2Btn").onclick = () => setSpeed(2);
 document.getElementById("ff4Btn").onclick = () => setSpeed(4);
+document.getElementById("ff8Btn").onclick = () => setSpeed(8);
 updateClock();
 
 // ----------------------------------------------------------------- base-model query log
