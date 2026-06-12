@@ -96,6 +96,12 @@
   #playBtn { padding:5px 11px; font-size:13px; }
   .doing { font:12px ui-monospace,monospace; color:var(--accent); margin:7px 0 3px; }
   .needs { margin-top:4px; }
+  .needrow { display:flex; align-items:center; gap:6px; margin:3px 0; font-size:12px; }
+  .needrow .nn { flex:1; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .needrow.unsure .nn::after { content:" ⚠"; color:var(--accent); }
+  .modesel { background:#1f1913; border:1px solid var(--line); border-radius:5px; color:var(--ink);
+             font:11px ui-monospace,monospace; padding:1px 4px; cursor:pointer; }
+  .modesel.unset { border-color:var(--accent); color:var(--accent); }
   .needbar { display:flex; align-items:center; gap:7px; margin-top:4px; }
   .needbar .nl { flex:0 0 86px; font-size:11px; color:var(--muted); text-transform:capitalize; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .needbar .nb { position:relative; flex:1; height:9px; background:#15110d; border:1px solid var(--line); border-radius:5px; overflow:hidden; }
@@ -145,6 +151,11 @@
   <div class="palette" id="palette">
     <label>World species</label>
     <div id="speciesLine" class="itf" style="margin-bottom:12px">—</div>
+    <label style="display:flex; justify-content:space-between; align-items:center; gap:6px">
+      <span>Needs</span>
+      <button id="classifyNeedsBtn" class="ghost sm" style="width:auto; padding:1px 8px; margin:0; font-size:11px">classify modes</button>
+    </label>
+    <div id="needList" style="margin-bottom:12px">—</div>
     <label>Items</label>
     <input id="itemInput" placeholder="loaf of bread, stovetop…" autocomplete="off">
     <button id="addItemBtn" class="additem">+ add item</button>
@@ -259,7 +270,7 @@ async function refreshWorld() {            // re-fetch + re-render, KEEP the cur
   document.getElementById("worldId").textContent = state.world.prompt + " · " + state.wid;
   await loadWorlds();
   initNeeds();
-  renderRoster(); renderPalette(); renderMap();
+  renderRoster(); renderPalette(); renderNeeds(); renderMap();
 }
 async function openWorld(wid) {            // switch worlds -> also reset the view to fit
   closePops();
@@ -587,6 +598,49 @@ function itemPrimaryNeed(item) {       // need with the highest refill (its dura
   return best;
 }
 let editItems = false;
+const MODE_LIST = ["consume", "restore", "ambient", "social", "experiential"];
+const MODE_COLORS = { consume:"#d9914a", restore:"#8ab368", ambient:"#6fa8d8", social:"#d87fa6", experiential:"#b08fd8" };
+
+function renderNeeds() {
+  const wrap = document.getElementById("needList"); wrap.innerHTML = "";
+  const ns = (state.world && state.world.needs) || [];
+  if (!ns.length) { wrap.textContent = "—"; return; }
+  const modes = (state.world && state.world.need_modes) || {};
+  for (const need of ns) {
+    const m = modes[need] || {};
+    const unsure = m.mode != null && !m.manual && m.conf != null && m.conf < 0.45;   // classifier wasn't sure
+    const row = el("div", { class: "needrow" + (unsure ? " unsure" : "") },
+      el("span", { class: "nn", text: need,
+        title: m.conf != null ? `confidence ${m.conf}` : (m.manual ? "manually set" : "") }));
+    const sel = el("select", { class: "modesel" + (m.mode ? "" : " unset"),
+      title: "how this need is met", onchange: e => setNeedMode(need, e.target.value) });
+    if (!m.mode) sel.appendChild(el("option", { value: "", text: "set…" }));
+    for (const mode of MODE_LIST) sel.appendChild(el("option", { value: mode, text: mode }));
+    sel.value = m.mode || "";
+    if (m.mode) sel.style.color = MODE_COLORS[m.mode];
+    row.appendChild(sel);
+    if (m.manual) row.appendChild(el("span", { text: "✎", title: "manually set", style: "color:var(--muted)" }));
+    wrap.appendChild(row);
+  }
+}
+
+async function classifyNeeds() {
+  if (!state.wid) return;
+  const btn = document.getElementById("classifyNeedsBtn"), lbl = btn.textContent;
+  btn.disabled = true; btn.textContent = "classifying…";
+  await new Promise(res => stream(`/api/world/${state.wid}/needs/classify`, () => {}, async (ok, msg) => {
+    if (!ok) document.getElementById("itemStatus").textContent = "⚠ " + msg;
+    await refreshWorld(); btn.disabled = false; btn.textContent = lbl; res();
+  }));
+}
+
+async function setNeedMode(need, mode) {
+  if (!mode || !state.wid) return;
+  await fetch(`/api/world/${state.wid}/need/${encodeURIComponent(need)}/mode`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode }) });
+  await refreshWorld();
+}
+
 function renderPalette() {
   document.getElementById("speciesLine").textContent = (state.world.species || []).join(", ") || "—";
   const list = document.getElementById("itemList"); list.innerHTML = "";
@@ -835,6 +889,7 @@ function toggleLog() {
 }
 document.getElementById("logBtn").onclick = toggleLog;
 document.getElementById("logClose").onclick = toggleLog;
+document.getElementById("classifyNeedsBtn").onclick = classifyNeeds;
 // drag the left edge to resize the panel (remembered across reloads)
 let logResizing = false;
 const savedLogW = parseInt(localStorage.getItem("logWidth") || "", 10);
