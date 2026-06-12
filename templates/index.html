@@ -800,7 +800,9 @@ function fmtT(t) {
 function logEntryEl(e) {
   const kind = (e.n_predict || 0) <= 1 ? "score" : (e.grammar ? "gen·g" : "gen");
   const head = `${fmtT(e.t)}  #${e.i}  ${kind}  `;
-  const preview = e.prompt.replace(/\s+/g, " ").trim().slice(0, 64);
+  // second-to-last non-empty line = the real query (last line is "Answer:"; earlier lines are few-shot)
+  const lines = e.prompt.split("\n").map(s => s.trim()).filter(Boolean);
+  const preview = (lines[lines.length - 2] || lines[lines.length - 1] || "").slice(0, 72);
   const out = (e.top && e.top.length)
     ? "→ " + e.top.map(([t, p]) => `${JSON.stringify(t)} ${p}`).join("   ")
     : (e.content ? "→ " + e.content : "");
