@@ -158,37 +158,46 @@ def bake_affordances(server, species, obj_kinds, need_list, gate_threshold=0.5):
     return table
 
 
-# --- durations: how long the ACTION of using an item takes (gen_duration -> minutes), baked PER
-#     ITEM. Durations belong to actions, not needs: "eating a loaf of bread" is minutes, "sleeping on
-#     a bed" is hours; how much each action RECOVERS the need is the affordance refill already baked.
-#     The model can only time an action when it's named as a gerund EVENT ("eating a loaf of bread") —
-#     a bare object ("a loaf of bread") yields near-zero/bimodal junk. So we NAME the action from
-#     (item, need) first, then time it; gen_duration's median absorbs the occasional wild outlier.
+# --- durations: how long using an item TAKES (gen_duration -> minutes), baked PER ITEM. We DON'T
+#     name a free-form "action" (that step was hopelessly noisy — empty strings, "water need",
+#     "mugging", rambling tails). The affordance gate already told us which NEED the item serves, and
+#     the NEED anchors the activity for us: asking "how long does using a {item} to satisfy their
+#     {sleep} need take?" yields a night, "{food}" a meal — no naming required. The elicitation is
+#     FEW-SHOT (range-spanning exemplars, water 1m..bed 8h) which anchors the magnitude so apparatus/
+#     prep items don't read as cooking-length (stovetop 135m->30m, loaf 256m->90m); gen_duration's
+#     median over `samples` plus the few-shot sanity gate (validated against the item+need itself)
+#     absorb the rest. Residual: genuinely ambiguous items (raw stew) can still read as cooking — the
+#     gate flags those with a low p_makes_sense.
 
-def action_prompt(species, item, need):
-    return (f"A {species} uses a {item} to satisfy their {need} need.\n"
-            f"In two or three words, the action they are doing is:")
+DURATION_FEWSHOT = (
+    "How long does a person spend using an item to satisfy a need? It depends on the item and the need.\n\n"
+    "Item: glass of water\nNeed: water\nAnswer: 1 minute\n\n"
+    "Item: hot meal\nNeed: food\nAnswer: 20 minutes\n\n"
+    "Item: shower\nNeed: hygiene\nAnswer: 10 minutes\n\n"
+    "Item: bed\nNeed: sleep\nAnswer: 8 hours\n\n"
+    "Item: {item}\nNeed: {need}\nAnswer:"
+)
 
 
-def duration_for_action_prompt(species, action):
-    return f"How long does {action} usually take for a {species}?\nAnswer:"
+def duration_prompt(species, item, need):
+    """Few-shot duration question (the grammar still forces a `<number> <unit>` answer). `species`
+    is kept for the signature; the exemplars are person-generic since durations are largely
+    species-agnostic (which NEEDS an item serves already captures species differences)."""
+    return DURATION_FEWSHOT.format(item=item, need=need)
 
 
-def bake_durations(server, species, affordance_table, samples=7, floor_min=0.5):
-    """Per-item action duration in MINUTES: {item: minutes}. For each item, first NAME the gerund
-    action from item + the need it serves (its primary/highest-refill need), then time that action —
-    a bare object can't be timed stably. floor_min keeps an action committable (a 0-length activity is
-    instantaneous, which reintroduces frantic topping-up). Items serving no need are skipped."""
+def bake_durations(server, species, affordance_table, samples=8, floor_min=0.5):
+    """Per-item activity length in MINUTES: {item: minutes}. Times the item's PRIMARY (highest-refill)
+    need directly — the need anchors the activity, so no free-form action-naming. floor_min keeps the
+    activity committable (a 0-length activity is instantaneous, reintroducing frantic topping-up).
+    Items serving no need are skipped."""
     out = {}
     for item, served in affordance_table.items():
         if not served:
             continue
-        need = max(served, key=served.get)                 # the item's primary activity
-        action = server.gen_text(action_prompt(species, item, need), stop=["\n", "."], n_predict=12)
-        if not action:
-            continue
-        r = server.gen_duration(duration_for_action_prompt(species, action), samples=samples,
-                                check_subject=action)   # yes/no-validate the median, resample if not
+        need = max(served, key=served.get)                 # the item's primary need = its activity
+        r = server.gen_duration(duration_prompt(species, item, need), samples=samples,
+                                check_subject=f"using a {item} to satisfy their {need} need")
         out[item] = max(round(r["minutes"], 1), floor_min) if r else None
     return out
 
