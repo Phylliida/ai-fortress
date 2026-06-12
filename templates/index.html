@@ -109,6 +109,8 @@
   .minimap .mmviewport { position:absolute; border:1px solid var(--ink); background:rgba(216,166,87,.14); pointer-events:none; }
   /* base-model query log panel */
   .logpanel { position:fixed; top:0; right:0; bottom:0; width:min(620px,50vw); background:var(--panel); border-left:1px solid var(--line); z-index:60; display:flex; flex-direction:column; box-shadow:-6px 0 26px rgba(0,0,0,.45); }
+  .logresize { position:absolute; top:0; left:-3px; bottom:0; width:8px; cursor:ew-resize; z-index:2; }
+  .logresize:hover { background:var(--accent); opacity:.45; }
   .loghead { display:flex; align-items:center; gap:10px; padding:11px 14px; border-bottom:1px solid var(--line); }
   .loghead .lt { color:var(--accent); font:600 14px Georgia,serif; }
   .loghead .x { margin-left:auto; cursor:pointer; color:var(--muted); font-size:18px; }
@@ -157,6 +159,7 @@
 </div>
 <div class="minimap" id="minimap" style="display:none"><div class="mmviewport" id="mmviewport"></div></div>
 <div class="logpanel" id="logpanel" style="display:none">
+  <div class="logresize" id="logresize" title="drag to resize"></div>
   <div class="loghead">
     <span class="lt">base-model query log</span>
     <span id="logcount" style="color:var(--muted); font:11px ui-monospace,monospace"></span>
@@ -832,6 +835,23 @@ function toggleLog() {
 }
 document.getElementById("logBtn").onclick = toggleLog;
 document.getElementById("logClose").onclick = toggleLog;
+// drag the left edge to resize the panel (remembered across reloads)
+let logResizing = false;
+const savedLogW = parseInt(localStorage.getItem("logWidth") || "", 10);
+if (savedLogW) document.getElementById("logpanel").style.width = savedLogW + "px";
+document.getElementById("logresize").addEventListener("mousedown", e => {
+  logResizing = true; e.preventDefault(); document.body.style.cursor = "ew-resize";
+});
+window.addEventListener("mousemove", e => {
+  if (!logResizing) return;
+  const w = Math.max(280, Math.min(window.innerWidth - 80, window.innerWidth - e.clientX));
+  document.getElementById("logpanel").style.width = w + "px";
+});
+window.addEventListener("mouseup", () => {
+  if (!logResizing) return;
+  logResizing = false; document.body.style.cursor = "";
+  localStorage.setItem("logWidth", parseInt(document.getElementById("logpanel").style.width, 10));
+});
 pollLog();
 
 loadWorlds().then(restoreFromHash);
