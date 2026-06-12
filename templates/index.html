@@ -805,7 +805,7 @@ function logEntryEl(e) {
   const head = `${fmtT(e.t)}  #${e.i}  ${kind}  `;
   // second-to-last non-empty line = the real query (last line is "Answer:"; earlier lines are few-shot)
   const lines = e.prompt.split("\n").map(s => s.trim()).filter(Boolean);
-  const preview = (lines[lines.length - 2] || lines[lines.length - 1] || "").slice(0, 72);
+  const preview = lines[lines.length - 2] || lines[lines.length - 1] || "";   // full line; CSS truncates to width
   const out = (e.top && e.top.length)
     ? "→ " + e.top.map(([t, p]) => `${JSON.stringify(t)} ${p}`).join("   ")
     : (e.content ? "→ " + e.content : "");
