@@ -18,6 +18,7 @@ import re
 import json
 import math
 import time
+import threading
 import statistics
 import requests
 
@@ -35,6 +36,34 @@ DEFAULT_SAMPLING = {"temperature": 1.0, "top_k": 0, "top_p": 1.0, "min_p": 0.0, 
 # Local embeddinggemma server, for SEMANTIC dedup of generated locations:
 #   llama-server -m embeddinggemma-300M-Q8_0.gguf --embedding --pooling mean --port 8062
 EMBED_URL = "http://127.0.0.1:8062"
+
+
+# --- base-model query log: every LlamaServer.complete() can be routed (per-thread) to a sink, so the
+#     web UI can persist each prompt+output into the ACTIVE world's log for auditing/debugging.
+_log_ctx = threading.local()
+
+
+def set_log_sink(fn):
+    """Route this thread's base-model queries to `fn(entry)` (None to stop). entry = {t, prompt,
+    n_predict, grammar, content, top}. Set per-request by the web UI to the active world's log."""
+    _log_ctx.sink = fn
+
+
+def _emit_query_log(prompt, payload, result):
+    sink = getattr(_log_ctx, "sink", None)
+    if not sink:
+        return
+    try:
+        top = []
+        if (payload.get("n_predict") or 0) <= 2:                  # log the top tokens for score reads
+            cp = result.get("completion_probabilities") or result.get("logprobs")
+            for c in ((cp[0].get("top_logprobs") or [])[:6] if cp else []):
+                lp = c.get("logprob")
+                top.append([c.get("token") or c.get("tok") or "", round(math.exp(lp), 4) if lp is not None else None])
+        sink({"t": time.time(), "prompt": prompt, "n_predict": payload.get("n_predict"),
+              "grammar": bool(payload.get("grammar")), "content": (result.get("content") or "")[:400], "top": top})
+    except Exception:
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -147,7 +176,9 @@ class LlamaServer:
             try:
                 r = requests.post(self.url + "/completion", json=payload, timeout=self.timeout)
                 r.raise_for_status()
-                return r.json()
+                out = r.json()
+                _emit_query_log(prompt, payload, out)
+                return out
             except (requests.exceptions.RequestException, ValueError) as e:
                 last = e
                 time.sleep(self.retry_delay * (attempt + 1))

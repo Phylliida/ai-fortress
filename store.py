@@ -15,6 +15,9 @@ Record types:
   {"type":"item_duration", "iid", "duration_min"}   # manual duration override (trusted)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
+  {"type":"query",      "t", "prompt", "n_predict", "grammar", "content", "top"}  # base-model query
+                                                   # log (audit/debug); ignored by load_world, read via
+                                                   # get_log()
 """
 import os
 import json
@@ -105,6 +108,31 @@ def load_world(world_id):
             world["objects"][r["location"]] = {"items": r["items"], "prompt": r.get("prompt")}
     world["species"] = sorted({c.get("species", "human") for c in world["characters"]})
     return world
+
+
+def get_log(world_id, since=0, cap=500):
+    """Base-model query records for a world, each tagged with a stable 1-based index `i`. since>0
+    returns only records after that index (polling); since<=0 returns the last `cap`."""
+    p = _path(world_id)
+    if not os.path.exists(p):
+        return []
+    out, i = [], 0
+    with open(p) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except Exception:
+                continue
+            if r.get("type") != "query":
+                continue
+            i += 1
+            if i > since:
+                r["i"] = i
+                out.append(r)
+    return out[-cap:] if since <= 0 else out
 
 
 def get_character(world_id, cid):

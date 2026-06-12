@@ -99,6 +99,18 @@
   .minimap { position:fixed; bottom:18px; right:18px; width:150px; height:150px; background:rgba(18,15,11,.92); border:1px solid var(--accent); border-radius:6px; cursor:crosshair; z-index:40; box-shadow:0 4px 18px rgba(0,0,0,.55); }
   .minimap .mmdot { position:absolute; width:5px; height:5px; border-radius:50%; transform:translate(-50%,-50%); }
   .minimap .mmviewport { position:absolute; border:1px solid var(--ink); background:rgba(216,166,87,.14); pointer-events:none; }
+  /* base-model query log panel */
+  .logpanel { position:fixed; top:0; right:0; bottom:0; width:min(620px,50vw); background:var(--panel); border-left:1px solid var(--line); z-index:60; display:flex; flex-direction:column; box-shadow:-6px 0 26px rgba(0,0,0,.45); }
+  .loghead { display:flex; align-items:center; gap:10px; padding:11px 14px; border-bottom:1px solid var(--line); }
+  .loghead .lt { color:var(--accent); font:600 14px Georgia,serif; }
+  .loghead .x { margin-left:auto; cursor:pointer; color:var(--muted); font-size:18px; }
+  .loglist { flex:1; overflow-y:auto; padding:4px 12px; }
+  .logentry { border-bottom:1px solid var(--line); padding:5px 0; }
+  .logentry > summary { list-style:none; cursor:pointer; font:11px ui-monospace,monospace; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .logentry > summary::-webkit-details-marker { display:none; }
+  .logentry > summary .lpv { color:var(--ink); }
+  .logentry pre { background:#15110d; border:1px solid var(--line); border-radius:6px; padding:7px 9px; margin:5px 0 0; font:11px/1.45 ui-monospace,monospace; white-space:pre-wrap; word-break:break-word; max-height:320px; overflow:auto; }
+  .logentry pre .lo { color:var(--accent); }
 </style>
 </head>
 <body>
@@ -111,6 +123,7 @@
   <select id="worldSel" title="switch world"></select>
   <input id="newPrompt" placeholder="new world: a neon cyberpunk megacity…" style="width:280px">
   <button id="newWorldBtn">+ world</button>
+  <button id="logBtn" class="ghost" title="base-model query log">▤ log</button>
   <span class="spacer"></span>
   <span id="worldId" class="tag" style="color:var(--muted);font:11px ui-monospace,monospace"></span>
 </header>
@@ -133,6 +146,14 @@
   </div>
 </div>
 <div class="minimap" id="minimap" style="display:none"><div class="mmviewport" id="mmviewport"></div></div>
+<div class="logpanel" id="logpanel" style="display:none">
+  <div class="loghead">
+    <span class="lt">base-model query log</span>
+    <span id="logcount" style="color:var(--muted); font:11px ui-monospace,monospace"></span>
+    <span class="x" id="logClose">✕</span>
+  </div>
+  <div class="loglist" id="loglist"></div>
+</div>
 
 <script>
 const MAP = 500;            // world is MAP x MAP cells
@@ -231,6 +252,7 @@ async function openWorld(wid) {            // switch worlds -> also reset the vi
   closePops();
   state.wid = wid;
   state.needLevels = {}; state.sim = null;  // fresh sim state for the new world
+  if (logOpen) resetLogView();              // log indices are per-world
   fetch(`/api/world/${wid}/sim/reset`, { method: "POST" });
   await refreshWorld();
   resetView();
@@ -702,6 +724,47 @@ document.getElementById("playBtn").onclick = togglePlay;
 document.getElementById("ff2Btn").onclick = () => setSpeed(2);
 document.getElementById("ff4Btn").onclick = () => setSpeed(4);
 updateClock();
+
+// ----------------------------------------------------------------- base-model query log
+let logOpen = false, logTimer = null, logMaxI = 0;
+function fmtT(t) {
+  const d = new Date(t * 1000);
+  return [d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2, "0")).join(":");
+}
+function logEntryEl(e) {
+  const kind = (e.n_predict || 0) <= 1 ? "score" : (e.grammar ? "gen·g" : "gen");
+  const head = `${fmtT(e.t)}  #${e.i}  ${kind}  `;
+  const preview = e.prompt.replace(/\s+/g, " ").trim().slice(0, 64);
+  const out = (e.top && e.top.length)
+    ? "→ " + e.top.map(([t, p]) => `${JSON.stringify(t)} ${p}`).join("   ")
+    : (e.content ? "→ " + e.content : "");
+  return el("details", { class: "logentry" },
+    el("summary", {}, el("span", { text: head }), el("span", { class: "lpv", text: preview })),
+    el("pre", {}, el("span", { text: e.prompt }), el("span", { class: "lo", text: out ? "\n\n" + out : "" })));
+}
+function resetLogView() { document.getElementById("loglist").innerHTML = ""; logMaxI = 0; }
+async function pollLog() {
+  if (!logOpen || !state.wid) { logTimer = setTimeout(pollLog, 1500); return; }
+  try {
+    const { entries } = await (await fetch(`/api/world/${state.wid}/log?since=${logMaxI}`)).json();
+    const list = document.getElementById("loglist");
+    const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90;
+    for (const e of entries) { list.appendChild(logEntryEl(e)); logMaxI = Math.max(logMaxI, e.i); }
+    if (entries.length) {
+      document.getElementById("logcount").textContent = logMaxI + " queries";
+      if (atBottom) list.scrollTop = list.scrollHeight;
+    }
+  } catch (e) {}
+  logTimer = setTimeout(pollLog, 1500);
+}
+function toggleLog() {
+  logOpen = !logOpen;
+  document.getElementById("logpanel").style.display = logOpen ? "flex" : "none";
+  if (logOpen) { resetLogView(); }
+}
+document.getElementById("logBtn").onclick = toggleLog;
+document.getElementById("logClose").onclick = toggleLog;
+pollLog();
 
 loadWorlds().then(restoreFromHash);
 </script>
