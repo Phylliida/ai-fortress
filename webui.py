@@ -133,6 +133,23 @@ def _world_species_needs(w):
     return {sp: (sorted(ns) if ns else core) for sp, ns in bysp.items()}
 
 
+def _modes_for(wid, w):
+    """Effective mode per world need: stored (manual override or prior auto) else freshly classified and
+    persisted. Returns {need: mode}. Used at item creation to pick the right affordance question."""
+    stored = w.get("need_modes", {})
+    out = {}
+    for need in sorted({n for ns in _world_species_needs(w).values() for n in ns}):
+        if need in stored:
+            out[need] = stored[need]["mode"]; continue
+        if need not in _MODE_CACHE:
+            _MODE_CACHE[need] = needs.classify_mode(SERVER, need)
+        r = _MODE_CACHE[need]
+        store.append(wid, {"type": "need_mode", "need": need, "mode": r["mode"],
+                           "conf": r["conf"], "manual": False})
+        out[need] = r["mode"]
+    return out
+
+
 @app.route("/api/world/<wid>/needs/classify")
 def api_classify_needs(wid):
     """Bake the MODE of every need in the world (consume/restore/ambient/social/experiential) via the
@@ -190,22 +207,34 @@ def api_create_item(wid):
         if not name:
             yield sse({"type": "error", "message": "No item name."}); return
         try:
-            affords = {}                                   # {species: {need: refill}}
-            for sp, need_list in _world_species_needs(w).items():
-                sp_aff = {}
-                for need in need_list:
-                    r = needs.bake_affordance(SERVER, sp, name, need)
-                    if r["applies"] and r["refill"] > 0:
-                        sp_aff[need] = round(r["refill"], 3)
-                        yield sse({"type": "afford", "species": sp, "need": need, "refill": sp_aff[need]})
-                affords[sp] = sp_aff
-            # how long using the item takes (for the sim's gradual refill); named-action via a species
-            # that it actually serves. None if it fills nothing.
-            # durations are PER NEED (a royal bed: sleep 8h, novelty a few min), so using the item for
-            # one need doesn't borrow another's duration.
-            served = sorted({n for sp in affords for n in affords[sp]})
+            sp_needs = _world_species_needs(w)             # {species: [needs]}
+            modeof = _modes_for(wid, w)                     # {need: mode} — picks the affordance question
+            species = list(sp_needs)
+            affords = {sp: {} for sp in species}            # {species: {need: refill (active) | strength (ambient)}}
+            radii = {}                                      # {need: cells} — ambient provider field reach
+            for need in sorted({n for ns in sp_needs.values() for n in ns}):
+                have = [sp for sp in species if need in sp_needs[sp]]
+                if modeof.get(need) == "ambient":
+                    # ambient: the item is a PROVIDER (emits a field); species-agnostic gate + radius
+                    r = needs.bake_provider(SERVER, name, need)
+                    if r["applies"] and r["strength"] > 0:
+                        radii[need] = r["radius"]
+                        for sp in have:
+                            affords[sp][need] = r["strength"]
+                        yield sse({"type": "afford", "need": need, "mode": "ambient",
+                                   "refill": r["strength"], "radius": r["radius"]})
+                else:
+                    for sp in have:                         # active: per-species use-gate
+                        r = needs.bake_affordance(SERVER, sp, name, need)
+                        if r["applies"] and r["refill"] > 0:
+                            affords[sp][need] = round(r["refill"], 3)
+                            yield sse({"type": "afford", "species": sp, "need": need, "refill": affords[sp][need]})
+            # how long using the item takes — ACTIVE served needs only (ambient needs use a radius, not a
+            # duration). PER NEED (a royal bed: sleep 8h, novelty a few min), so one need doesn't borrow
+            # another's time.
+            served_active = sorted({n for sp in affords for n in affords[sp] if modeof.get(n) != "ambient"})
             durations, durations_ok = {}, {}
-            for need in served:
+            for need in served_active:
                 yield sse({"type": "status", "message": f"timing the {need} activity…"})
                 spn = next(s for s in affords if need in affords[s])
                 dr = SERVER.gen_duration(needs.duration_prompt(spn, name, need), samples=8,
@@ -219,7 +248,7 @@ def api_create_item(wid):
             yield sse({"type": "consumable", "consumable": consumable})
             iid = store.new_id(8)
             store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords,
-                               "durations": durations, "durations_ok": durations_ok,
+                               "durations": durations, "durations_ok": durations_ok, "radii": radii,
                                "consumable": consumable})
             yield sse({"type": "saved", "iid": iid, "affords": affords})
             yield sse({"type": "done"})
