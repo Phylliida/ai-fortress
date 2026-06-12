@@ -47,6 +47,11 @@
   .paletteItem:hover { border-color:var(--accent); }
   .paletteItem .itn { font-size:13px; color:var(--ink); }
   .paletteItem .itf { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .paletteItem .itd { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; }
+  .paletteItem .itd.flag { color:var(--err); }
+  .det .k.flag { color:var(--err); }
+  .durrow { display:flex; gap:6px; align-items:center; margin-top:4px; font-size:12px; color:var(--muted); }
+  .durrow input { background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:4px 6px; }
   /* item instances on the map (under the colonists) */
   .map .mapitem { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:1; }
   .map .mapitem .box { width:13px; height:13px; border-radius:2px; background:var(--accent); border:1px solid #15110d; }
@@ -513,16 +518,23 @@ function itemSummary(item) {
   }
   return parts.length ? parts.join(" · ") : "fills no needs";
 }
+function fmtDur(m) {
+  if (m == null) return "—";
+  if (m < 60) return Math.round(m) + "m";
+  const h = m / 60; return (Number.isInteger(h) ? h : h.toFixed(1)) + "h";
+}
+function durFlagged(item) { return item.duration_ok != null && item.duration_ok < 0.5; }
 function renderPalette() {
   document.getElementById("speciesLine").textContent = (state.world.species || []).join(", ") || "—";
   const list = document.getElementById("itemList"); list.innerHTML = "";
   const items = state.world.items || {}, ids = Object.keys(items);
   if (!ids.length) { list.appendChild(el("div", { class: "empty", style: "font-size:12px;margin-top:10px", text: "No items yet." })); return; }
   for (const iid of ids) {
-    const it = items[iid];
+    const it = items[iid], flagged = durFlagged(it);
     const pi = el("div", { class: "paletteItem", draggable: "true", title: "drag onto the map to place" },
       el("div", { class: "itn", text: it.name }),
-      el("div", { class: "itf", text: itemSummary(it) }));
+      el("div", { class: "itf", text: itemSummary(it) }),
+      el("div", { class: "itd" + (flagged ? " flag" : ""), text: "⏱ " + fmtDur(it.duration_min) + (flagged ? "  ⚠" : "") }));
     pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
     list.appendChild(pi);
   }
@@ -584,6 +596,21 @@ function openItemDetail(pid, item) {
       pop.appendChild(nd);
     } else pop.appendChild(el("div", { class: "v", text: "no needs" }));
   }
+  const iid = (state.world.item_placements[pid] || {}).iid, flagged = durFlagged(item);
+  pop.appendChild(el("div", { class: "k" + (flagged ? " flag" : ""),
+    text: "duration" + (flagged ? "  ⚠ gate unsure — set it" : "") }));
+  const durInput = el("input", { type: "number", min: "0.5", step: "1", style: "width:74px",
+    value: item.duration_min != null ? Math.round(item.duration_min) : "" });
+  const durSave = el("button", { class: "ghost sm", text: "set", onclick: async () => {
+    const v = parseFloat(durInput.value);
+    if (!isNaN(v) && iid) {
+      await fetch(`/api/world/${state.wid}/item/${iid}/duration`, { method: "POST",
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify({ duration_min: v }) });
+      await refreshWorld(); closePops();
+    }
+  }});
+  pop.appendChild(el("div", { class: "durrow" }, durInput, el("span", { text: "min" }),
+    el("span", { class: "dh", text: "(" + fmtDur(item.duration_min) + ")" }), durSave));
   pop.appendChild(el("button", { class: "ghost sm", style: "margin-top:12px", text: "remove from map", onclick: () => { removeItem(pid); closePops(); } }));
   pop.style.position = "fixed"; pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
   document.body.appendChild(pop);
