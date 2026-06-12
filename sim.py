@@ -17,6 +17,7 @@ DEFAULT_THRESH = 0.35          # need deadband when a character has no baked per
 DEFAULT_DURATION_MIN = 5       # activity length for an item with no baked duration
 WALK_CELLS = 3                 # cells walked per tick
 START_GAME_MIN = 8 * 60
+AMBIENT_FILL_PER_TICK = 0.05   # in-field refill RATE per tick = field strength x this (climbs toward full)
 
 _SIMS = {}                     # wid -> {"game_min": float, "agents": {cid: agent}}
 
@@ -44,7 +45,7 @@ def _affords_for(item, species):
 
 
 def _items(world):
-    """Placed item instances as targets: [{pid, x, y, name, affords, duration_min, consumable}]."""
+    """Placed item instances as targets: [{pid, x, y, name, affords, durations, radii, consumable}]."""
     items = world.get("items", {})
     out = []
     for pid, ip in world.get("item_placements", {}).items():
@@ -52,25 +53,99 @@ def _items(world):
         if it:
             out.append({"pid": pid, "x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
                         "affords": it.get("affords", {}), "durations": it.get("durations", {}),
-                        "consumable": bool(it.get("consumable"))})
+                        "radii": it.get("radii", {}), "consumable": bool(it.get("consumable"))})
     return out
 
 
-def _choose(agent, items):
-    """Best (item, need) to act on: max over placed items AND the below-threshold needs they serve of
-    refill x urgency(1-level), distance-discounted. Returns (item, need) — the agent uses the item FOR
-    that one need (its duration, its refill), so a multi-need item doesn't borrow another need's time
-    (a royal bed for novelty != an 8h sleep). (None, None) if nothing is worth doing."""
+def _all_affords(item):
+    """Union of needs an item serves across species -> {need: max refill/strength}. A physical field
+    doesn't care which species stands in it, so ambient strength is the max over species."""
+    a = item.get("affords", {}) or {}
+    if a and all(isinstance(v, dict) for v in a.values()):     # per-species {sp: {need: r}}
+        out = {}
+        for sub in a.values():
+            for n, r in sub.items():
+                out[n] = max(out.get(n, 0.0), r)
+        return out
+    return dict(a)                                             # legacy flat {need: r}
+
+
+def _providers(items, ambient_needs):
+    """[{x, y, name, need, radius, strength}] for every placed item that PROVIDES an ambient need. A
+    baked radius is REQUIRED — that's the mark of an item gated through the ambient provider-path, so a
+    stale item with leftover use-gate affords (an old chair with 'shelter') emits no field."""
+    out = []
+    for it in items:
+        radii = it.get("radii", {}) or {}
+        for n, strength in _all_affords(it).items():
+            if n in ambient_needs and strength > 0 and n in radii:
+                out.append({"x": it["x"], "y": it["y"], "name": it["name"], "need": n,
+                            "radius": radii[n], "strength": strength})
+    return out
+
+
+def _field(providers, n, x, y):
+    """Strongest field of need `n` covering (x, y) — 0.0 if outside every provider's radius (cells)."""
+    best = 0.0
+    for p in providers:
+        if p["need"] == n and (p["x"] - x) ** 2 + (p["y"] - y) ** 2 <= p["radius"] ** 2:
+            best = max(best, p["strength"])
+    return best
+
+
+def _nearest_provider(providers, n, x, y):
+    best, bestd = None, None
+    for p in providers:
+        if p["need"] == n:
+            d = abs(p["x"] - x) + abs(p["y"] - y)
+            if bestd is None or d < bestd:
+                best, bestd = p, d
+    return best
+
+
+def _choose(agent, items, ambient_needs):
+    """Best (item, need) for an ACTIVE need to act on: max over placed items AND the below-threshold
+    non-ambient needs they serve of refill x urgency(1-level), distance-discounted. (None, None) if
+    nothing. Ambient needs are excluded here — they're met by a field (see _decide), not by using an item."""
     best, best_score, best_need = None, 0.0, None
     for it in items:
         af = _affords_for(it, agent["species"])
         d = abs(agent["x"] - it["x"]) + abs(agent["y"] - it["y"])
         for n, r in af.items():
+            if n in ambient_needs:
+                continue
             if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n):
                 score = (r * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
                 if score > best_score:
                     best, best_score, best_need = it, score, n
     return best, best_need
+
+
+def _decide(agent, items, ambient_needs, providers):
+    """Most worthwhile thing to do now, comparing two kinds on one urgency scale (refill/strength x
+    (1-level), distance-discounted): an ACTIVE item-use (walk to it, use it for a duration, refill the
+    one need) or an AMBIENT move-into-a-field (walk into the nearest provider's radius, then stand while
+    the passive field refills the need — no fixed duration). Returns an action dict or None."""
+    best_score, act = 0.0, None
+    it, need = _choose(agent, items, ambient_needs)          # active candidate
+    if it:
+        af = _affords_for(it, agent["species"])
+        d = abs(agent["x"] - it["x"]) + abs(agent["y"] - it["y"])
+        best_score = (af.get(need, 0.0) * (1.0 - agent["needs"][need])) / (1.0 + 0.01 * d)
+        act = {"kind": "active", "name": it["name"], "tx": it["x"], "ty": it["y"], "need": need,
+               "refill": af.get(need, 0.0), "dur": (it.get("durations") or {}).get(need),
+               "pid": it.get("pid"), "consumable": it.get("consumable", False)}
+    for n in ambient_needs:                                  # ambient candidates: low + not already covered
+        if (n in agent["needs"] and agent["needs"][n] < _thresh(agent, n)
+                and _field(providers, n, agent["x"], agent["y"]) <= 0.0):
+            p = _nearest_provider(providers, n, agent["x"], agent["y"])
+            if p:
+                d = abs(agent["x"] - p["x"]) + abs(agent["y"] - p["y"])
+                score = (p["strength"] * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
+                if score > best_score:
+                    best_score = score
+                    act = {"kind": "ambient", "name": p["name"], "tx": p["x"], "ty": p["y"], "need": n}
+    return act
 
 
 def _reconcile(sim, world):
@@ -90,6 +165,8 @@ def step_world(world, ticks=1):
     sim = _SIMS.setdefault(world["id"], {"game_min": float(START_GAME_MIN), "agents": {}})
     _reconcile(sim, world)
     items = _items(world)
+    ambient_needs = {n for n, m in world.get("need_modes", {}).items() if m.get("mode") == "ambient"}
+    providers = _providers(items, ambient_needs)
     consumed = []
     for _ in range(max(1, ticks)):
         sim["game_min"] += GAME_MIN_PER_TICK
@@ -98,6 +175,11 @@ def step_world(world, ticks=1):
             for n in a["needs"]:                                  # decay (except what you're using)
                 if n not in serving:
                     a["needs"][n] = max(0.0, a["needs"][n] - a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
+            for n in ambient_needs:                               # passive: standing in a field refills it
+                if n in a["needs"]:                               # (positional — runs whatever you're doing)
+                    f = _field(providers, n, a["x"], a["y"])
+                    if f > 0.0:
+                        a["needs"][n] = min(1.0, a["needs"][n] + f * AMBIENT_FILL_PER_TICK)
             if a["busy"] > 0:                                     # mid-activity: spread refill over its span
                 for n, r in serving.items():
                     if n in a["needs"]:
@@ -111,46 +193,51 @@ def step_world(world, ticks=1):
                     a["busy_affords"], a["busy_name"] = {}, ""
                     a["busy_pid"], a["busy_consumable"] = None, False
                 continue                                          # committed to the full duration
-            if a["action"] is None:                               # decide: best (item, need)
-                tgt, need = _choose(a, items)
-                if tgt:
-                    af = _affords_for(tgt, a["species"])
-                    a["action"] = {"name": tgt["name"], "tx": tgt["x"], "ty": tgt["y"],
-                                   "need": need, "refill": af.get(need, 0.0),
-                                   "dur": (tgt.get("durations") or {}).get(need),
-                                   "pid": tgt.get("pid"), "consumable": tgt.get("consumable", False)}
-                    a["path"] = pathfinding.astar((a["x"], a["y"]), (tgt["x"], tgt["y"]))[1:]
-            if a["action"]:                                       # walk; begin the activity on arrival
+            if a["action"] is None:                               # decide: best active-use or ambient-field
+                act = _decide(a, items, ambient_needs, providers)
+                if act:
+                    a["action"] = act
+                    a["path"] = pathfinding.astar((a["x"], a["y"]), (act["tx"], act["ty"]))[1:]
+            if a["action"]:                                       # walk toward the target
+                act = a["action"]
                 for _ in range(WALK_CELLS):
                     if a["path"]:
                         a["x"], a["y"] = a["path"].pop(0)
-                if (a["x"], a["y"]) == (a["action"]["tx"], a["action"]["ty"]):
-                    dur = max(1, round((a["action"]["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
+                if act["kind"] == "ambient":                      # arrive = inside the field; passive refill takes over
+                    if _field(providers, act["need"], a["x"], a["y"]) > 0.0 or (a["x"], a["y"]) == (act["tx"], act["ty"]):
+                        a["action"], a["path"] = None, []         # stand here (no busy duration — the field does it)
+                    elif not a["path"]:
+                        a["action"] = None                        # unreachable -> give up
+                elif (a["x"], a["y"]) == (act["tx"], act["ty"]):  # active: begin the activity on arrival
+                    dur = max(1, round((act["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
                     a["busy"], a["busy_dur"] = dur, dur
-                    a["busy_affords"] = {a["action"]["need"]: a["action"]["refill"]}   # refill ONLY the driving need
-                    a["busy_name"] = a["action"]["name"]
-                    a["busy_pid"], a["busy_consumable"] = a["action"]["pid"], a["action"]["consumable"]
+                    a["busy_affords"] = {act["need"]: act["refill"]}   # refill ONLY the driving need
+                    a["busy_name"] = act["name"]
+                    a["busy_pid"], a["busy_consumable"] = act["pid"], act["consumable"]
                     a["action"], a["path"] = None, []
                 elif not a["path"]:                               # unreachable -> give up
                     a["action"] = None
-    st = _state(sim)
+    st = _state(sim, providers, ambient_needs)
     st["consumed"] = consumed
     return st
 
 
-def _doing(a):
+def _doing(a, providers, ambient_needs):
     if a["busy"] > 0:
         return "using " + a["busy_name"]
     if a["action"]:
         return "→ " + a["action"]["name"]
+    for n in ambient_needs:                                   # idle but standing in a field, still recovering
+        if n in a["needs"] and a["needs"][n] < 1.0 and _field(providers, n, a["x"], a["y"]) > 0.0:
+            return "↺ " + n
     return "idle"
 
 
-def _state(sim):
+def _state(sim, providers=(), ambient_needs=()):
     return {"game_min": sim["game_min"],
             "agents": {cid: {"x": a["x"], "y": a["y"],
                              "needs": {n: round(v, 4) for n, v in a["needs"].items()},
-                             "doing": _doing(a)}
+                             "doing": _doing(a, providers, ambient_needs)}
                        for cid, a in sim["agents"].items()}}
 
 

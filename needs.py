@@ -307,3 +307,57 @@ def classify_mode(server, need):
     scores = {m: round(server.yes_no_prob(mode_prompt(m, need)), 3) for m in NEED_MODES}
     best = max(scores, key=scores.get)
     return {"mode": best, "conf": scores[best], "unsure": scores[best] < MODE_FLOOR, "scores": scores}
+
+
+# --- AMBIENT affordance: an ambient-mode need (shelter/safety/warmth) is met by being in a PROVIDER's
+#     field, not by "using" an item. So the gate asks whether the item PROVIDES the condition to the area
+#     around it — which excludes loosely-associated furniture the use-gate let in (a chair is *in* a
+#     sheltered room but provides no shelter). Validated 9/9 vs the use-gate's 7/9: chair/shelter
+#     0.92->0.13, chair/safety 0.73->0.16, while providers (roof/fireplace/wall/tower) sharpen to 0.96-0.99.
+AMBIENT_PROVIDER_FEWSHOT = (
+    "Question: Does a roof provide shelter to the area around it?\nAnswer: Yes\n"
+    "Question: Does a coffee mug provide shelter to the area around it?\nAnswer: No\n"
+    "Question: Does a campfire provide warmth to the area around it?\nAnswer: Yes\n"
+    "Question: Does a bookshelf provide warmth to the area around it?\nAnswer: No\n"
+    "Question: Does a {obj} provide {need} to the area around it?\nAnswer:"
+)
+
+
+def provider_applies_prompt(obj_kind, need):
+    return AMBIENT_PROVIDER_FEWSHOT.format(obj=obj_kind, need=need)
+
+
+def provider_amount_prompt(obj_kind, need):
+    """Strength of the field (gen_percent): how fully being near the provider meets the need."""
+    return (f"Q: How much does being near a {obj_kind} satisfy a person's {need} need?\n"
+            f"A: It satisfies their {need} need")
+
+
+# --- ambient RADIUS: how far the field reaches, in GRID CELLS (~1 meter/cell). Few-shot anchors the
+#     magnitude (a campfire a few cells; a watchtower's safety much farther). gen_number_median, floor 1.
+RADIUS_FEWSHOT = (
+    "On a grid where each cell is about one meter:\n\n"
+    "Question: Within how many cells does the warmth from a campfire reach?\nAnswer: 4\n"
+    "Question: Within how many cells does the shelter from a tent reach?\nAnswer: 3\n"
+    "Question: Within how many cells does the warmth from a fireplace reach?\nAnswer: 3\n"
+    "Question: Within how many cells does the safety from a watchtower reach?\nAnswer: 15\n"
+    "Question: Within how many cells does the {need} from a {item} reach?\nAnswer:"
+)
+
+
+def radius_prompt(item, need):
+    return RADIUS_FEWSHOT.format(item=item, need=need)
+
+
+def bake_provider(server, obj_kind, need, gate_threshold=0.5, samples=5, radius_floor=1):
+    """One ambient (item, need): provider-gate, then field strength (gen_percent) + radius (cells).
+    Returns {applies, p_applies, strength, radius} — strength/radius 0 when the gate fails (species-
+    agnostic: a physical field exists regardless of who stands in it)."""
+    p = server.yes_no_prob(provider_applies_prompt(obj_kind, need))
+    if p < gate_threshold:
+        return {"applies": False, "p_applies": round(p, 3), "strength": 0.0, "radius": 0}
+    pct = server.gen_percent(provider_amount_prompt(obj_kind, need))
+    rr = server.gen_number_median(radius_prompt(obj_kind, need), samples=samples)
+    return {"applies": True, "p_applies": round(p, 3),
+            "strength": round(pct["value"], 3) if pct else 0.0,
+            "radius": max(radius_floor, round(rr["median"])) if rr else 3}

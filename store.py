@@ -11,7 +11,8 @@ Record types:
   {"type":"place",      "cid", "x", "y"}   # position on the 500x500 world map; last write wins
                                             # (x or y null = removed from the map)
   {"type":"item",       "iid", "name", "species", "affords":{need:refill},  # an item TEMPLATE (palette)
-                        "durations":{need:min}, "durations_ok":{need:conf}, "consumable"}  # per-need length
+                        "durations":{need:min}, "durations_ok":{need:conf},   # per-need activity length
+                        "radii":{need:cells}, "consumable"}   # ambient-need field radius (provider)
   {"type":"item_duration", "iid", "need", "duration_min"}   # per-need manual duration override
   {"type":"need_mode",  "need", "mode", "conf", "manual"}   # how a need is met (consume/restore/
                                             # ambient/social/experiential); last write wins per need
@@ -93,8 +94,9 @@ def load_world(world_id):
         elif t == "item":
             world["items"][r["iid"]] = {"name": r["name"], "species": r.get("species"),
                                         "affords": r.get("affords", {}),
-                                        "durations": r.get("durations", {}),       # {need: minutes}
+                                        "durations": r.get("durations", {}),       # {need: minutes} (active)
                                         "durations_ok": r.get("durations_ok", {}),  # {need: gate conf}
+                                        "radii": r.get("radii", {}),                # {need: cells} (ambient)
                                         "consumable": bool(r.get("consumable"))}
         elif t == "item_duration":
             if r.get("need") is not None and r["iid"] in world["items"]:   # skip legacy per-item records
