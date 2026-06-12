@@ -597,6 +597,12 @@ function itemPrimaryNeed(item) {       // need with the highest refill (its dura
   for (const sp in bysp) for (const n in bysp[sp]) if (bysp[sp][n] > bestR) { bestR = bysp[sp][n]; best = n; }
   return best;
 }
+function itemSummaryDur(item) {        // palette one-liner: a field for ambient items, else a duration
+  const pn = itemPrimaryNeed(item);
+  if (((state.world && state.world.need_modes) || {})[pn]?.mode === "ambient")
+    return "✷ " + ((item.radii || {})[pn] != null ? (item.radii)[pn] + "c field" : "field");
+  return "⏱ " + fmtDur((item.durations || {})[pn]);
+}
 let editItems = false;
 const MODE_LIST = ["consume", "restore", "ambient", "social", "experiential"];
 const MODE_COLORS = { consume:"#d9914a", restore:"#8ab368", ambient:"#6fa8d8", social:"#d87fa6", experiential:"#b08fd8" };
@@ -652,7 +658,7 @@ function renderPalette() {
       title: editItems ? "click ✕ to delete" : "drag onto the map to place" },
       el("div", { class: "itn", text: it.name }),
       el("div", { class: "itf", text: itemSummary(it) }),
-      el("div", { class: "itd" + (flagged ? " flag" : ""), text: "⏱ " + fmtDur((it.durations || {})[itemPrimaryNeed(it)]) + (flagged ? "  ⚠" : "") }));
+      el("div", { class: "itd" + (flagged ? " flag" : ""), text: itemSummaryDur(it) + (flagged ? "  ⚠" : "") }));
     if (editItems)
       pi.appendChild(el("span", { class: "delx", text: "✕", title: "delete this item",
         onclick: ev => { ev.stopPropagation(); deleteItemTemplate(iid); } }));
@@ -724,11 +730,20 @@ function openItemDetail(pid, item) {
     } else pop.appendChild(el("div", { class: "v", text: "no needs" }));
   }
   const iid = (state.world.item_placements[pid] || {}).iid;
-  const durs = item.durations || {}, dok = item.durations_ok || {};
-  const served = [...new Set(Object.values(affordsBySpecies(item)).flatMap(a => Object.keys(a)))];
+  const durs = item.durations || {}, dok = item.durations_ok || {}, radii = item.radii || {};
+  const modes = (state.world && state.world.need_modes) || {};
+  const af = affordsBySpecies(item);
+  const served = [...new Set(Object.values(af).flatMap(a => Object.keys(a)))];
   if (served.length) {
-    pop.appendChild(el("div", { class: "k", text: "duration per need" }));
+    pop.appendChild(el("div", { class: "k", text: "per need" }));
     for (const need of served) {
+      if ((modes[need] || {}).mode === "ambient") {        // ambient: a field (strength + radius), not a duration
+        const strength = Math.max(...Object.values(af).map(a => a[need] || 0));
+        pop.appendChild(el("div", { class: "durrow" },
+          el("span", { style: "flex:0 0 76px; text-transform:capitalize; color:" + MODE_COLORS.ambient, text: need }),
+          el("span", { class: "dh", text: `field · ${Math.round(strength * 100)}% · ${radii[need] != null ? radii[need] + " cells" : "?"}` })));
+        continue;
+      }
       const fl = dok[need] != null && dok[need] < 0.5;
       const inp = el("input", { type: "number", min: "0.5", step: "1", style: "width:62px",
         value: durs[need] != null ? Math.round(durs[need]) : "" });
