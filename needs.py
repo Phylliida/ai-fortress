@@ -118,13 +118,24 @@ def discover_rates(server, person, need_list, wake_hours=None, samples=5):
 #     filters irrelevant pairs (painting -> hunger), so gen_percent only runs on real affordances
 #     (and never sees the fat-tail leak it has on irrelevant inputs).
 
+# Few-shot frame for the affordance gate (which needs an item can fill). Mixed Yes/No exemplars
+# (non-overlapping with real items, person-generic) sharpen the clear cases (yes_mean 0.82->0.98) AND
+# recover borderline true-positives the zero-shot gate wrongly rejected (fireplace/warmth 0.36->0.95).
+AFFORDANCE_GATE_FEWSHOT = (
+    "Question: Is a bowl of soup relevant to satisfying a person's food need?\nAnswer: Yes\n"
+    "Question: Is a wall mirror relevant to satisfying a person's food need?\nAnswer: No\n"
+    "Question: Is a hammock relevant to satisfying a person's sleep need?\nAnswer: Yes\n"
+    "Question: Is a brick relevant to satisfying a person's water need?\nAnswer: No\n"
+    "Question: Is a {obj} relevant to satisfying a {species}'s {need} need?\nAnswer:"
+)
+
+
 def affordance_applies_prompt(species, obj_kind, need):
-    # "relevant to satisfying" separates real affordances from irrelevant pairs far better than
-    # "affect ... at all" (which biased to no — gated meal->food at 0.32); calibrated 9/9. Direct
-    # possessive ("a {species}'s {need} need") drops the "For a {species}, ... their" pronoun
-    # indirection — re-verified still 9/9.
-    return (f"Is a {obj_kind} relevant to satisfying a {species}'s {need} need? "
-            f"Answer yes or no.\nAnswer:")
+    # "relevant to satisfying" beats "affect ... at all" (which biased to No, gated meal->food at
+    # 0.32). Direct possessive ("a {species}'s {need} need" — no "their" pronoun) + few-shot (mixed
+    # Yes/No): sharpens clear cases (yes_mean ->0.98) and recovers borderline affordances zero-shot
+    # dropped (fireplace/warmth 0.36->0.95); calibrated 9/9.
+    return AFFORDANCE_GATE_FEWSHOT.format(obj=obj_kind, species=species, need=need)
 
 
 def affordance_amount_prompt(species, obj_kind, need):
