@@ -13,6 +13,8 @@ Record types:
   {"type":"item",       "iid", "name", "species", "affords":{need:refill},  # an item TEMPLATE (palette)
                         "durations":{need:min}, "durations_ok":{need:conf}, "consumable"}  # per-need length
   {"type":"item_duration", "iid", "need", "duration_min"}   # per-need manual duration override
+  {"type":"need_mode",  "need", "mode", "conf", "manual"}   # how a need is met (consume/restore/
+                                            # ambient/social/experiential); last write wins per need
   {"type":"item_delete", "iid"}   # delete an item TEMPLATE from the palette (+ its placed instances)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
@@ -74,7 +76,7 @@ def load_world(world_id):
         return None
     world = {"id": world_id, "prompt": None, "created": None,
              "characters": [], "locations": [], "npc_totals": {}, "objects": {}, "placements": {},
-             "items": {}, "item_placements": {}}
+             "items": {}, "item_placements": {}, "need_modes": {}}
     for r in recs:
         t = r.get("type")
         if t == "world":
@@ -98,6 +100,9 @@ def load_world(world_id):
             if r.get("need") is not None and r["iid"] in world["items"]:   # skip legacy per-item records
                 world["items"][r["iid"]].setdefault("durations", {})[r["need"]] = r["duration_min"]
                 world["items"][r["iid"]].setdefault("durations_ok", {})[r["need"]] = 1.0  # set -> trusted
+        elif t == "need_mode":
+            world["need_modes"][r["need"]] = {"mode": r["mode"], "conf": r.get("conf"),
+                                              "manual": bool(r.get("manual"))}
         elif t == "item_delete":
             world["items"].pop(r["iid"], None)
             for pid in [p for p, ip in world["item_placements"].items() if ip.get("iid") == r["iid"]]:

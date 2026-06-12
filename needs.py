@@ -261,3 +261,49 @@ def bake_thresholds(server, need_list, samples=7, floor=0.05, cap=0.95):
         v = (r["median"] / 100.0) if r else 0.35
         out[need] = round(min(max(v, floor), cap), 2)
     return out
+
+
+# --- need MODE: HOW a need is met, which decides how the sim must treat it. Five modes, each a
+#     few-shot Y/N ("Is a person's {need} need mainly satisfied by {desc}?"); the need is assigned to
+#     the mode with the highest P(yes), species-agnostic ("a person's ... need" — the mode is a
+#     property of the NEED, identical for every species). Explicit need name every shot (no pronouns),
+#     mixed Yes/No spanning the range. Prototyped across 18 needs: archetypes land 0.84-0.98 confident
+#     (food->consume, sleep->restore, shelter/safety/warmth->ambient, social/love->social,
+#     novelty/fun->experiential); genuinely cross-cutting needs (comfort, respect, rest) fall below
+#     MODE_FLOOR and are flagged `unsure` for manual assignment rather than committed on noise.
+#       consume      - use up / ingest an item (food, water)           -> walk, use once, item may vanish
+#       restore      - a personal upkeep activity (sleep, hygiene)      -> walk, do it over a duration
+#       ambient      - a condition of WHERE you are (shelter, warmth)   -> a provider's field; passive
+#       social       - proximity to other PEOPLE (companionship, love)  -> near other agents, not items
+#       experiential - doing something new/meaningful (novelty, fun)    -> varied activities; variety
+NEED_MODES = {
+    "consume":      ("eating, drinking, or swallowing something",
+                     ["hunger", "thirst", "medicine"], ["sleep", "safety", "friendship"]),
+    "restore":      ("spending time on a personal activity like sleeping, washing, or using a bathroom",
+                     ["sleep", "cleanliness", "toileting"], ["hunger", "shelter", "friendship"]),
+    "ambient":      ("simply being in a safe, sheltered, or warm place",
+                     ["shelter", "safety", "warmth"], ["hunger", "friendship", "sleep"]),
+    "social":       ("spending time with or near other people",
+                     ["friendship", "love", "companionship"], ["hunger", "shelter", "novelty"]),
+    "experiential": ("doing something new, enjoyable, or personally meaningful",
+                     ["novelty", "fun", "creativity"], ["hunger", "shelter", "sleep"]),
+}
+MODE_FLOOR = 0.45   # top score below this -> the need fits no mode cleanly; flag for manual assignment
+
+
+def mode_prompt(mode, need):
+    """Few-shot Y/N for one mode: 'Is a person's {need} need mainly satisfied by {desc}?'. The full
+    question with the EXPLICIT need is repeated each exemplar — no pronouns."""
+    desc, yes, no = NEED_MODES[mode]
+    shots = "".join(f"Question: Is a person's {n} need mainly satisfied by {desc}?\nAnswer: {a}\n"
+                    for n, a in ([(y, "Yes") for y in yes] + [(x, "No") for x in no]))
+    return shots + f"Question: Is a person's {need} need mainly satisfied by {desc}?\nAnswer:"
+
+
+def classify_mode(server, need):
+    """Classify a need into one of the five modes (species-agnostic). Runs a Y/N per mode and takes the
+    argmax of P(yes). Returns {mode, conf, unsure, scores} — `unsure` True when the top score is below
+    MODE_FLOOR (the need fits no mode cleanly; the caller should ask the user to assign it)."""
+    scores = {m: round(server.yes_no_prob(mode_prompt(m, need)), 3) for m in NEED_MODES}
+    best = max(scores, key=scores.get)
+    return {"mode": best, "conf": scores[best], "unsure": scores[best] < MODE_FLOOR, "scores": scores}
