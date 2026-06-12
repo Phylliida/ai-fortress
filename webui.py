@@ -134,15 +134,20 @@ def api_create_item(wid):
                 affords[sp] = sp_aff
             # how long using the item takes (for the sim's gradual refill); named-action via a species
             # that it actually serves. None if it fills nothing.
-            duration_min = None
+            duration_min = duration_ok = None
             prim = next((sp for sp in affords if affords[sp]), None)
             if prim:
                 yield sse({"type": "status", "message": "timing the activity…"})
-                duration_min = needs.bake_durations(SERVER, prim, {name: affords[prim]}, samples=8).get(name)
-                yield sse({"type": "duration", "duration_min": duration_min})
+                need = max(affords[prim], key=affords[prim].get)
+                dr = SERVER.gen_duration(needs.duration_prompt(prim, name, need), samples=8,
+                                         check_subject=f"using a {name} to satisfy their {need} need")
+                if dr:
+                    duration_min = max(round(dr["minutes"], 1), 0.5)
+                    duration_ok = round(dr["p_makes_sense"], 3) if dr.get("p_makes_sense") is not None else None
+                yield sse({"type": "duration", "duration_min": duration_min, "duration_ok": duration_ok})
             iid = store.new_id(8)
-            store.append(wid, {"type": "item", "iid": iid, "name": name,
-                               "affords": affords, "duration_min": duration_min})
+            store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords,
+                               "duration_min": duration_min, "duration_ok": duration_ok})
             yield sse({"type": "saved", "iid": iid, "affords": affords})
             yield sse({"type": "done"})
         except Exception as e:
@@ -167,6 +172,18 @@ def api_item_place(wid):
         x = y = None
     store.append(wid, {"type": "item_place", "pid": pid, "iid": iid, "x": x, "y": y})
     return {"ok": True, "pid": pid, "iid": iid, "x": x, "y": y}
+
+
+@app.route("/api/world/<wid>/item/<iid>/duration", methods=["POST"])
+def api_item_duration(wid, iid):
+    """Manually set an item's activity duration (minutes) — used to correct a gate-flagged guess."""
+    w = store.load_world(wid)
+    if not w or iid not in w["items"]:
+        return {"error": "not found"}, 404
+    dm = (request.json or {}).get("duration_min")
+    dm = max(0.5, float(dm)) if dm is not None else None
+    store.append(wid, {"type": "item_duration", "iid": iid, "duration_min": dm})
+    return {"ok": True, "duration_min": dm}
 
 
 @app.route("/api/world/<wid>/sim/step", methods=["POST"])
