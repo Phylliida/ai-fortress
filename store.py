@@ -13,6 +13,7 @@ Record types:
   {"type":"item",       "iid", "name", "species", "affords":{need:refill},  # an item TEMPLATE (palette)
                         "duration_min", "duration_ok", "consumable"}  # length + gate conf + used-up?
   {"type":"item_duration", "iid", "duration_min"}   # manual duration override (trusted)
+  {"type":"item_delete", "iid"}   # delete an item TEMPLATE from the palette (+ its placed instances)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
   {"type":"query",      "t", "prompt", "n_predict", "grammar", "content", "top"}  # base-model query
@@ -97,6 +98,10 @@ def load_world(world_id):
             if r["iid"] in world["items"]:
                 world["items"][r["iid"]]["duration_min"] = r["duration_min"]
                 world["items"][r["iid"]]["duration_ok"] = 1.0        # manually set -> trusted
+        elif t == "item_delete":
+            world["items"].pop(r["iid"], None)
+            for pid in [p for p, ip in world["item_placements"].items() if ip.get("iid") == r["iid"]]:
+                world["item_placements"].pop(pid, None)        # drop its placed instances too
         elif t == "item_place":
             if r.get("x") is None or r.get("y") is None:
                 world["item_placements"].pop(r["pid"], None)

@@ -197,6 +197,15 @@ def api_item_place(wid):
     return {"ok": True, "pid": pid, "iid": iid, "x": x, "y": y}
 
 
+@app.route("/api/world/<wid>/item/<iid>/delete", methods=["POST"])
+def api_item_delete(wid, iid):
+    """Delete an item template from the palette (and its placed instances)."""
+    if not store.load_world(wid):
+        return {"error": "not found"}, 404
+    store.append(wid, {"type": "item_delete", "iid": iid})
+    return {"ok": True}
+
+
 @app.route("/api/world/<wid>/item/<iid>/duration", methods=["POST"])
 def api_item_duration(wid, iid):
     """Manually set an item's activity duration (minutes) — used to correct a gate-flagged guess."""
