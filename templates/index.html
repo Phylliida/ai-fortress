@@ -611,6 +611,8 @@ function openItemDetail(pid, item) {
   }});
   pop.appendChild(el("div", { class: "durrow" }, durInput, el("span", { text: "min" }),
     el("span", { class: "dh", text: "(" + fmtDur(item.duration_min) + ")" }), durSave));
+  pop.appendChild(el("div", { class: "v", style: "margin-top:8px; color:var(--muted)",
+    text: item.consumable ? "▪ used up after use" : "▪ reusable" }));
   pop.appendChild(el("button", { class: "ghost sm", style: "margin-top:12px", text: "remove from map", onclick: () => { removeItem(pid); closePops(); } }));
   pop.style.position = "fixed"; pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
   document.body.appendChild(pop);
@@ -664,6 +666,11 @@ function applySim() {                          // render the latest sim state: p
     renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
     const a = s.agents[state.openNeeds.cid];
     if (state.openNeeds.doingEl && a) state.openNeeds.doingEl.textContent = a.doing;
+  }
+  for (const pid of (s.consumed || [])) {                  // consumable items used up -> vanish
+    const f = document.querySelector(`.mapitem[data-pid="${pid}"]`);
+    if (f) f.remove();
+    if (state.world.item_placements) delete state.world.item_placements[pid];
   }
   renderMinimap();
 }

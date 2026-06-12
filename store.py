@@ -11,7 +11,7 @@ Record types:
   {"type":"place",      "cid", "x", "y"}   # position on the 500x500 world map; last write wins
                                             # (x or y null = removed from the map)
   {"type":"item",       "iid", "name", "species", "affords":{need:refill},  # an item TEMPLATE (palette)
-                        "duration_min", "duration_ok"}  # activity length + sanity-gate confidence
+                        "duration_min", "duration_ok", "consumable"}  # length + gate conf + used-up?
   {"type":"item_duration", "iid", "duration_min"}   # manual duration override (trusted)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
@@ -88,7 +88,8 @@ def load_world(world_id):
             world["items"][r["iid"]] = {"name": r["name"], "species": r.get("species"),
                                         "affords": r.get("affords", {}),
                                         "duration_min": r.get("duration_min"),
-                                        "duration_ok": r.get("duration_ok")}
+                                        "duration_ok": r.get("duration_ok"),
+                                        "consumable": bool(r.get("consumable"))}
         elif t == "item_duration":
             if r["iid"] in world["items"]:
                 world["items"][r["iid"]]["duration_min"] = r["duration_min"]
