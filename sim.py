@@ -4,20 +4,21 @@ pathfinding.py) to placed items to satisfy needs that drop below a deadband thre
 them — the colony.py utility loop, wired to stored world data (characters' needs/rates, items'
 per-species affordances). State is in-memory per world id; the UI steps it and renders the result.
 
-Time: 5 ticks per game-minute (12 game-seconds/tick), matching colony.py / the UI clock. Needs decay
-by rate_per_hour/300 per tick. Movement is WALK_CELLS cells/tick along the cached path.
+Time: 1 tick per game-minute, matching the UI clock. Needs decay by rate_per_hour/60 per tick. Movement
+is WALK_CELLS cells/tick along the cached path. (Rates below are all PER-GAME-MINUTE now, so the colony
+behaves identically to the old 5-ticks/min model — just clocked coarser, advancing the clock faster.)
 """
 import pathfinding
 import store
 
-TICKS_PER_HOUR = 300
-TICKS_PER_MIN = 5              # 5 ticks per game-minute (1/GAME_MIN_PER_TICK) -> duration_min * 5 = ticks
-GAME_MIN_PER_TICK = 0.2
+TICKS_PER_HOUR = 60
+TICKS_PER_MIN = 1              # 1 tick per game-minute (1/GAME_MIN_PER_TICK) -> duration_min ticks
+GAME_MIN_PER_TICK = 1.0
 DEFAULT_THRESH = 0.35          # need deadband when a character has no baked per-need threshold
 DEFAULT_DURATION_MIN = 5       # activity length for an item with no baked duration
-WALK_CELLS = 3                 # cells walked per tick
+WALK_CELLS = 15                # cells walked per tick (15 cells/game-min, = old 3 cells x 5 ticks/min)
 START_GAME_MIN = 8 * 60
-AMBIENT_FILL_PER_TICK = 0.05   # in-field refill RATE per tick = field strength x this (climbs toward full)
+AMBIENT_FILL_PER_TICK = 0.25   # in-field refill RATE per tick = strength x this (0.25/game-min, balances decay)
 
 _SIMS = {}                     # wid -> {"game_min": float, "agents": {cid: agent}}
 
