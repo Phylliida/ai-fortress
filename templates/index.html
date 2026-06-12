@@ -68,6 +68,11 @@
   /* grid is a NON-transformed overlay sized to the map, so its lines stay 1px at every zoom */
   .grid { position:absolute; top:0; left:0; pointer-events:none; background-color:#15110d; }
   .map { position:absolute; top:0; left:0; transform-origin:0 0; will-change:transform; }
+  /* a "picked up" ghost that follows the cursor while dragging */
+  .dragghost { position:fixed; transform:translate(-50%,-55%) scale(1.15); pointer-events:none; z-index:80; opacity:.92; filter:drop-shadow(0 3px 7px rgba(0,0,0,.6)); }
+  .dragghost svg.stick { width:26px; height:34px; }
+  .dragghost .box { width:18px; height:18px; border-radius:3px; background:var(--accent); border:1px solid #15110d; }
+  .paletteItem, .map .mapfig, .map .mapitem { user-select:none; }
   .map .mapfig { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:2; }
   .map .mapfig svg.stick { width:auto; height:16px; }
   .map .mapfig .nm { position:absolute; top:17px; left:50%; transform:translateX(-50%); display:none; font-size:11px; color:var(--accent); background:rgba(20,16,11,.85); padding:0 4px; border-radius:4px; white-space:nowrap; z-index:6; }
@@ -272,13 +277,12 @@ function renderRoster() {
   for (const ch of chars) {
     const placed = isPlaced(ch.cid);
     const btn = el("div", { class: "figbtn " + (placed ? "placed" : "unplaced"),
-      title: placed ? "click to focus on the map" : "drag onto the map",
-      draggable: placed ? null : "true" },
+      title: placed ? "click to focus on the map" : "drag onto the map" },
       stick(gcolor(ch)),
       el("div", { class: "nm", text: ch.name }),
       el("div", { class: "tag", text: placed ? "on map" : "drag →" }));
     if (placed) btn.onclick = () => focusChar(ch.cid);
-    else btn.addEventListener("dragstart", e => e.dataTransfer.setData("text/cid", ch.cid));
+    else btn.addEventListener("mousedown", ev => startDragSource("char", ch.cid, ev, () => stick(gcolor(ch))));
     r.appendChild(btn);
   }
   r.appendChild(genControl());
@@ -340,13 +344,14 @@ function renderMap() {
 }
 
 function mapFig(ch, pos) {
-  const fig = el("div", { class: "mapfig", draggable: "true" },
+  const fig = el("div", { class: "mapfig" },
     stick(gcolor(ch)), el("div", { class: "nm", text: ch.name }));
   fig.style.left = (pos.x * SCALE) + "px";
   fig.style.top = (pos.y * SCALE) + "px";
   fig.dataset.cid = ch.cid;
-  fig.addEventListener("dragstart", e => e.dataTransfer.setData("text/cid", ch.cid));
-  fig.addEventListener("click", e => { e.stopPropagation(); openDetail(ch, e); });
+  fig.addEventListener("mousedown", ev => startDragSource("char", ch.cid, ev, () => stick(gcolor(ch)),
+    op => { fig.style.opacity = op; }));
+  fig.addEventListener("click", e => { e.stopPropagation(); if (_suppressClick) { _suppressClick = false; return; } openDetail(ch, e); });
   return fig;
 }
 
@@ -406,20 +411,42 @@ function centerOn(mx, my) {                  // put map-px (mx,my) at the viewpo
   clampPan(); applyView();
 }
 
-// drop onto the map -> place at that cell (account for pan+zoom)
-mapwrap.addEventListener("dragover", e => { e.preventDefault(); });
-mapwrap.addEventListener("drop", e => {
-  e.preventDefault();
-  const cid = e.dataTransfer.getData("text/cid"),
-        iid = e.dataTransfer.getData("text/iid"),
-        pid = e.dataTransfer.getData("text/pid");
-  if (!cid && !iid && !pid) return;
-  const r = mapEl.getBoundingClientRect();   // transformed (scaled) box; per-cell = SCALE*zoom px
-  const x = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientX - r.left) / (SCALE * zoom))));
-  const y = Math.max(0, Math.min(MAP - 1, Math.floor((e.clientY - r.top) / (SCALE * zoom))));
-  if (cid) placeChar(cid, x, y);             // colonist from roster
-  else if (pid) moveItem(pid, x, y);         // existing item instance -> reposition
-  else if (iid) placeItem(iid, x, y);        // palette item -> new instance (stamp)
+// physical drag: a ghost of the thing follows the cursor; releasing over the map places/moves it.
+// kinds: "char" (roster colonist or on-map move), "item-new" (palette stamp), "item-move" (on-map).
+let _pend = null, _drag = null, _suppressClick = false;
+function itemBoxGhost() { return el("div", { class: "box" }); }
+function startDragSource(kind, id, ev, ghostFactory, dim) {
+  if (ev.button !== 0) return;
+  _pend = { kind, id, sx: ev.clientX, sy: ev.clientY, ghostFactory, dim };
+  _suppressClick = false;
+}
+function _cellAt(ev) {
+  const mr = mapEl.getBoundingClientRect();   // transformed box; per-cell = SCALE*zoom screen px
+  return [Math.max(0, Math.min(MAP - 1, Math.floor((ev.clientX - mr.left) / (SCALE * zoom)))),
+          Math.max(0, Math.min(MAP - 1, Math.floor((ev.clientY - mr.top) / (SCALE * zoom))))];
+}
+window.addEventListener("mousemove", ev => {
+  if (_pend && !_drag && Math.abs(ev.clientX - _pend.sx) + Math.abs(ev.clientY - _pend.sy) > 4) {
+    const ghost = el("div", { class: "dragghost" }, _pend.ghostFactory());  // past the click threshold
+    document.body.appendChild(ghost);
+    _drag = Object.assign({ ghost }, _pend); _pend = null;
+    if (_drag.dim) _drag.dim(0.25);                                          // dim the original
+  }
+  if (_drag) { _drag.ghost.style.left = ev.clientX + "px"; _drag.ghost.style.top = ev.clientY + "px"; }
+});
+window.addEventListener("mouseup", ev => {
+  if (_drag) {
+    const d = _drag; _drag = null; _suppressClick = true;
+    d.ghost.remove();
+    const r = mapwrap.getBoundingClientRect();
+    if (ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom) {
+      const [x, y] = _cellAt(ev);
+      if (d.kind === "char") placeChar(d.id, x, y);
+      else if (d.kind === "item-new") placeItem(d.id, x, y);
+      else if (d.kind === "item-move") moveItem(d.id, x, y);
+    } else if (d.dim) d.dim(1);                 // released off the map -> cancel, restore
+  }
+  _pend = null;
 });
 
 // drag-to-pan (ignore when starting on a figure, so HTML5 drag handles those)
@@ -559,7 +586,6 @@ function renderPalette() {
   for (const iid of ids) {
     const it = items[iid], flagged = durFlagged(it);
     const pi = el("div", { class: "paletteItem" + (editItems ? " editing" : ""),
-      draggable: editItems ? null : "true",
       title: editItems ? "click ✕ to delete" : "drag onto the map to place" },
       el("div", { class: "itn", text: it.name }),
       el("div", { class: "itf", text: itemSummary(it) }),
@@ -568,7 +594,7 @@ function renderPalette() {
       pi.appendChild(el("span", { class: "delx", text: "✕", title: "delete this item",
         onclick: ev => { ev.stopPropagation(); deleteItemTemplate(iid); } }));
     else
-      pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
+      pi.addEventListener("mousedown", ev => startDragSource("item-new", iid, ev, itemBoxGhost));
     list.appendChild(pi);
   }
 }
@@ -592,12 +618,13 @@ function addItem() {
   });
 }
 function mapItem(pid, pos, item) {
-  const fig = el("div", { class: "mapitem", draggable: "true", title: item.name },
+  const fig = el("div", { class: "mapitem", title: item.name },
     el("div", { class: "box" }), el("div", { class: "nm", text: item.name }));
   fig.style.left = (pos.x * SCALE) + "px"; fig.style.top = (pos.y * SCALE) + "px";
   fig.dataset.pid = pid;
-  fig.addEventListener("dragstart", e => e.dataTransfer.setData("text/pid", pid));
-  fig.addEventListener("click", e => { e.stopPropagation(); openItemDetail(pid, item); });
+  fig.addEventListener("mousedown", ev => startDragSource("item-move", pid, ev, itemBoxGhost,
+    op => { fig.style.opacity = op; }));
+  fig.addEventListener("click", e => { e.stopPropagation(); if (_suppressClick) { _suppressClick = false; return; } openItemDetail(pid, item); });
   return fig;
 }
 async function placeItem(iid, x, y) {
