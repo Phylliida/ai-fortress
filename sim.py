@@ -8,6 +8,7 @@ Time: 5 ticks per game-minute (12 game-seconds/tick), matching colony.py / the U
 by rate_per_hour/300 per tick. Movement is WALK_CELLS cells/tick along the cached path.
 """
 import pathfinding
+import store
 
 TICKS_PER_HOUR = 300
 TICKS_PER_MIN = 5              # 5 ticks per game-minute (1/GAME_MIN_PER_TICK) -> duration_min * 5 = ticks
@@ -27,7 +28,8 @@ def _new_agent(x, y, ch):
             "thresholds": ch.get("thresholds", {}) or {},
             "species": ch.get("species", "human"),
             "action": None, "path": [],
-            "busy": 0, "busy_dur": 1, "busy_affords": {}, "busy_name": ""}
+            "busy": 0, "busy_dur": 1, "busy_affords": {}, "busy_name": "",
+            "busy_pid": None, "busy_consumable": False}
 
 
 def _thresh(agent, need):
@@ -42,14 +44,15 @@ def _affords_for(item, species):
 
 
 def _items(world):
-    """Placed item instances as targets: [{x, y, name, affords}]."""
+    """Placed item instances as targets: [{pid, x, y, name, affords, duration_min, consumable}]."""
     items = world.get("items", {})
     out = []
-    for ip in world.get("item_placements", {}).values():
+    for pid, ip in world.get("item_placements", {}).items():
         it = items.get(ip["iid"])
         if it:
-            out.append({"x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
-                        "affords": it.get("affords", {}), "duration_min": it.get("duration_min")})
+            out.append({"pid": pid, "x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
+                        "affords": it.get("affords", {}), "duration_min": it.get("duration_min"),
+                        "consumable": bool(it.get("consumable"))})
     return out
 
 
@@ -88,6 +91,7 @@ def step_world(world, ticks=1):
     sim = _SIMS.setdefault(world["id"], {"game_min": float(START_GAME_MIN), "agents": {}})
     _reconcile(sim, world)
     items = _items(world)
+    consumed = []
     for _ in range(max(1, ticks)):
         sim["game_min"] += GAME_MIN_PER_TICK
         for a in sim["agents"].values():
@@ -101,13 +105,19 @@ def step_world(world, ticks=1):
                         a["needs"][n] = min(1.0, a["needs"][n] + r / a["busy_dur"])
                 a["busy"] -= 1
                 if a["busy"] == 0:
+                    if a["busy_consumable"] and a["busy_pid"]:     # used up -> remove the instance (persist)
+                        store.append(world["id"], {"type": "item_place", "pid": a["busy_pid"], "x": None, "y": None})
+                        consumed.append(a["busy_pid"])
+                        items[:] = [it for it in items if it["pid"] != a["busy_pid"]]
                     a["busy_affords"], a["busy_name"] = {}, ""
+                    a["busy_pid"], a["busy_consumable"] = None, False
                 continue                                          # committed to the full duration
             if a["action"] is None:                               # decide
                 tgt = _choose(a, items)
                 if tgt:
                     a["action"] = {"name": tgt["name"], "tx": tgt["x"], "ty": tgt["y"],
-                                   "affords": _affords_for(tgt, a["species"]), "dur": tgt.get("duration_min")}
+                                   "affords": _affords_for(tgt, a["species"]), "dur": tgt.get("duration_min"),
+                                   "pid": tgt.get("pid"), "consumable": tgt.get("consumable", False)}
                     a["path"] = pathfinding.astar((a["x"], a["y"]), (tgt["x"], tgt["y"]))[1:]
             if a["action"]:                                       # walk; begin the activity on arrival
                 for _ in range(WALK_CELLS):
@@ -117,10 +127,13 @@ def step_world(world, ticks=1):
                     dur = max(1, round((a["action"]["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
                     a["busy"], a["busy_dur"] = dur, dur
                     a["busy_affords"], a["busy_name"] = a["action"]["affords"], a["action"]["name"]
+                    a["busy_pid"], a["busy_consumable"] = a["action"]["pid"], a["action"]["consumable"]
                     a["action"], a["path"] = None, []
                 elif not a["path"]:                               # unreachable -> give up
                     a["action"] = None
-    return _state(sim)
+    st = _state(sim)
+    st["consumed"] = consumed
+    return st
 
 
 def _doing(a):

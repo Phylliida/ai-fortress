@@ -170,19 +170,19 @@ def bake_affordances(server, species, obj_kinds, need_list, gate_threshold=0.5):
 #     gate flags those with a low p_makes_sense.
 
 DURATION_FEWSHOT = (
-    "How long does a person spend using an item to satisfy a need? It depends on the item and the need.\n\n"
-    "Item: glass of water\nNeed: water\nAnswer: 1 minute\n\n"
-    "Item: hot meal\nNeed: food\nAnswer: 20 minutes\n\n"
-    "Item: shower\nNeed: hygiene\nAnswer: 10 minutes\n\n"
-    "Item: bed\nNeed: sleep\nAnswer: 8 hours\n\n"
-    "Item: {item}\nNeed: {need}\nAnswer:"
+    "Question: How long does a person spend using a glass of water to satisfy their water need?\nAnswer: 1 minute\n"
+    "Question: How long does a person spend using a hot meal to satisfy their food need?\nAnswer: 20 minutes\n"
+    "Question: How long does a person spend using a shower to satisfy their hygiene need?\nAnswer: 10 minutes\n"
+    "Question: How long does a person spend using a bed to satisfy their sleep need?\nAnswer: 8 hours\n"
+    "Question: How long does a person spend using a {item} to satisfy their {need} need?\nAnswer:"
 )
 
 
 def duration_prompt(species, item, need):
-    """Few-shot duration question (the grammar still forces a `<number> <unit>` answer). `species`
-    is kept for the signature; the exemplars are person-generic since durations are largely
-    species-agnostic (which NEEDS an item serves already captures species differences)."""
+    """Few-shot duration question (the grammar still forces a `<number> <unit>` answer). The full
+    question with the EXPLICIT item+need is repeated each exemplar — no pronouns. `species` is kept
+    for the signature; the exemplars are person-generic since durations are largely species-agnostic
+    (which NEEDS an item serves already captures species differences)."""
     return DURATION_FEWSHOT.format(item=item, need=need)
 
 
@@ -222,6 +222,23 @@ THRESHOLD_FEWSHOT = (
 
 def threshold_prompt(need):
     return THRESHOLD_FEWSHOT.format(need=need)
+
+
+# --- consumable: is the item used up (gone) after one use? Few-shot (mixed Yes/No) to beat the base
+#     model's reflexive 'No'. Loaf of bread -> Yes (eaten), bed -> No (stays). The full question with
+#     the EXPLICIT item is repeated each exemplar — no "it" (an indirect reference the model pays to
+#     resolve).
+CONSUMABLE_FEWSHOT = (
+    "Question: Is a loaf of bread used up and gone after one use?\nAnswer: Yes\n"
+    "Question: Is a bed used up and gone after one use?\nAnswer: No\n"
+    "Question: Is a glass of water used up and gone after one use?\nAnswer: Yes\n"
+    "Question: Is a chair used up and gone after one use?\nAnswer: No\n"
+    "Question: Is a {item} used up and gone after one use?\nAnswer:"
+)
+
+
+def consumable_prompt(item):
+    return CONSUMABLE_FEWSHOT.format(item=item)
 
 
 def bake_thresholds(server, need_list, samples=7, floor=0.05, cap=0.95):

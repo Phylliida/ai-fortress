@@ -145,9 +145,12 @@ def api_create_item(wid):
                     duration_min = max(round(dr["minutes"], 1), 0.5)
                     duration_ok = round(dr["p_makes_sense"], 3) if dr.get("p_makes_sense") is not None else None
                 yield sse({"type": "duration", "duration_min": duration_min, "duration_ok": duration_ok})
+            consumable = SERVER.yes_no_prob(needs.consumable_prompt(name)) >= 0.5   # used up after use?
+            yield sse({"type": "consumable", "consumable": consumable})
             iid = store.new_id(8)
             store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords,
-                               "duration_min": duration_min, "duration_ok": duration_ok})
+                               "duration_min": duration_min, "duration_ok": duration_ok,
+                               "consumable": consumable})
             yield sse({"type": "saved", "iid": iid, "affords": affords})
             yield sse({"type": "done"})
         except Exception as e:
