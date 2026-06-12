@@ -43,8 +43,11 @@
   .palette label { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
   .palette input { width:100%; background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:6px 8px; font:inherit; }
   .palette .additem { width:100%; margin-top:7px; }
-  .paletteItem { display:flex; flex-direction:column; gap:1px; border:1px solid var(--line); border-radius:8px; padding:7px 9px; margin-top:9px; background:#15110d; cursor:grab; }
+  .paletteItem { position:relative; display:flex; flex-direction:column; gap:1px; border:1px solid var(--line); border-radius:8px; padding:7px 9px; margin-top:9px; background:#15110d; cursor:grab; }
   .paletteItem:hover { border-color:var(--accent); }
+  .paletteItem.editing { cursor:default; border-color:var(--err); padding-right:22px; }
+  .paletteItem .delx { position:absolute; top:50%; right:7px; transform:translateY(-50%); color:var(--err); cursor:pointer; font-size:13px; }
+  .paletteItem .delx:hover { color:#f0a08a; }
   .paletteItem .itn { font-size:13px; color:var(--ink); }
   .paletteItem .itf { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .paletteItem .itd { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; }
@@ -138,6 +141,7 @@
     <input id="itemInput" placeholder="loaf of bread, stovetop…" autocomplete="off">
     <button id="addItemBtn" class="additem">+ add item</button>
     <div id="itemStatus" class="status"></div>
+    <button id="editItemsBtn" class="ghost sm" style="width:100%; margin-top:4px">edit items</button>
     <div id="itemList"></div>
   </div>
   <div class="mapwrap" id="mapwrap">
@@ -546,6 +550,7 @@ function fmtDur(m) {
   const h = m / 60; return (Number.isInteger(h) ? h : h.toFixed(1)) + "h";
 }
 function durFlagged(item) { return item.duration_ok != null && item.duration_ok < 0.5; }
+let editItems = false;
 function renderPalette() {
   document.getElementById("speciesLine").textContent = (state.world.species || []).join(", ") || "—";
   const list = document.getElementById("itemList"); list.innerHTML = "";
@@ -553,13 +558,23 @@ function renderPalette() {
   if (!ids.length) { list.appendChild(el("div", { class: "empty", style: "font-size:12px;margin-top:10px", text: "No items yet." })); return; }
   for (const iid of ids) {
     const it = items[iid], flagged = durFlagged(it);
-    const pi = el("div", { class: "paletteItem", draggable: "true", title: "drag onto the map to place" },
+    const pi = el("div", { class: "paletteItem" + (editItems ? " editing" : ""),
+      draggable: editItems ? null : "true",
+      title: editItems ? "click ✕ to delete" : "drag onto the map to place" },
       el("div", { class: "itn", text: it.name }),
       el("div", { class: "itf", text: itemSummary(it) }),
       el("div", { class: "itd" + (flagged ? " flag" : ""), text: "⏱ " + fmtDur(it.duration_min) + (flagged ? "  ⚠" : "") }));
-    pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
+    if (editItems)
+      pi.appendChild(el("span", { class: "delx", text: "✕", title: "delete this item",
+        onclick: ev => { ev.stopPropagation(); deleteItemTemplate(iid); } }));
+    else
+      pi.addEventListener("dragstart", e => e.dataTransfer.setData("text/iid", iid));
     list.appendChild(pi);
   }
+}
+async function deleteItemTemplate(iid) {
+  await fetch(`/api/world/${state.wid}/item/${iid}/delete`, { method: "POST" });
+  await refreshWorld();
 }
 function addItem() {
   const inp = document.getElementById("itemInput"), name = inp.value.trim();
@@ -641,6 +656,13 @@ function openItemDetail(pid, item) {
 }
 document.getElementById("addItemBtn").onclick = addItem;
 document.getElementById("itemInput").addEventListener("keydown", e => { if (e.key === "Enter") addItem(); });
+document.getElementById("editItemsBtn").onclick = () => {
+  editItems = !editItems;
+  const b = document.getElementById("editItemsBtn");
+  b.textContent = editItems ? "done" : "edit items";
+  b.classList.toggle("active", editItems);
+  renderPalette();
+};
 
 // ----------------------------------------------------------------- needs + clock
 function byCid(cid) { return ((state.world && state.world.characters) || []).find(c => c.cid === cid); }
