@@ -81,6 +81,7 @@
   .det .x { position:absolute; top:8px; right:10px; color:var(--muted); cursor:pointer; font-size:16px; }
   .clock { font:600 17px ui-monospace,monospace; color:var(--accent); min-width:54px; }
   #playBtn { padding:5px 11px; font-size:13px; }
+  .doing { font:12px ui-monospace,monospace; color:var(--accent); margin:7px 0 3px; }
   .needs { margin-top:4px; }
   .needbar { display:flex; align-items:center; gap:7px; margin-top:4px; }
   .needbar .nl { flex:0 0 86px; font-size:11px; color:var(--muted); text-transform:capitalize; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -472,11 +473,14 @@ function openDetail(ch, ev) {
   if (ch.nocturnal != null)
     pop.appendChild(el("div", {}, el("div", { class: "k", text: "nocturnal" }), el("div", { class: "v", text: Math.round(ch.nocturnal * 100) + "% likely" })));
   if (ch.needs && ch.needs.length) {
+    const doingEl = el("div", { class: "doing",
+      text: (state.sim && state.sim.agents[ch.cid] && state.sim.agents[ch.cid].doing) || "—" });
+    pop.appendChild(doingEl);
     pop.appendChild(el("div", { class: "k", text: "needs" }));
     const needsDiv = el("div", { class: "needs" });
     renderNeedBars(ch.cid, needsDiv);
     pop.appendChild(needsDiv);
-    state.openNeeds = { cid: ch.cid, el: needsDiv };       // live-update while time plays
+    state.openNeeds = { cid: ch.cid, el: needsDiv, doingEl };   // live-update while time plays
   }
   const remove = el("button", { class: "ghost sm", text: "remove from map", style: "margin-top:12px",
     onclick: () => { placeChar(ch.cid, null, null); closePops(); } });
@@ -629,7 +633,11 @@ function applySim() {                          // render the latest sim state: p
     if (fig) { fig.style.left = (a.x * SCALE) + "px"; fig.style.top = (a.y * SCALE) + "px"; }
     state.needLevels[cid] = a.needs;
   }
-  if (state.openNeeds) renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
+  if (state.openNeeds) {
+    renderNeedBars(state.openNeeds.cid, state.openNeeds.el);
+    const a = s.agents[state.openNeeds.cid];
+    if (state.openNeeds.doingEl && a) state.openNeeds.doingEl.textContent = a.doing;
+  }
   renderMinimap();
 }
 async function simLoop() {

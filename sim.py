@@ -10,8 +10,10 @@ by rate_per_hour/300 per tick. Movement is WALK_CELLS cells/tick along the cache
 import pathfinding
 
 TICKS_PER_HOUR = 300
+TICKS_PER_MIN = 5              # 5 ticks per game-minute (1/GAME_MIN_PER_TICK) -> duration_min * 5 = ticks
 GAME_MIN_PER_TICK = 0.2
-DEFAULT_THRESH = 0.35          # need deadband until per-need baked thresholds are stored on characters
+DEFAULT_THRESH = 0.35          # need deadband when a character has no baked per-need threshold
+DEFAULT_DURATION_MIN = 5       # activity length for an item with no baked duration
 WALK_CELLS = 3                 # cells walked per tick
 START_GAME_MIN = 8 * 60
 
@@ -24,7 +26,8 @@ def _new_agent(x, y, ch):
             "rates": ch.get("rates", {}) or {},
             "thresholds": ch.get("thresholds", {}) or {},
             "species": ch.get("species", "human"),
-            "action": None, "path": []}
+            "action": None, "path": [],
+            "busy": 0, "busy_dur": 1, "busy_affords": {}, "busy_name": ""}
 
 
 def _thresh(agent, need):
@@ -45,7 +48,8 @@ def _items(world):
     for ip in world.get("item_placements", {}).values():
         it = items.get(ip["iid"])
         if it:
-            out.append({"x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"], "affords": it.get("affords", {})})
+            out.append({"x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
+                        "affords": it.get("affords", {}), "duration_min": it.get("duration_min")})
     return out
 
 
@@ -87,33 +91,51 @@ def step_world(world, ticks=1):
     for _ in range(max(1, ticks)):
         sim["game_min"] += GAME_MIN_PER_TICK
         for a in sim["agents"].values():
-            for n in a["needs"]:                                  # decay
-                a["needs"][n] = max(0.0, a["needs"][n] - a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
+            serving = a["busy_affords"] if a["busy"] > 0 else {}
+            for n in a["needs"]:                                  # decay (except what you're using)
+                if n not in serving:
+                    a["needs"][n] = max(0.0, a["needs"][n] - a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
+            if a["busy"] > 0:                                     # mid-activity: spread refill over its span
+                for n, r in serving.items():
+                    if n in a["needs"]:
+                        a["needs"][n] = min(1.0, a["needs"][n] + r / a["busy_dur"])
+                a["busy"] -= 1
+                if a["busy"] == 0:
+                    a["busy_affords"], a["busy_name"] = {}, ""
+                continue                                          # committed to the full duration
             if a["action"] is None:                               # decide
                 tgt = _choose(a, items)
                 if tgt:
                     a["action"] = {"name": tgt["name"], "tx": tgt["x"], "ty": tgt["y"],
-                                   "affords": _affords_for(tgt, a["species"])}
+                                   "affords": _affords_for(tgt, a["species"]), "dur": tgt.get("duration_min")}
                     a["path"] = pathfinding.astar((a["x"], a["y"]), (tgt["x"], tgt["y"]))[1:]
-            if a["action"]:                                       # walk, then use on arrival
+            if a["action"]:                                       # walk; begin the activity on arrival
                 for _ in range(WALK_CELLS):
                     if a["path"]:
                         a["x"], a["y"] = a["path"].pop(0)
                 if (a["x"], a["y"]) == (a["action"]["tx"], a["action"]["ty"]):
-                    for n, r in a["action"]["affords"].items():
-                        if n in a["needs"]:
-                            a["needs"][n] = min(1.0, a["needs"][n] + r)
+                    dur = max(1, round((a["action"]["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
+                    a["busy"], a["busy_dur"] = dur, dur
+                    a["busy_affords"], a["busy_name"] = a["action"]["affords"], a["action"]["name"]
                     a["action"], a["path"] = None, []
                 elif not a["path"]:                               # unreachable -> give up
                     a["action"] = None
     return _state(sim)
 
 
+def _doing(a):
+    if a["busy"] > 0:
+        return "using " + a["busy_name"]
+    if a["action"]:
+        return "→ " + a["action"]["name"]
+    return "idle"
+
+
 def _state(sim):
     return {"game_min": sim["game_min"],
             "agents": {cid: {"x": a["x"], "y": a["y"],
                              "needs": {n: round(v, 4) for n, v in a["needs"].items()},
-                             "doing": ("→ " + a["action"]["name"]) if a["action"] else "idle"}
+                             "doing": _doing(a)}
                        for cid, a in sim["agents"].items()}}
 
 
