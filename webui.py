@@ -77,7 +77,10 @@ def api_worlds():
 @app.route("/api/world/<wid>")
 def api_world(wid):
     w = store.load_world(wid)
-    return w if w else ({"error": "not found"}, 404)
+    if not w:
+        return {"error": "not found"}, 404
+    w["needs"] = sorted({n for ns in _world_species_needs(w).values() for n in ns})  # effective need list
+    return w
 
 
 @app.route("/api/world/<wid>/log")
@@ -107,6 +110,7 @@ def api_place(wid):
 
 
 _THRESH_CACHE = {}   # per-need deadband, baked once (bake_thresholds is species-agnostic) and reused
+_MODE_CACHE = {}     # per-need mode classification, baked once (species-agnostic) and reused across worlds
 
 
 def _thresholds_for(need_list):
@@ -127,6 +131,49 @@ def _world_species_needs(w):
         bysp["human"] = set()
     core = [n for n in needs.UNIVERSAL_CORE if n not in needs.EXCLUDE_NEEDS]
     return {sp: (sorted(ns) if ns else core) for sp, ns in bysp.items()}
+
+
+@app.route("/api/world/<wid>/needs/classify")
+def api_classify_needs(wid):
+    """Bake the MODE of every need in the world (consume/restore/ambient/social/experiential) via the
+    5-way few-shot classifier. Streams one result per need; respects manual overrides. Persists each
+    auto-result so it survives restarts and the sim can read which needs are ambient/social/etc."""
+    w = store.load_world(wid)
+
+    @stream_with_context
+    def gen():
+        if not w:
+            yield sse({"type": "error", "message": "World not found."}); return
+        try:
+            need_list = sorted({n for ns in _world_species_needs(w).values() for n in ns})
+            stored = w.get("need_modes", {})
+            for need in need_list:
+                if stored.get(need, {}).get("manual"):          # never clobber a manual assignment
+                    yield sse({"type": "mode", "need": need, "skipped": True, **stored[need]}); continue
+                if need not in _MODE_CACHE:
+                    _MODE_CACHE[need] = needs.classify_mode(SERVER, need)
+                r = _MODE_CACHE[need]
+                store.append(wid, {"type": "need_mode", "need": need, "mode": r["mode"],
+                                   "conf": r["conf"], "manual": False})
+                yield sse({"type": "mode", "need": need, "mode": r["mode"], "conf": r["conf"],
+                           "unsure": r["unsure"], "scores": r["scores"]})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+@app.route("/api/world/<wid>/need/<need>/mode", methods=["POST"])
+def api_set_need_mode(wid, need):
+    """Manually assign a need's mode (overrides + pins against re-classification; for unsure needs)."""
+    if not store.load_world(wid):
+        return {"error": "not found"}, 404
+    mode = (request.json or {}).get("mode")
+    if mode not in needs.NEED_MODES:
+        return {"error": "bad mode"}, 400
+    store.append(wid, {"type": "need_mode", "need": need, "mode": mode, "conf": None, "manual": True})
+    return {"ok": True, "need": need, "mode": mode}
 
 
 @app.route("/api/world/<wid>/item")
