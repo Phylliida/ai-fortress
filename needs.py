@@ -120,8 +120,10 @@ def discover_rates(server, person, need_list, wake_hours=None, samples=5):
 
 def affordance_applies_prompt(species, obj_kind, need):
     # "relevant to satisfying" separates real affordances from irrelevant pairs far better than
-    # "affect ... at all" (which biased to no — gated meal->food at 0.32); calibrated 9/9.
-    return (f"For a {species}, is a {obj_kind} relevant to satisfying their {need} need? "
+    # "affect ... at all" (which biased to no — gated meal->food at 0.32); calibrated 9/9. Direct
+    # possessive ("a {species}'s {need} need") drops the "For a {species}, ... their" pronoun
+    # indirection — re-verified still 9/9.
+    return (f"Is a {obj_kind} relevant to satisfying a {species}'s {need} need? "
             f"Answer yes or no.\nAnswer:")
 
 
