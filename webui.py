@@ -86,6 +86,17 @@ def api_place(wid):
     return {"ok": True, "cid": cid, "x": x, "y": y}
 
 
+_THRESH_CACHE = {}   # per-need deadband, baked once (bake_thresholds is species-agnostic) and reused
+
+
+def _thresholds_for(need_list):
+    """Per-need deadband fractions for `need_list`, baking only the not-yet-cached ones."""
+    missing = [n for n in need_list if n not in _THRESH_CACHE]
+    if missing:
+        _THRESH_CACHE.update(needs.bake_thresholds(SERVER, missing, samples=5))
+    return {n: _THRESH_CACHE[n] for n in need_list}
+
+
 def _world_species_needs(w):
     """Map EVERY species present in the world (default {human}) to the need-list to test items
     against — the union of that species' characters' needs, else the universal core minus excludes."""
@@ -121,8 +132,17 @@ def api_create_item(wid):
                         sp_aff[need] = round(r["refill"], 3)
                         yield sse({"type": "afford", "species": sp, "need": need, "refill": sp_aff[need]})
                 affords[sp] = sp_aff
+            # how long using the item takes (for the sim's gradual refill); named-action via a species
+            # that it actually serves. None if it fills nothing.
+            duration_min = None
+            prim = next((sp for sp in affords if affords[sp]), None)
+            if prim:
+                yield sse({"type": "status", "message": "timing the activity…"})
+                duration_min = needs.bake_durations(SERVER, prim, {name: affords[prim]}, samples=5).get(name)
+                yield sse({"type": "duration", "duration_min": duration_min})
             iid = store.new_id(8)
-            store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords})
+            store.append(wid, {"type": "item", "iid": iid, "name": name,
+                               "affords": affords, "duration_min": duration_min})
             yield sse({"type": "saved", "iid": iid, "affords": affords})
             yield sse({"type": "done"})
         except Exception as e:
@@ -204,6 +224,9 @@ def api_world_character(wid):
             rr = needs.discover_rates(SERVER, person_desc, need_list, samples=3)
             rates = {n: rr["rates"][n]["decay_per_hour"] for n in need_list}
             yield sse({"type": "rates", "rates": rates, "wake_hours": rr["wake_hours"]})
+            yield sse({"type": "status", "message": "finding need thresholds…"})
+            thresholds = _thresholds_for(need_list)        # per-need deadband (cached across characters)
+            yield sse({"type": "thresholds", "thresholds": thresholds})
 
             cid = store.new_id(8)
             store.append(wid, {"type": "character", "cid": cid, "role": "location" if at else "seed",
@@ -211,7 +234,7 @@ def api_world_character(wid):
                                "name": nm, "appearance": ctx["appearance"],
                                "personality": ctx["personality"], "backstory": ctx["backstory"],
                                "nocturnal": noc, "needs": need_list, "rates": rates,
-                               "wake_hours": rr["wake_hours"], "prompts": prompts})
+                               "wake_hours": rr["wake_hours"], "thresholds": thresholds, "prompts": prompts})
             yield sse({"type": "saved", "cid": cid})
             yield sse({"type": "done"})
         except Exception as e:

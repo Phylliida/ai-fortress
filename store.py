@@ -84,7 +84,8 @@ def load_world(world_id):
                 world["placements"][r["cid"]] = {"x": r["x"], "y": r["y"]}
         elif t == "item":
             world["items"][r["iid"]] = {"name": r["name"], "species": r.get("species"),
-                                        "affords": r.get("affords", {})}
+                                        "affords": r.get("affords", {}),
+                                        "duration_min": r.get("duration_min")}
         elif t == "item_place":
             if r.get("x") is None or r.get("y") is None:
                 world["item_placements"].pop(r["pid"], None)
