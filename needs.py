@@ -69,27 +69,24 @@ def discover_needs(server, species, n_extra=6, threshold=0.5):
 
 # Few-shot frame for rate extraction. The exemplars (a) SPAN the frequency range — once-daily sleep=1
 # up to high-frequency water=8 — so a base model doesn't plant a wrong magnitude prior on a need it
-# hasn't seen (zero-shot gave sleep 3x/day, and the recluse MORE social than the baker — both wrong),
-# and (b) vary the PERSON so person-dependence is reinforced, not flattened (baker social 8 vs hermit
-# 1). Verified: few-shot fixes both the magnitude AND the per-person spread vs zero-shot.
+# hasn't seen (zero-shot gave sleep 3x/day, the recluse MORE social than the baker — both wrong), and
+# (b) vary the PERSON so person-dependence is reinforced, not flattened. The full question with the
+# EXPLICIT person folded in is repeated each shot under Question:/Answer: — no "this person" (an
+# indirect reference the model pays to resolve); this sharpened the spread (baker social 3->10).
 RATE_FEWSHOT = (
-    "Person: a weary laborer at the end of a long day\n"
-    "On a typical day, how many times does this person satisfy their sleep need?\nAnswer: 1\n\n"
-    "Person: an active child running around outside\n"
-    "On a typical day, how many times does this person satisfy their water need?\nAnswer: 8\n\n"
-    "Person: a hardworking farmhand\n"
-    "On a typical day, how many times does this person satisfy their food need?\nAnswer: 4\n\n"
-    "Person: a content hermit who treasures solitude\n"
-    "On a typical day, how many times does this person satisfy their social need?\nAnswer: 1\n\n"
-    "Person: {person}\n"
-    "On a typical day, how many times does this person satisfy their {need} need?\nAnswer:"
+    "Question: On a typical day, how many times does a weary laborer satisfy their sleep need?\nAnswer: 1\n"
+    "Question: On a typical day, how many times does an active child running around outside satisfy their water need?\nAnswer: 8\n"
+    "Question: On a typical day, how many times does a hardworking farmhand satisfy their food need?\nAnswer: 4\n"
+    "Question: On a typical day, how many times does a content hermit who treasures solitude satisfy their social need?\nAnswer: 1\n"
+    "Question: On a typical day, how many times does {person} satisfy their {need} need?\nAnswer:"
 )
 
 
 def rate_prompt(person, need):
     """`person` is a description string — the richer it is, the more individuated the rate. Few-shot
     (RATE_FEWSHOT): exemplars span the frequency range (sleep 1 .. water 8) so the model doesn't carry
-    a wrong magnitude prior onto an unseen need, and vary the person so individuation is reinforced."""
+    a wrong magnitude prior onto an unseen need, vary the person to reinforce individuation, and fold
+    the explicit person into the repeated Question:/Answer: (no pronouns)."""
     return RATE_FEWSHOT.format(person=person, need=need)
 
 
