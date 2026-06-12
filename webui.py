@@ -15,12 +15,26 @@ from types import SimpleNamespace
 from flask import Flask, render_template, request, Response, stream_with_context
 
 import worldRefactored as wr
+import baseModelPrimitives as bmp
 import needs
 import sim
 import store
 
 app = Flask(__name__)
 SERVER = wr.LlamaServer()
+
+
+@app.before_request
+def _route_query_log():
+    """Route this request's base-model queries into the targeted world's log (audit/debug)."""
+    parts = request.path.strip("/").split("/")          # api / world / <wid> / ...
+    if len(parts) >= 3 and parts[0] == "api" and parts[1] == "world":
+        wid = parts[2]
+        bmp.set_log_sink(lambda e: store.append(wid, {"type": "query", **e}))
+    else:
+        bmp.set_log_sink(None)
+    # NB: no teardown clear — it fires before the SSE generator streams its queries. The next
+    # request's before_request resets the sink, so it can't leak to the wrong world.
 
 
 def sse(obj):
@@ -64,6 +78,12 @@ def api_worlds():
 def api_world(wid):
     w = store.load_world(wid)
     return w if w else ({"error": "not found"}, 404)
+
+
+@app.route("/api/world/<wid>/log")
+def api_world_log(wid):
+    """Chronological base-model query log for a world (prompt + output). since>0 = only newer."""
+    return {"entries": store.get_log(wid, int(request.args.get("since", 0)))}
 
 
 @app.route("/api/world/<wid>/place", methods=["POST"])
