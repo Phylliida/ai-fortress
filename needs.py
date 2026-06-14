@@ -351,6 +351,60 @@ def radius_prompt(item, need):
     return RADIUS_FEWSHOT.format(item=item, need=need)
 
 
+# --- SPECIES as a target: another creature can satisfy a consumer's need the same way an item can — the
+#     gate is mode-appropriate (a CONSUME need is met by EATING the target, possibly killing it; a SOCIAL
+#     or ambient need by being NEAR it). Validated: monster/human eat 0.99, person/person eat 0.06;
+#     person/person near 0.98, person/rock near 0.02. consumable is per (consumer,target): eating usually
+#     kills (wolf/rabbit) but not always (a vampire's victim survives).
+SPECIES_EAT_FEWSHOT = (
+    "Question: Can a wolf satisfy its food need by eating a rabbit?\nAnswer: Yes\n"
+    "Question: Can a person satisfy its food need by eating another person?\nAnswer: No\n"
+    "Question: Can a fox satisfy its food need by eating a chicken?\nAnswer: Yes\n"
+    "Question: Can a deer satisfy its food need by eating a wolf?\nAnswer: No\n"
+    "Question: Can a {consumer} satisfy its {need} need by eating a {target}?\nAnswer:"
+)
+SPECIES_NEAR_FEWSHOT = (
+    "Question: Can a person satisfy its social need by spending time with another person?\nAnswer: Yes\n"
+    "Question: Can a person satisfy its social need by spending time with a chair?\nAnswer: No\n"
+    "Question: Can a dog satisfy its social need by spending time with a person?\nAnswer: Yes\n"
+    "Question: Can a person satisfy its social need by spending time with a rock?\nAnswer: No\n"
+    "Question: Can a {consumer} satisfy its {need} need by spending time with a {target}?\nAnswer:"
+)
+SPECIES_KILL_FEWSHOT = (
+    "Question: After a wolf eats a rabbit once, is the rabbit dead and gone?\nAnswer: Yes\n"
+    "Question: After a person spends time with a friend once, is the friend dead and gone?\nAnswer: No\n"
+    "Question: After a bear eats a salmon once, is the salmon dead and gone?\nAnswer: Yes\n"
+    "Question: After a mosquito bites a person once, is the person dead and gone?\nAnswer: No\n"
+    "Question: After a {consumer} feeds on a {target} once, is the {target} dead and gone?\nAnswer:"
+)
+
+
+def species_affordance_prompt(mode, consumer, target, need):
+    """Mode-appropriate gate: CONSUME -> eat the target, else (social/ambient) -> be near it."""
+    tmpl = SPECIES_EAT_FEWSHOT if mode == "consume" else SPECIES_NEAR_FEWSHOT
+    return tmpl.format(consumer=consumer, target=target, need=need)
+
+
+def species_amount_prompt(mode, consumer, target, need):
+    verb = "eating" if mode == "consume" else "being near"
+    return (f"Q: How much does {verb} a {target} satisfy a {consumer}'s {need} need?\n"
+            f"A: It satisfies their {need} need")
+
+
+def species_kill_prompt(consumer, target):
+    return SPECIES_KILL_FEWSHOT.format(consumer=consumer, target=target)
+
+
+def bake_species_affordance(server, consumer, target, need, mode, gate_threshold=0.5):
+    """Does target-species satisfy consumer-species' `need` (mode-appropriate gate + degree)?
+    Returns {applies, p, refill}."""
+    p = server.yes_no_prob(species_affordance_prompt(mode, consumer, target, need))
+    if p < gate_threshold:
+        return {"applies": False, "p": round(p, 3), "refill": 0.0}
+    pct = server.gen_percent(species_amount_prompt(mode, consumer, target, need))
+    return {"applies": True, "p": round(p, 3), "refill": round(pct["value"], 3) if pct else 0.0}
+
+
 def bake_provider(server, obj_kind, need, gate_threshold=0.5, samples=5, radius_floor=1):
     """One ambient (item, need): provider-gate, then field strength (gen_percent) + radius (cells).
     Returns {applies, p_applies, strength, radius} — strength/radius 0 when the gate fails (species-
