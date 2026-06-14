@@ -133,12 +133,15 @@ def _world_species_needs(w):
     return {sp: (sorted(ns) if ns else core) for sp, ns in bysp.items()}
 
 
-def _modes_for(wid, w):
-    """Effective mode per world need: stored (manual override or prior auto) else freshly classified and
-    persisted. Returns {need: mode}. Used at item creation to pick the right affordance question."""
+def _modes_for(wid, w, need_list=None):
+    """Effective mode per need: stored (manual override or prior auto) else freshly classified and
+    persisted. Returns {need: mode}. `need_list` defaults to the world's effective needs; pass an
+    explicit list to classify a new species' needs that aren't in the world yet."""
     stored = w.get("need_modes", {})
+    if need_list is None:
+        need_list = sorted({n for ns in _world_species_needs(w).values() for n in ns})
     out = {}
-    for need in sorted({n for ns in _world_species_needs(w).values() for n in ns}):
+    for need in need_list:
         if need in stored:
             out[need] = stored[need]["mode"]; continue
         if need not in _MODE_CACHE:
@@ -148,6 +151,41 @@ def _modes_for(wid, w):
                            "conf": r["conf"], "manual": False})
         out[need] = r["mode"]
     return out
+
+
+def _bake_item_species(name, species, need_list, modeof, item):
+    """Bake an EXISTING item's metadata for a newly-added species (so it needn't be regenerated): which
+    of the species' needs it serves (active use-gate / ambient provider-gate), any new per-need durations
+    or radii, and the per-species consumable. Returns merge-updates; empty affords_sub => does nothing
+    for this species. Ambient strength/radius are species-agnostic, so a field already baked is reused."""
+    cur_affords = item.get("affords", {}) or {}
+    cur_radii = item.get("radii", {}) or {}
+    cur_dur = item.get("durations", {}) or {}
+    affords_sub, radii_add, dur_add, durok_add = {}, {}, {}, {}
+    for need in need_list:
+        if modeof.get(need) == "ambient":
+            if need in cur_radii:                          # item already known to provide this field
+                strength = max((s.get(need, 0.0) for s in cur_affords.values() if isinstance(s, dict)), default=0.0)
+                if strength > 0:
+                    affords_sub[need] = strength
+            else:
+                r = needs.bake_provider(SERVER, name, need)
+                if r["applies"] and r["strength"] > 0:
+                    radii_add[need] = r["radius"]; affords_sub[need] = r["strength"]
+        else:
+            r = needs.bake_affordance(SERVER, species, name, need)
+            if r["applies"] and r["refill"] > 0:
+                affords_sub[need] = round(r["refill"], 3)
+    for need in [n for n in affords_sub if modeof.get(n) != "ambient" and n not in cur_dur]:
+        dr = SERVER.gen_duration(needs.duration_prompt(species, name, need), samples=8,
+                                 check_subject=f"using a {name} to satisfy their {need} need")
+        if dr:
+            dur_add[need] = max(round(dr["minutes"], 1), 0.5)
+            durok_add[need] = round(dr["p_makes_sense"], 3) if dr.get("p_makes_sense") is not None else None
+    has_active = any(modeof.get(n) != "ambient" for n in affords_sub)
+    consumable = (SERVER.yes_no_prob(needs.consumable_prompt(species, name)) >= 0.5) if has_active else False
+    return {"affords_sub": affords_sub, "radii": radii_add, "durations": dur_add,
+            "durations_ok": durok_add, "consumable": consumable}
 
 
 @app.route("/api/world/<wid>/needs/classify")
@@ -370,6 +408,28 @@ def api_world_character(wid):
                                "nocturnal": noc, "needs": need_list, "rates": rates,
                                "wake_hours": rr["wake_hours"], "thresholds": thresholds, "prompts": prompts})
             yield sse({"type": "saved", "cid": cid})
+
+            # brand-new species → teach every existing item about it (vs. regenerating them all). Bakes
+            # the species' affordances/consumable/missing durations+radii and merges into each item.
+            if species not in {c.get("species", "human") for c in w["characters"]} and w.get("items"):
+                sp_needs = sorted(set(need_list))
+                modeof = _modes_for(wid, w, sp_needs)
+                taught = 0
+                for iid, item in w["items"].items():
+                    yield sse({"type": "status", "message": f"teaching '{item['name']}' about {species}…"})
+                    upd = _bake_item_species(item["name"], species, sp_needs, modeof, item)
+                    if not upd["affords_sub"]:
+                        continue
+                    affords = dict(item.get("affords") or {}); affords[species] = upd["affords_sub"]
+                    cons = dict(item.get("consumable") or {}) if isinstance(item.get("consumable"), dict) else {}
+                    cons[species] = upd["consumable"]
+                    store.append(wid, {"type": "item", "iid": iid, "name": item["name"], "affords": affords,
+                                       "durations": {**(item.get("durations") or {}), **upd["durations"]},
+                                       "durations_ok": {**(item.get("durations_ok") or {}), **upd["durations_ok"]},
+                                       "radii": {**(item.get("radii") or {}), **upd["radii"]},
+                                       "consumable": cons})
+                    taught += 1
+                yield sse({"type": "species_backfill", "species": species, "items": taught})
             yield sse({"type": "done"})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
