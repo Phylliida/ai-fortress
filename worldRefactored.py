@@ -47,13 +47,13 @@ FIELDS = {
                     "There was once a {gender} {species} named",
                     ["\n", ".", ",", ";", " who", " that", " which", " from", " lived", " was"], 12),
     "appearance":  ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
-                    "In one sentence, {name}'s physical appearance:", ["\n"], 64),
+                    "In one sentence, {name}'s physical appearance:", ["\n"], 160),
     "personality": ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
                     "Appearance: {appearance}\n"
-                    "In one sentence, {name}'s personality:", ["\n"], 64),
+                    "In one sentence, {name}'s personality:", ["\n"], 160),
     "backstory":   ("Setting: {world}\nSpecies: {species}\nGender: {gender}\nCharacter: {name}\n"
                     "Personality: {personality}\n"
-                    "In one sentence, {name}'s backstory:", ["\n"], 96),
+                    "In one sentence, {name}'s backstory:", ["\n"], 240),
 }
 
 # Resample a field whose output is rejected by REJECT[field] (a predicate -> True means resample).
