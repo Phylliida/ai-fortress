@@ -244,8 +244,12 @@ def api_create_item(wid):
                     durations_ok[need] = round(dr["p_makes_sense"], 3) if dr.get("p_makes_sense") is not None else None
                 yield sse({"type": "duration", "need": need,
                            "duration_min": durations.get(need), "duration_ok": durations_ok.get(need)})
-            consumable = SERVER.yes_no_prob(needs.consumable_prompt(name)) >= 0.5   # used up after use?
-            yield sse({"type": "consumable", "consumable": consumable})
+            # consumable PER SPECIES: whether use destroys the item depends on WHO uses it (a wall-eating
+            # monster eats the wall; a person leaning on it doesn't). Only species the item serves.
+            consumable = {}
+            for sp in [s for s in affords if affords[s]]:
+                consumable[sp] = SERVER.yes_no_prob(needs.consumable_prompt(sp, name)) >= 0.5
+                yield sse({"type": "consumable", "species": sp, "consumable": consumable[sp]})
             iid = store.new_id(8)
             store.append(wid, {"type": "item", "iid": iid, "name": name, "affords": affords,
                                "durations": durations, "durations_ok": durations_ok, "radii": radii,

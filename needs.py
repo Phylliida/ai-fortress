@@ -234,21 +234,23 @@ def threshold_prompt(need):
     return THRESHOLD_FEWSHOT.format(need=need)
 
 
-# --- consumable: is the item used up (gone) after one use? Few-shot (mixed Yes/No) to beat the base
-#     model's reflexive 'No'. Loaf of bread -> Yes (eaten), bed -> No (stays). The full question with
-#     the EXPLICIT item is repeated each exemplar — no "it" (an indirect reference the model pays to
-#     resolve).
+# --- consumable: is the item used up (gone) after one use? PER SPECIES — whether use destroys the item
+#     depends on WHO uses it: a wall persists when a person leans on it but is eaten by a wall-eating
+#     monster (else the monster gets free food off an indestructible wall). The few-shot carries a
+#     species-CONTRAST pair (termite/beam Yes vs person/beam No) to teach the species-dependence, and
+#     mixed Yes/No to beat the base model's reflexive 'No'. Validated 10/10. Full question repeated each
+#     exemplar — no pronouns.
 CONSUMABLE_FEWSHOT = (
-    "Question: Is a loaf of bread used up and gone after one use?\nAnswer: Yes\n"
-    "Question: Is a bed used up and gone after one use?\nAnswer: No\n"
-    "Question: Is a glass of water used up and gone after one use?\nAnswer: Yes\n"
-    "Question: Is a chair used up and gone after one use?\nAnswer: No\n"
-    "Question: Is a {item} used up and gone after one use?\nAnswer:"
+    "Question: After a person uses a loaf of bread once, is it used up and gone?\nAnswer: Yes\n"
+    "Question: After a person uses a bed once, is it used up and gone?\nAnswer: No\n"
+    "Question: After a termite uses a wooden beam once, is it used up and gone?\nAnswer: Yes\n"
+    "Question: After a person uses a wooden beam once, is it used up and gone?\nAnswer: No\n"
+    "Question: After a {species} uses a {item} once, is it used up and gone?\nAnswer:"
 )
 
 
-def consumable_prompt(item):
-    return CONSUMABLE_FEWSHOT.format(item=item)
+def consumable_prompt(species, item):
+    return CONSUMABLE_FEWSHOT.format(species=species, item=item)
 
 
 def bake_thresholds(server, need_list, samples=7, floor=0.05, cap=0.95):

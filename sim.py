@@ -54,8 +54,15 @@ def _items(world):
         if it:
             out.append({"pid": pid, "x": int(ip["x"]), "y": int(ip["y"]), "name": it["name"],
                         "affords": it.get("affords", {}), "durations": it.get("durations", {}),
-                        "radii": it.get("radii", {}), "consumable": bool(it.get("consumable"))})
+                        "radii": it.get("radii", {}), "consumable": it.get("consumable")})
     return out
+
+
+def _consumable_for(item, species):
+    """Does THIS species' use destroy the item? consumable is {species: bool}; a legacy single bool
+    applies to everyone. A wall is consumable for a wall-eating monster, not for a person."""
+    c = item.get("consumable")
+    return bool(c.get(species, False)) if isinstance(c, dict) else bool(c)
 
 
 def _all_affords(item):
@@ -135,7 +142,7 @@ def _decide(agent, items, ambient_needs, providers):
         best_score = (af.get(need, 0.0) * (1.0 - agent["needs"][need])) / (1.0 + 0.01 * d)
         act = {"kind": "active", "name": it["name"], "tx": it["x"], "ty": it["y"], "need": need,
                "refill": af.get(need, 0.0), "dur": (it.get("durations") or {}).get(need),
-               "pid": it.get("pid"), "consumable": it.get("consumable", False)}
+               "pid": it.get("pid"), "consumable": _consumable_for(it, agent["species"])}
     for n in ambient_needs:                                  # ambient candidates: low + not already covered
         if (n in agent["needs"] and agent["needs"][n] < _thresh(agent, n)
                 and _field(providers, n, agent["x"], agent["y"]) <= 0.0):
