@@ -847,6 +847,11 @@ function applySim() {                          // render the latest sim state: p
     if (f) f.remove();
     if (state.world.item_placements) delete state.world.item_placements[pid];
   }
+  for (const cid of (s.eaten || [])) {                     // agents eaten by a predator -> die, leave the map
+    const f = document.querySelector(`.mapfig[data-cid="${cid}"]`);
+    if (f) f.remove();
+    if (state.world.placements) delete state.world.placements[cid];
+  }
   renderMinimap();
 }
 async function simLoop() {
