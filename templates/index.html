@@ -762,8 +762,11 @@ function openItemDetail(pid, item) {
         inp, el("span", { text: "min" }), el("span", { class: "dh", text: "(" + fmtDur(durs[need]) + ")" })));
     }
   }
-  pop.appendChild(el("div", { class: "v", style: "margin-top:8px; color:var(--muted)",
-    text: item.consumable ? "▪ used up after use" : "▪ reusable" }));
+  const cons = item.consumable;
+  const consTxt = (cons && typeof cons === "object")
+    ? ((Object.keys(cons).filter(sp => cons[sp])).length ? "▪ used up by " + Object.keys(cons).filter(sp => cons[sp]).join(", ") : "▪ reusable")
+    : (cons ? "▪ used up after use" : "▪ reusable");        // legacy bool
+  pop.appendChild(el("div", { class: "v", style: "margin-top:8px; color:var(--muted)", text: consTxt }));
   pop.appendChild(el("button", { class: "ghost sm", style: "margin-top:12px", text: "remove from map", onclick: () => { removeItem(pid); closePops(); } }));
   pop.style.position = "fixed"; pop.style.left = "auto"; pop.style.right = "16px"; pop.style.top = "64px";
   document.body.appendChild(pop);
