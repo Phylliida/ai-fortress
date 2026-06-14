@@ -4,21 +4,22 @@ pathfinding.py) to placed items to satisfy needs that drop below a deadband thre
 them — the colony.py utility loop, wired to stored world data (characters' needs/rates, items'
 per-species affordances). State is in-memory per world id; the UI steps it and renders the result.
 
-Time: 1 tick per game-minute, matching the UI clock. Needs decay by rate_per_hour/60 per tick. Movement
-is WALK_CELLS cells/tick along the cached path. (Rates below are all PER-GAME-MINUTE now, so the colony
-behaves identically to the old 5-ticks/min model — just clocked coarser, advancing the clock faster.)
+Time: 15 ticks per game-minute. Needs decay by rate_per_hour/900 per tick. Movement is ONE cell/tick
+along the CACHED path (re-pathed only on re-decide — walls never change yet; pathfinding.passable is the
+hook for solids later). Per-game-minute rates are held at the known-good 15 cells/game-min, so finer ticks
+just buy smoother motion (cell-by-cell, no teleporting) at a slower wall-clock.
 """
 import pathfinding
 import store
 
-TICKS_PER_HOUR = 60
-TICKS_PER_MIN = 1              # 1 tick per game-minute (1/GAME_MIN_PER_TICK) -> duration_min ticks
-GAME_MIN_PER_TICK = 1.0
+TICKS_PER_HOUR = 900
+TICKS_PER_MIN = 15             # 15 ticks/game-minute -> 1 cell/tick = 15 cells/game-min (the known-good speed)
+GAME_MIN_PER_TICK = 1.0 / 15
 DEFAULT_THRESH = 0.35          # need deadband when a character has no baked per-need threshold
 DEFAULT_DURATION_MIN = 5       # activity length for an item with no baked duration
-WALK_CELLS = 15                # cells walked per tick (15 cells/game-min, = old 3 cells x 5 ticks/min)
+WALK_CELLS = 1                 # ONE cell per tick, walked along the cached path (reused until re-decide)
 START_GAME_MIN = 8 * 60
-AMBIENT_FILL_PER_TICK = 0.25   # in-field refill RATE per tick = strength x this (0.25/game-min, balances decay)
+AMBIENT_FILL_PER_TICK = 0.0167 # 0.25/game-min / 15 ticks — keeps in-field refill balanced vs per-tick decay
 SOCIAL_RADIUS = 2              # cells — "conversation distance"; near a satisfying agent refills social
 EAT_RADIUS = 2                 # cells — a predator catches (and eats) prey within this range
 

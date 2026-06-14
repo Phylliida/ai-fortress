@@ -73,7 +73,7 @@
   .dragghost svg.stick { width:26px; height:34px; }
   .dragghost .box { width:18px; height:18px; border-radius:3px; background:var(--accent); border:1px solid #15110d; }
   .paletteItem, .map .mapfig, .map .mapitem { user-select:none; }
-  .map .mapfig { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:2; }
+  .map .mapfig { position:absolute; width:18px; height:18px; display:flex; align-items:center; justify-content:center; cursor:grab; z-index:2; transition: left .2s linear, top .2s linear; }
   .map .mapfig svg.stick { width:auto; height:16px; }
   .map .mapfig .nm { position:absolute; top:17px; left:50%; transform:translateX(-50%); display:none; font-size:11px; color:var(--accent); background:rgba(20,16,11,.85); padding:0 4px; border-radius:4px; white-space:nowrap; z-index:6; }
   .map .mapfig:hover { z-index:5; }
