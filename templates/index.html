@@ -84,7 +84,9 @@
   .pop { position:absolute; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.5); z-index:50; width:300px; max-height:calc(100vh - 84px); overflow-y:auto; }
   .pop label { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:8px 0 3px; }
   .pop .row { display:flex; gap:8px; } .pop .row > * { flex:1; }
-  .pop input, .pop select { width:100%; }
+  .pop input, .pop select, .pop textarea { width:100%; box-sizing:border-box; }
+  .pop textarea { resize:vertical; min-height:38px; font:12px ui-sans-serif,system-ui; background:#1f1913;
+                  color:var(--ink); border:1px solid var(--line); border-radius:5px; padding:4px 6px; }
   .status { font:12px ui-monospace,monospace; color:var(--muted); margin-top:8px; min-height:15px; }
   .status.err { color:var(--err); } .status.ok { color:var(--ok); }
   .det .k { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:8px; }
@@ -314,14 +316,26 @@ function genControl() {
 function openGenPop(anchor) {
   const gender = el("select", {}, ...["female", "male", "nonbinary"].map(g => el("option", { text: g })));
   const species = el("input", { value: "human" });
+  const name = el("input", { placeholder: "auto-fill" });
+  const appearance = el("textarea", { placeholder: "auto-fill", rows: "2" });
+  const personality = el("textarea", { placeholder: "auto-fill", rows: "2" });
+  const backstory = el("textarea", { placeholder: "auto-fill", rows: "2" });
   const status = el("div", { class: "status" });
   const go = el("button", { text: "summon", style: "margin-top:10px; width:100%" });
   const pop = el("div", { class: "pop", "data-pop": "1", style: "top:64px; left:auto; right:14px" },
     el("label", { text: "gender" }), gender,
-    el("label", { text: "species" }), species, go, status);
+    el("label", { text: "species" }), species,
+    el("label", { text: "name" }), name,
+    el("label", { text: "appearance" }), appearance,
+    el("label", { text: "personality" }), personality,
+    el("label", { text: "backstory" }), backstory, go, status);
   go.onclick = () => {
     go.disabled = true; status.className = "status"; status.textContent = "summoning…";
-    const q = new URLSearchParams({ gender: gender.value, species: species.value.trim() || "human" });
+    const params = { gender: gender.value, species: species.value.trim() || "human" };
+    for (const [k, inp] of [["name", name], ["appearance", appearance], ["personality", personality], ["backstory", backstory]]) {
+      const v = inp.value.trim(); if (v) params[k] = v;     // blank => let the model auto-fill it
+    }
+    const q = new URLSearchParams(params);
     let nm = "";
     stream(`/api/world/${state.wid}/character?` + q, d => {
       if (d.type === "field" && d.field === "name") { nm = d.value; status.textContent = "summoning " + nm + "…"; }
