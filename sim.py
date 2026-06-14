@@ -19,6 +19,8 @@ DEFAULT_DURATION_MIN = 5       # activity length for an item with no baked durat
 WALK_CELLS = 15                # cells walked per tick (15 cells/game-min, = old 3 cells x 5 ticks/min)
 START_GAME_MIN = 8 * 60
 AMBIENT_FILL_PER_TICK = 0.25   # in-field refill RATE per tick = strength x this (0.25/game-min, balances decay)
+SOCIAL_RADIUS = 2              # cells — "conversation distance"; near a satisfying agent refills social
+EAT_RADIUS = 2                 # cells — a predator catches (and eats) prey within this range
 
 _SIMS = {}                     # wid -> {"game_min": float, "agents": {cid: agent}}
 
@@ -111,6 +113,25 @@ def _nearest_provider(providers, n, x, y):
     return best
 
 
+def _species_affords(world, consumer_sp, target_sp):
+    """{affords: {need: refill}, consumable} — how a TARGET species satisfies a CONSUMER's needs (target
+    as food/company). Empty if the pair was never baked or satisfies nothing."""
+    return (world.get("species_affords", {}).get(consumer_sp, {}).get(target_sp)
+            or {"affords": {}, "consumable": False})
+
+
+def _nearest_sat_agent(agent, others, world, need):
+    """Nearest OTHER agent whose species satisfies `agent`'s `need` -> (cid, x, y, sp, saff, dist) | None."""
+    best, bestd = None, None
+    for (c, bx, by, sp) in others:
+        saff = _species_affords(world, agent["species"], sp)
+        if need in saff["affords"]:
+            d = abs(agent["x"] - bx) + abs(agent["y"] - by)
+            if bestd is None or d < bestd:
+                best, bestd = (c, bx, by, sp, saff, d), d
+    return best
+
+
 def _choose(agent, items, ambient_needs):
     """Best (item, need) for an ACTIVE need to act on: max over placed items AND the below-threshold
     non-ambient needs they serve of refill x urgency(1-level), distance-discounted. (None, None) if
@@ -129,13 +150,13 @@ def _choose(agent, items, ambient_needs):
     return best, best_need
 
 
-def _decide(agent, items, ambient_needs, providers):
-    """Most worthwhile thing to do now, comparing two kinds on one urgency scale (refill/strength x
-    (1-level), distance-discounted): an ACTIVE item-use (walk to it, use it for a duration, refill the
-    one need) or an AMBIENT move-into-a-field (walk into the nearest provider's radius, then stand while
-    the passive field refills the need — no fixed duration). Returns an action dict or None."""
+def _decide(agent, others, items, ambient_needs, providers, world, consume_needs, social_needs):
+    """Most worthwhile thing to do now, comparing every kind on one urgency scale (refill/strength x
+    (1-level), distance-discounted): ACTIVE item-use, AMBIENT move-into-an-item-field, EAT another agent
+    (a consume need met by a prey species), or seek a SOCIAL peer (a social need met by being near another
+    agent). `others` = [(cid, x, y, species)] of the live agents. Returns an action dict or None."""
     best_score, act = 0.0, None
-    it, need = _choose(agent, items, ambient_needs)          # active candidate
+    it, need = _choose(agent, items, ambient_needs)          # active item-use
     if it:
         af = _affords_for(it, agent["species"])
         d = abs(agent["x"] - it["x"]) + abs(agent["y"] - it["y"])
@@ -143,7 +164,7 @@ def _decide(agent, items, ambient_needs, providers):
         act = {"kind": "active", "name": it["name"], "tx": it["x"], "ty": it["y"], "need": need,
                "refill": af.get(need, 0.0), "dur": (it.get("durations") or {}).get(need),
                "pid": it.get("pid"), "consumable": _consumable_for(it, agent["species"])}
-    for n in ambient_needs:                                  # ambient candidates: low + not already covered
+    for n in ambient_needs:                                  # ambient item-field: low + not already in one
         if (n in agent["needs"] and agent["needs"][n] < _thresh(agent, n)
                 and _field(providers, n, agent["x"], agent["y"]) <= 0.0):
             p = _nearest_provider(providers, n, agent["x"], agent["y"])
@@ -153,6 +174,30 @@ def _decide(agent, items, ambient_needs, providers):
                 if score > best_score:
                     best_score = score
                     act = {"kind": "ambient", "name": p["name"], "tx": p["x"], "ty": p["y"], "need": n}
+    for n in consume_needs:                                  # EAT prey: a consume need met by another agent
+        if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n):
+            r = _nearest_sat_agent(agent, others, world, n)
+            if r:
+                c, bx, by, sp, saff, d = r
+                score = (saff["affords"][n] * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
+                if score > best_score:
+                    best_score = score
+                    act = {"kind": "eat", "prey": c, "need": n, "refill": saff["affords"][n],
+                           "tx": bx, "ty": by, "consumable": saff["consumable"], "name": sp}
+    for n in social_needs:                                   # seek a SOCIAL peer: low + not already near one
+        if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n):
+            near = any((agent["x"] - bx) ** 2 + (agent["y"] - by) ** 2 <= SOCIAL_RADIUS ** 2
+                       and n in _species_affords(world, agent["species"], sp)["affords"]
+                       for (c, bx, by, sp) in others)
+            if near:
+                continue                                     # already in company -> passive refill handles it
+            r = _nearest_sat_agent(agent, others, world, n)
+            if r:
+                c, bx, by, sp, saff, d = r
+                score = (saff["affords"][n] * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
+                if score > best_score:
+                    best_score = score
+                    act = {"kind": "social", "peer": c, "need": n, "tx": bx, "ty": by, "name": sp}
     return act
 
 
@@ -173,21 +218,38 @@ def step_world(world, ticks=1):
     sim = _SIMS.setdefault(world["id"], {"game_min": float(START_GAME_MIN), "agents": {}})
     _reconcile(sim, world)
     items = _items(world)
-    ambient_needs = {n for n, m in world.get("need_modes", {}).items() if m.get("mode") == "ambient"}
+    modes = world.get("need_modes", {})
+    ambient_needs = {n for n, m in modes.items() if m.get("mode") == "ambient"}
+    consume_needs = {n for n, m in modes.items() if m.get("mode") == "consume"}
+    social_needs = {n for n, m in modes.items() if m.get("mode") == "social"}
     providers = _providers(items, ambient_needs)
-    consumed = []
+    consumed, eaten = [], []
     for _ in range(max(1, ticks)):
         sim["game_min"] += GAME_MIN_PER_TICK
-        for a in sim["agents"].values():
+        killed = set()
+        for cid, a in list(sim["agents"].items()):
+            if cid in killed:                                     # eaten earlier this tick
+                continue
             serving = a["busy_affords"] if a["busy"] > 0 else {}
             for n in a["needs"]:                                  # decay (except what you're using)
                 if n not in serving:
                     a["needs"][n] = max(0.0, a["needs"][n] - a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
-            for n in ambient_needs:                               # passive: standing in a field refills it
+            for n in ambient_needs:                               # passive: standing in an item field refills it
                 if n in a["needs"]:                               # (positional — runs whatever you're doing)
                     f = _field(providers, n, a["x"], a["y"])
                     if f > 0.0:
                         a["needs"][n] = min(1.0, a["needs"][n] + f * AMBIENT_FILL_PER_TICK)
+            prox = {}                                             # passive: near a satisfying AGENT refills (social)
+            for cb, b in sim["agents"].items():
+                if cb == cid or cb in killed:
+                    continue
+                if (a["x"] - b["x"]) ** 2 + (a["y"] - b["y"]) ** 2 <= SOCIAL_RADIUS ** 2:
+                    for n, strength in _species_affords(world, a["species"], b["species"])["affords"].items():
+                        if n not in consume_needs:                # eating is active, not a proximity field
+                            prox[n] = max(prox.get(n, 0.0), strength)
+            for n, strength in prox.items():
+                if n in a["needs"]:
+                    a["needs"][n] = min(1.0, a["needs"][n] + strength * AMBIENT_FILL_PER_TICK)
             if a["busy"] > 0:                                     # mid-activity: spread refill over its span
                 for n, r in serving.items():
                     if n in a["needs"]:
@@ -201,8 +263,10 @@ def step_world(world, ticks=1):
                     a["busy_affords"], a["busy_name"] = {}, ""
                     a["busy_pid"], a["busy_consumable"] = None, False
                 continue                                          # committed to the full duration
-            if a["action"] is None:                               # decide: best active-use or ambient-field
-                act = _decide(a, items, ambient_needs, providers)
+            if a["action"] is None:                               # decide across all kinds
+                others = [(c, b["x"], b["y"], b["species"]) for c, b in sim["agents"].items()
+                          if c != cid and c not in killed]
+                act = _decide(a, others, items, ambient_needs, providers, world, consume_needs, social_needs)
                 if act:
                     a["action"] = act
                     a["path"] = pathfinding.astar((a["x"], a["y"]), (act["tx"], act["ty"]))[1:]
@@ -211,11 +275,30 @@ def step_world(world, ticks=1):
                 for _ in range(WALK_CELLS):
                     if a["path"]:
                         a["x"], a["y"] = a["path"].pop(0)
-                if act["kind"] == "ambient":                      # arrive = inside the field; passive refill takes over
+                kind = act["kind"]
+                if kind == "ambient":                             # arrive = inside the field; passive refill takes over
                     if _field(providers, act["need"], a["x"], a["y"]) > 0.0 or (a["x"], a["y"]) == (act["tx"], act["ty"]):
                         a["action"], a["path"] = None, []         # stand here (no busy duration — the field does it)
                     elif not a["path"]:
-                        a["action"] = None                        # unreachable -> give up
+                        a["action"] = None
+                elif kind == "eat":                               # chase prey; catch within EAT_RADIUS -> devour
+                    prey = sim["agents"].get(act["prey"])
+                    if prey is None or act["prey"] in killed:
+                        a["action"], a["path"] = None, []         # prey already gone -> re-decide
+                    elif (a["x"] - prey["x"]) ** 2 + (a["y"] - prey["y"]) ** 2 <= EAT_RADIUS ** 2:
+                        a["needs"][act["need"]] = min(1.0, a["needs"][act["need"]] + act["refill"])
+                        if act["consumable"]:                     # the prey dies — off the map (persist)
+                            killed.add(act["prey"])
+                            store.append(world["id"], {"type": "place", "cid": act["prey"], "x": None, "y": None})
+                            eaten.append(act["prey"])
+                        a["action"], a["path"] = None, []
+                    elif not a["path"]:
+                        a["action"] = None                        # prey moved out of reach -> re-acquire
+                elif kind == "social":                            # walk to a peer; in range -> passive refill takes over
+                    peer = sim["agents"].get(act["peer"])
+                    if (peer is None or not a["path"]
+                            or (peer and (a["x"] - peer["x"]) ** 2 + (a["y"] - peer["y"]) ** 2 <= SOCIAL_RADIUS ** 2)):
+                        a["action"], a["path"] = None, []
                 elif (a["x"], a["y"]) == (act["tx"], act["ty"]):  # active: begin the activity on arrival
                     dur = max(1, round((act["dur"] or DEFAULT_DURATION_MIN) * TICKS_PER_MIN))
                     a["busy"], a["busy_dur"] = dur, dur
@@ -225,8 +308,10 @@ def step_world(world, ticks=1):
                     a["action"], a["path"] = None, []
                 elif not a["path"]:                               # unreachable -> give up
                     a["action"] = None
+        for c in killed:
+            sim["agents"].pop(c, None)
     st = _state(sim, providers, ambient_needs)
-    st["consumed"] = consumed
+    st["consumed"], st["eaten"] = consumed, eaten
     return st
 
 
@@ -234,7 +319,12 @@ def _doing(a, providers, ambient_needs):
     if a["busy"] > 0:
         return "using " + a["busy_name"]
     if a["action"]:
-        return "→ " + a["action"]["name"]
+        act = a["action"]
+        if act["kind"] == "eat":
+            return "→ hunting " + act["name"]
+        if act["kind"] == "social":
+            return "→ socializing"
+        return "→ " + act["name"]
     for n in ambient_needs:                                   # idle but standing in a field, still recovering
         if n in a["needs"] and a["needs"][n] < 1.0 and _field(providers, n, a["x"], a["y"]) > 0.0:
             return "↺ " + n
