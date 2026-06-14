@@ -65,7 +65,7 @@ def _get_sim(wid):
 
 
 def _new_agent(x, y, ch):
-    return {"x": int(x), "y": int(y),
+    return {"x": int(x), "y": int(y), "placed_at": [int(x), int(y)],  # last drop point (detects re-drags)
             "needs": {n: 1.0 for n in ch.get("needs", [])},
             "rates": ch.get("rates", {}) or {},
             "thresholds": ch.get("thresholds", {}) or {},
@@ -256,28 +256,45 @@ def _decide(agent, others, items, ambient_needs, providers, world, consume_needs
 
 
 def _reconcile(sim, world):
-    """Add agents for newly-placed characters, drop agents whose character left the map."""
+    """Add agents for newly-placed characters, drop agents whose character left the map, and TELEPORT an
+    agent the user re-dragged to its new spot — interrupting whatever it was doing (needs left as-is). A
+    consumable mid-use is consumed on interrupt (no dragging-off-an-item-for-free abuse). Returns the pids
+    consumed by interrupts."""
     placed = world.get("placements", {})
     bycid = {c["cid"]: c for c in world.get("characters", [])}
+    consumed = []
     for cid, pos in placed.items():
-        if cid not in sim["agents"] and cid in bycid:
-            sim["agents"][cid] = _new_agent(pos["x"], pos["y"], bycid[cid])
+        if cid not in bycid:
+            continue
+        px, py = int(pos["x"]), int(pos["y"])
+        if cid not in sim["agents"]:
+            sim["agents"][cid] = _new_agent(px, py, bycid[cid])
+        elif sim["agents"][cid].get("placed_at") != [px, py]:   # user dragged it -> move + interrupt
+            a = sim["agents"][cid]
+            if a["busy"] > 0 and a["busy_consumable"] and a["busy_pid"]:   # eat the item so the drag can't farm it
+                store.append(world["id"], {"type": "item_place", "pid": a["busy_pid"], "x": None, "y": None})
+                consumed.append(a["busy_pid"])
+            a["x"], a["y"], a["placed_at"] = px, py, [px, py]
+            a["action"], a["path"] = None, []
+            a["busy"], a["busy_affords"], a["busy_name"] = 0, {}, ""
+            a["busy_pid"], a["busy_consumable"] = None, False
     for cid in list(sim["agents"]):
         if cid not in placed:
             del sim["agents"][cid]
+    return consumed
 
 
 def step_world(world, ticks=1):
     """Advance the world's sim `ticks` ticks and return its state."""
     sim = _get_sim(world["id"])                # restores the disk snapshot after a restart, else fresh
-    _reconcile(sim, world)
-    items = _items(world)
+    consumed = _reconcile(sim, world)          # interrupt-consumed pids (agent re-dragged off a consumable)
+    items = [it for it in _items(world) if it["pid"] not in consumed]
     modes = world.get("need_modes", {})
     ambient_needs = {n for n, m in modes.items() if m.get("mode") == "ambient"}
     consume_needs = {n for n, m in modes.items() if m.get("mode") == "consume"}
     social_needs = {n for n, m in modes.items() if m.get("mode") == "social"}
     providers = _providers(items, ambient_needs)
-    consumed, eaten = [], []
+    eaten = []
     for _ in range(max(1, ticks)):
         sim["game_min"] += GAME_MIN_PER_TICK
         killed = set()
