@@ -22,6 +22,7 @@ START_GAME_MIN = 8 * 60
 AMBIENT_FILL_PER_TICK = 0.25   # in-field refill RATE per tick = strength x this (0.25/game-min, balances decay)
 SOCIAL_RADIUS = 2              # cells — "conversation distance"; near a satisfying agent refills social
 EAT_RADIUS = 2                 # cells — a predator catches (and eats) prey within this range
+SLEEP_DECAY_FACTOR = 0.1       # while asleep, every OTHER need drains 10x slower (else they wake starving)
 
 _SIMS = {}                     # wid -> {"game_min": float, "agents": {cid: agent}}
 
@@ -39,6 +40,17 @@ def _new_agent(x, y, ch):
 
 def _thresh(agent, need):
     return agent["thresholds"].get(need, DEFAULT_THRESH)
+
+
+def _is_sleep_need(n):
+    n = n.lower()
+    return "sleep" in n or n in ("rest", "tiredness", "sleepiness", "tired")
+
+
+def _is_sleeping(a):
+    """Mid-sleep: busy on a restore activity that's satisfying a sleep/rest need (so we drain its other
+    needs slower). Keys off the need name since 'the sleep need' has no dedicated flag."""
+    return a["busy"] > 0 and any(_is_sleep_need(n) for n in a["busy_affords"])
 
 
 def _affords_for(item, species):
@@ -232,9 +244,10 @@ def step_world(world, ticks=1):
             if cid in killed:                                     # eaten earlier this tick
                 continue
             serving = a["busy_affords"] if a["busy"] > 0 else {}
+            slow = SLEEP_DECAY_FACTOR if _is_sleeping(a) else 1.0  # asleep -> other needs drain 10x slower
             for n in a["needs"]:                                  # decay (except what you're using)
                 if n not in serving:
-                    a["needs"][n] = max(0.0, a["needs"][n] - a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
+                    a["needs"][n] = max(0.0, a["needs"][n] - slow * a["rates"].get(n, 0.0) / TICKS_PER_HOUR)
             for n in ambient_needs:                               # passive: standing in an item field refills it
                 if n in a["needs"]:                               # (positional — runs whatever you're doing)
                     f = _field(providers, n, a["x"], a["y"])
