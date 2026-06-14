@@ -188,6 +188,24 @@ def _bake_item_species(name, species, need_list, modeof, item):
             "durations_ok": durok_add, "consumable": consumable}
 
 
+def _bake_species_pair(consumer, consumer_needs, target, modeof):
+    """Does the TARGET species satisfy the CONSUMER species' needs — the same checks we run for items,
+    but the 'item' is a creature. Mode picks the verb: consume -> eat the target (and maybe kill it),
+    social/ambient/experiential -> be near it; restore needs can't be met by a creature, skipped.
+    Returns {affords: {need: refill}, consumable: bool} (consumable = does eating kill the target)."""
+    affords = {}
+    for need in consumer_needs:
+        mode = modeof.get(need)
+        if mode in (None, "restore"):
+            continue
+        r = needs.bake_species_affordance(SERVER, consumer, target, need, mode)
+        if r["applies"] and r["refill"] > 0:
+            affords[need] = r["refill"]
+    consumable = (any(modeof.get(n) == "consume" for n in affords)
+                  and SERVER.yes_no_prob(needs.species_kill_prompt(consumer, target)) >= 0.5)
+    return {"affords": affords, "consumable": bool(consumable)}
+
+
 @app.route("/api/world/<wid>/needs/classify")
 def api_classify_needs(wid):
     """Bake the MODE of every need in the world (consume/restore/ambient/social/experiential) via the
@@ -415,27 +433,41 @@ def api_world_character(wid):
                                "wake_hours": rr["wake_hours"], "thresholds": thresholds, "prompts": prompts})
             yield sse({"type": "saved", "cid": cid})
 
-            # brand-new species → teach every existing item about it (vs. regenerating them all). Bakes
-            # the species' affordances/consumable/missing durations+radii and merges into each item.
-            if species not in {c.get("species", "human") for c in w["characters"]} and w.get("items"):
-                sp_needs = sorted(set(need_list))
-                modeof = _modes_for(wid, w, sp_needs)
-                taught = 0
-                for iid, item in w["items"].items():
-                    yield sse({"type": "status", "message": f"teaching '{item['name']}' about {species}…"})
-                    upd = _bake_item_species(item["name"], species, sp_needs, modeof, item)
-                    if not upd["affords_sub"]:
-                        continue
-                    affords = dict(item.get("affords") or {}); affords[species] = upd["affords_sub"]
-                    cons = dict(item.get("consumable") or {}) if isinstance(item.get("consumable"), dict) else {}
-                    cons[species] = upd["consumable"]
-                    store.append(wid, {"type": "item", "iid": iid, "name": item["name"], "affords": affords,
-                                       "durations": {**(item.get("durations") or {}), **upd["durations"]},
-                                       "durations_ok": {**(item.get("durations_ok") or {}), **upd["durations_ok"]},
-                                       "radii": {**(item.get("radii") or {}), **upd["radii"]},
-                                       "consumable": cons})
-                    taught += 1
-                yield sse({"type": "species_backfill", "species": species, "items": taught})
+            # brand-new species → teach the world about it without regenerating anything: (1) backfill
+            # every existing item with its affordances, (2) bake species-vs-species affordances (a creature
+            # is a mobile 'item' — food to a predator, company to a social peer).
+            if species not in {c.get("species", "human") for c in w["characters"]}:
+                sp_needs_map = _world_species_needs(w)              # {existing species: [needs]}
+                sp_needs_map[species] = sorted(set(need_list))      # + the new species
+                modeof = _modes_for(wid, w, sorted({n for ns in sp_needs_map.values() for n in ns}))
+                if w.get("items"):                                 # (1) items
+                    taught = 0
+                    for iid, item in w["items"].items():
+                        yield sse({"type": "status", "message": f"teaching '{item['name']}' about {species}…"})
+                        upd = _bake_item_species(item["name"], species, sp_needs_map[species], modeof, item)
+                        if not upd["affords_sub"]:
+                            continue
+                        affords = dict(item.get("affords") or {}); affords[species] = upd["affords_sub"]
+                        cons = dict(item.get("consumable") or {}) if isinstance(item.get("consumable"), dict) else {}
+                        cons[species] = upd["consumable"]
+                        store.append(wid, {"type": "item", "iid": iid, "name": item["name"], "affords": affords,
+                                           "durations": {**(item.get("durations") or {}), **upd["durations"]},
+                                           "durations_ok": {**(item.get("durations_ok") or {}), **upd["durations_ok"]},
+                                           "radii": {**(item.get("radii") or {}), **upd["radii"]},
+                                           "consumable": cons})
+                        taught += 1
+                    yield sse({"type": "species_backfill", "species": species, "items": taught})
+                for consumer in sorted(sp_needs_map):              # (2) species pairs (only those involving the new one)
+                    for target in sorted(sp_needs_map):
+                        if species not in (consumer, target):
+                            continue
+                        yield sse({"type": "status", "message": f"can a {consumer} use a {target}?…"})
+                        pair = _bake_species_pair(consumer, sp_needs_map[consumer], target, modeof)
+                        if pair["affords"]:
+                            store.append(wid, {"type": "species_afford", "consumer": consumer, "target": target,
+                                               "affords": pair["affords"], "consumable": pair["consumable"]})
+                            yield sse({"type": "species_afford", "consumer": consumer, "target": target,
+                                       "affords": pair["affords"], "consumable": pair["consumable"]})
             yield sse({"type": "done"})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})

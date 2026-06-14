@@ -17,6 +17,8 @@ Record types:
   {"type":"item_duration", "iid", "need", "duration_min"}   # per-need manual duration override
   {"type":"need_mode",  "need", "mode", "conf", "manual"}   # how a need is met (consume/restore/
                                             # ambient/social/experiential); last write wins per need
+  {"type":"species_afford", "consumer", "target", "affords":{need:refill}, "consumable"}  # another
+                                            # SPECIES satisfies a consumer's needs (target as food/company)
   {"type":"item_delete", "iid"}   # delete an item TEMPLATE from the palette (+ its placed instances)
   {"type":"item_place", "pid", "iid", "x", "y"}   # one instance on the map (many per template;
                                                    # last write wins per pid; x or y null = removed)
@@ -78,7 +80,7 @@ def load_world(world_id):
         return None
     world = {"id": world_id, "prompt": None, "created": None,
              "characters": [], "locations": [], "npc_totals": {}, "objects": {}, "placements": {},
-             "items": {}, "item_placements": {}, "need_modes": {}}
+             "items": {}, "item_placements": {}, "need_modes": {}, "species_affords": {}}
     for r in recs:
         t = r.get("type")
         if t == "world":
@@ -106,6 +108,9 @@ def load_world(world_id):
         elif t == "need_mode":
             world["need_modes"][r["need"]] = {"mode": r["mode"], "conf": r.get("conf"),
                                               "manual": bool(r.get("manual"))}
+        elif t == "species_afford":
+            world["species_affords"].setdefault(r["consumer"], {})[r["target"]] = {
+                "affords": r.get("affords", {}), "consumable": bool(r.get("consumable"))}
         elif t == "item_delete":
             world["items"].pop(r["iid"], None)
             for pid in [p for p, ip in world["item_placements"].items() if ip.get("iid") == r["iid"]]:
