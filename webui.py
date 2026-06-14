@@ -106,6 +106,7 @@ def api_place(wid):
     else:
         x = y = None
     store.append(wid, {"type": "place", "cid": cid, "x": x, "y": y})
+    sim.reconcile(wid)              # sync the live sim now so a paused drag shows on refresh (not next step)
     return {"ok": True, "cid": cid, "x": x, "y": y}
 
 

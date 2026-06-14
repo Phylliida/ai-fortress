@@ -416,6 +416,20 @@ def _state(sim, providers=(), ambient_needs=()):
                        for cid, a in sim["agents"].items()}}
 
 
+def reconcile(wid):
+    """Sync the live sim to the current placements WITHOUT advancing time — call after a drag so a paused
+    move shows immediately (the agent teleports + interrupts there now, not on the next step). No-op if
+    there's no live sim yet (the figure then comes straight from placements). Returns interrupt-consumed pids."""
+    sim = _SIMS.get(wid) or _load_snapshot(wid)
+    world = store.load_world(wid)
+    if sim is None or world is None:
+        return []
+    _SIMS[wid] = sim
+    consumed = _reconcile(sim, world)
+    _save_snapshot(wid)
+    return consumed
+
+
 def state(wid):
     """Current rendered sim state (positions, need levels, clock) for `wid`, restoring from disk if the
     server restarted. Returns None if this world has no live sim yet."""
