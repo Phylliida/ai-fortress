@@ -365,6 +365,7 @@ def api_world_character(wid):
     gender = request.args.get("gender", "female").strip()
     species = request.args.get("species", "human").strip()
     at = request.args.get("at", "").strip() or None
+    given = {f: request.args.get(f, "").strip() for f in ("name", "appearance", "personality", "backstory")}
 
     @stream_with_context
     def gen():
@@ -374,13 +375,18 @@ def api_world_character(wid):
         try:
             setting = w["prompt"] + (f" — at {at}" if at else "")
             ctx = {"world": setting, "species": species, "gender": gender}
-            prompts = {"name": wr.field_prompt("name", ctx)}
-            ctx["name"] = nm = wr.gen_field(SERVER, "name", ctx)
-            yield sse({"type": "field", "field": "name", "value": nm, "prompt": prompts["name"]})
-            for field in ("appearance", "personality", "backstory"):
-                prompts[field] = wr.field_prompt(field, ctx)
-                ctx[field] = val = wr.gen_field(SERVER, field, ctx)
-                yield sse({"type": "field", "field": field, "value": val, "prompt": prompts[field]})
+            prompts = {}
+            # each field: use the user-provided value if given, else generate (later fields' prompts read
+            # earlier ones from ctx, so a hand-typed name still informs a generated appearance/backstory)
+            for field in ("name", "appearance", "personality", "backstory"):
+                if given[field]:
+                    ctx[field] = val = given[field]
+                    yield sse({"type": "field", "field": field, "value": val, "prompt": None, "given": True})
+                else:
+                    prompts[field] = wr.field_prompt(field, ctx)
+                    ctx[field] = val = wr.gen_field(SERVER, field, ctx)
+                    yield sse({"type": "field", "field": field, "value": val, "prompt": prompts[field]})
+            nm = ctx["name"]
             char = SimpleNamespace(name=nm, gender=gender, species=species, prefix=wr.char_prefix(ctx))
             prompts["nocturnal"] = wr.nocturnal_prompt(char)
             noc = wr.nocturnal_prob(SERVER, char)
