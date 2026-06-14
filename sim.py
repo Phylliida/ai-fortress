@@ -9,6 +9,8 @@ cell/tick along the CACHED path (re-pathed only on re-decide — walls never cha
 is the hook for solids later). Tuned for SMALL/compact settings: walks are short, so 1 cell/game-min is
 plenty and the clock stays fast. (Bigger maps would want more ticks/game-min so agents don't starve mid-walk.)
 """
+import json
+import os
 import pathfinding
 import store
 
@@ -25,6 +27,41 @@ EAT_RADIUS = 2                 # cells — a predator catches (and eats) prey wi
 SLEEP_DECAY_FACTOR = 0.1       # while asleep, every OTHER need drains 10x slower (else they wake starving)
 
 _SIMS = {}                     # wid -> {"game_min": float, "agents": {cid: agent}}
+_save_calls = {}               # wid -> step calls since the last disk save
+SAVE_EVERY_CALLS = 75          # persist the live sim ~every 75 step calls (~15s at the UI's 200ms cadence)
+
+
+def _snap_path(wid):
+    return os.path.join(store.WORLDS_DIR, wid + ".sim.json")
+
+
+def _save_snapshot(wid):
+    """Persist the live sim (clock + full agent state) so it survives a server restart."""
+    sim = _SIMS.get(wid)
+    if sim is None:
+        return
+    try:
+        with open(_snap_path(wid), "w") as f:
+            json.dump({"game_min": sim["game_min"], "agents": sim["agents"]}, f)
+    except OSError:
+        pass
+
+
+def _load_snapshot(wid):
+    try:
+        with open(_snap_path(wid)) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def _get_sim(wid):
+    """The in-memory sim for `wid`, restoring from the disk snapshot (or starting fresh) if absent."""
+    sim = _SIMS.get(wid)
+    if sim is None:
+        sim = _load_snapshot(wid) or {"game_min": float(START_GAME_MIN), "agents": {}}
+        _SIMS[wid] = sim
+    return sim
 
 
 def _new_agent(x, y, ch):
@@ -232,7 +269,7 @@ def _reconcile(sim, world):
 
 def step_world(world, ticks=1):
     """Advance the world's sim `ticks` ticks and return its state."""
-    sim = _SIMS.setdefault(world["id"], {"game_min": float(START_GAME_MIN), "agents": {}})
+    sim = _get_sim(world["id"])                # restores the disk snapshot after a restart, else fresh
     _reconcile(sim, world)
     items = _items(world)
     modes = world.get("need_modes", {})
@@ -328,6 +365,11 @@ def step_world(world, ticks=1):
                     a["action"] = None
         for c in killed:
             sim["agents"].pop(c, None)
+    wid = world["id"]                          # persist periodically (~every SAVE_EVERY_CALLS steps)
+    _save_calls[wid] = _save_calls.get(wid, 0) + 1
+    if _save_calls[wid] >= SAVE_EVERY_CALLS:
+        _save_calls[wid] = 0
+        _save_snapshot(wid)
     st = _state(sim, providers, ambient_needs)
     st["consumed"], st["eaten"] = consumed, eaten
     return st
@@ -357,5 +399,20 @@ def _state(sim, providers=(), ambient_needs=()):
                        for cid, a in sim["agents"].items()}}
 
 
+def state(wid):
+    """Current rendered sim state (positions, need levels, clock) for `wid`, restoring from disk if the
+    server restarted. Returns None if this world has no live sim yet."""
+    sim = _SIMS.get(wid) or _load_snapshot(wid)
+    if sim is None:
+        return None
+    _SIMS.setdefault(wid, sim)
+    return _state(sim)
+
+
 def reset(wid):
     _SIMS.pop(wid, None)
+    _save_calls.pop(wid, None)
+    try:
+        os.remove(_snap_path(wid))             # forget the persisted snapshot too
+    except OSError:
+        pass

@@ -370,6 +370,15 @@ def api_sim_step(wid):
     return sim.step_world(w, ticks)
 
 
+@app.route("/api/world/<wid>/sim/state")
+def api_sim_state(wid):
+    """The saved live sim state (positions, need levels, clock) so a page refresh resumes where it left
+    off instead of resetting. {} if this world has no live sim yet."""
+    if not store.load_world(wid):
+        return {"error": "not found"}, 404
+    return sim.state(wid) or {}
+
+
 @app.route("/api/world/<wid>/sim/reset", methods=["POST"])
 def api_sim_reset(wid):
     sim.reset(wid)

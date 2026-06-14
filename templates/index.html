@@ -242,7 +242,7 @@ async function restoreFromHash() {
   state.wid = wid; state.needLevels = {}; state.sim = null;
   await refreshWorld();
   if (!state.world || state.world.error) { state.wid = null; return; }   // stale/deleted world
-  fetch(`/api/world/${wid}/sim/reset`, { method: "POST" });
+  await restoreSim(wid);                     // resume the saved live state instead of resetting
   const z = parseFloat(p.get("z")), px = parseFloat(p.get("x")), py = parseFloat(p.get("y"));
   if (!isNaN(z) && !isNaN(px) && !isNaN(py)) { zoom = Math.max(ZMIN, Math.min(ZMAX, z)); panX = px; panY = py; clampPan(); applyView(); }
   else resetView();
@@ -279,9 +279,9 @@ async function openWorld(wid) {            // switch worlds -> also reset the vi
   state.wid = wid;
   state.needLevels = {}; state.sim = null;  // fresh sim state for the new world
   if (logOpen) resetLogView();              // log indices are per-world
-  fetch(`/api/world/${wid}/sim/reset`, { method: "POST" });
   await refreshWorld();
   resetView();
+  await restoreSim(wid);                     // resume this world's saved live state
 }
 
 // ----------------------------------------------------------------- roster
@@ -853,6 +853,12 @@ function applySim() {                          // render the latest sim state: p
     if (state.world.placements) delete state.world.placements[cid];
   }
   renderMinimap();
+}
+async function restoreSim(wid) {              // pull the saved live state (positions/needs/clock) onto the map
+  try {
+    const s = await (await fetch(`/api/world/${wid}/sim/state`)).json();
+    if (s && s.agents && Object.keys(s.agents).length) { state.sim = s; applySim(); }
+  } catch (e) { /* no saved sim yet */ }
 }
 async function simLoop() {
   if (!playing || simBusy || !state.wid) return;
