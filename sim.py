@@ -133,10 +133,14 @@ def _species_affords(world, consumer_sp, target_sp):
             or {"affords": {}, "consumable": False})
 
 
-def _nearest_sat_agent(agent, others, world, need):
-    """Nearest OTHER agent whose species satisfies `agent`'s `need` -> (cid, x, y, sp, saff, dist) | None."""
+def _nearest_sat_agent(agent, others, world, need, skip_asleep=False):
+    """Nearest OTHER agent whose species satisfies `agent`'s `need` -> (cid, x, y, sp, saff, dist) | None.
+    `others` = [(cid, x, y, species, asleep)]. skip_asleep drops sleepers (they emit no social field — but
+    a predator can still eat sleeping prey)."""
     best, bestd = None, None
-    for (c, bx, by, sp) in others:
+    for (c, bx, by, sp, asleep) in others:
+        if skip_asleep and asleep:
+            continue
         saff = _species_affords(world, agent["species"], sp)
         if need in saff["affords"]:
             d = abs(agent["x"] - bx) + abs(agent["y"] - by)
@@ -197,14 +201,14 @@ def _decide(agent, others, items, ambient_needs, providers, world, consume_needs
                     best_score = score
                     act = {"kind": "eat", "prey": c, "need": n, "refill": saff["affords"][n],
                            "tx": bx, "ty": by, "consumable": saff["consumable"], "name": sp}
-    for n in social_needs:                                   # seek a SOCIAL peer: low + not already near one
+    for n in social_needs:                                   # seek a SOCIAL peer: low + not already near an AWAKE one
         if n in agent["needs"] and agent["needs"][n] < _thresh(agent, n):
-            near = any((agent["x"] - bx) ** 2 + (agent["y"] - by) ** 2 <= SOCIAL_RADIUS ** 2
+            near = any(not asleep and (agent["x"] - bx) ** 2 + (agent["y"] - by) ** 2 <= SOCIAL_RADIUS ** 2
                        and n in _species_affords(world, agent["species"], sp)["affords"]
-                       for (c, bx, by, sp) in others)
+                       for (c, bx, by, sp, asleep) in others)
             if near:
                 continue                                     # already in company -> passive refill handles it
-            r = _nearest_sat_agent(agent, others, world, n)
+            r = _nearest_sat_agent(agent, others, world, n, skip_asleep=True)
             if r:
                 c, bx, by, sp, saff, d = r
                 score = (saff["affords"][n] * (1.0 - agent["needs"][n])) / (1.0 + 0.01 * d)
@@ -255,7 +259,7 @@ def step_world(world, ticks=1):
                         a["needs"][n] = min(1.0, a["needs"][n] + f * AMBIENT_FILL_PER_TICK)
             prox = {}                                             # passive: near a satisfying AGENT refills (social)
             for cb, b in sim["agents"].items():
-                if cb == cid or cb in killed:
+                if cb == cid or cb in killed or _is_sleeping(b):  # a sleeping agent emits no passive field
                     continue
                 if (a["x"] - b["x"]) ** 2 + (a["y"] - b["y"]) ** 2 <= SOCIAL_RADIUS ** 2:
                     for n, strength in _species_affords(world, a["species"], b["species"])["affords"].items():
@@ -278,7 +282,7 @@ def step_world(world, ticks=1):
                     a["busy_pid"], a["busy_consumable"] = None, False
                 continue                                          # committed to the full duration
             if a["action"] is None:                               # decide across all kinds
-                others = [(c, b["x"], b["y"], b["species"]) for c, b in sim["agents"].items()
+                others = [(c, b["x"], b["y"], b["species"], _is_sleeping(b)) for c, b in sim["agents"].items()
                           if c != cid and c not in killed]
                 act = _decide(a, others, items, ambient_needs, providers, world, consume_needs, social_needs)
                 if act:
