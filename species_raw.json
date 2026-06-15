@@ -1,0 +1,2598 @@
+[
+  {
+    "name": "Gargoyles",
+    "desc": "Winged stone statues that defend their home from intruders, terrifyingly effective as living sentries"
+  },
+  {
+    "name": "Makit",
+    "desc": "Satisfyingly smooth-skinned, porous mushrooms that absorb any memories they hear or overhear"
+  },
+  {
+    "name": "Utukki",
+    "desc": "Seven-headed, carnivorous donkeys"
+  },
+  {
+    "name": "Moonlight dragon",
+    "desc": "Serpentine creatures that sculpt spans from trunk-like appendages and retract their wings into their necks. They sleep beneath ice-caves glimmering with minuscule, cold luminous crystals"
+  },
+  {
+    "name": "Hydra",
+    "desc": "Many-headed serpents that can grow new heads for each one removed, making them a nightmare to kill"
+  },
+  {
+    "name": "Genie",
+    "desc": "Magical beings shaped by countless wishes, and centuries of twisted whims"
+  },
+  {
+    "name": "Chimera",
+    "desc": "Fire-breathing lions with dragon wings and goat heads"
+  },
+  {
+    "name": "Saobr",
+    "desc": "Cursed lizards that serve dark priests and whisper false prophecies"
+  },
+  {
+    "name": "Satyr",
+    "desc": "Goat-men drinkers of the woods, with extreme appetites that only new experiences can quell"
+  },
+  {
+    "name": "Ogre",
+    "desc": "Hulking humanoid brutes that roar at loud insects and eat massive meals at diners"
+  },
+  {
+    "name": "Behemoth",
+    "desc": "Colossal beasts with lionlike muzzles, batlike snouts, and mouths that vomit flame"
+  },
+  {
+    "name": "Thousand Pox",
+    "desc": "Itching, yellow, foot-high lumps that crawl across the countryside leaving a path of diseased scabs"
+  },
+  {
+    "name": "Sabertooth",
+    "desc": "Cats with fangs longer than their tiny brains"
+  },
+  {
+    "name": "Froglings",
+    "desc": "Iridescent amphibians that form grudges and gossips with squawks and croaks"
+  },
+  {
+    "name": "Merfolk",
+    "desc": "Except their tails are red"
+  },
+  {
+    "name": "Kraken",
+    "desc": "Monstrous cephalopods with tentacles like hundred-meter chainsaws"
+  },
+  {
+    "name": "Snoutling",
+    "desc": "Engorged hamster-rats, nearly hairless and tooled for loathsome acts"
+  },
+  {
+    "name": "Sirrush",
+    "desc": "Serpentine reptilian beasts that sagely guard royal treasure within towering spires"
+  },
+  {
+    "name": "Urthos",
+    "desc": "Evil elves whose hair is known to shift colors, who can cast black-magic illusions"
+  },
+  {
+    "name": "Pixie",
+    "desc": "Translucent-featured beings, that dart across landscapes while stealing kisses and often ciphers"
+  },
+  {
+    "name": "Saketachew",
+    "desc": "A rain spirit, rainfall falls as colored, spherical resin that sticks to targets"
+  },
+  {
+    "name": "Goblin",
+    "desc": "Small green men that hate having their forest homes blasted away by ballistae"
+  },
+  {
+    "name": "Manakete",
+    "desc": "Ancient elves, kept alive via totems that house their unconcealed souls"
+  },
+  {
+    "name": "Couatl",
+    "desc": "Vast rainbow serpents with wings of iridescent pheasant tail feathers, native to the middle world"
+  },
+  {
+    "name": "Giant",
+    "desc": "Towering humanoids with five times the strength of a man and alabaster skin"
+  },
+  {
+    "name": "Ice Maroon",
+    "desc": "Starfish-shaped marine organisms that can drop rocks everywhere"
+  },
+  {
+    "name": "Carrac",
+    "desc": "A horse-sized bat, said to have dark, fractal wings and voracious hunger"
+  },
+  {
+    "name": "Roc",
+    "desc": "Enormous birds, fit to take a castle down with their aerial bombardment"
+  },
+  {
+    "name": "Faun",
+    "desc": "Minikin humanoids with goatish features and devil's horns who leave napses in the crops they pillage"
+  },
+  {
+    "name": "Griffin",
+    "desc": "Eagle-headed lions who claim the skies as their hunting grounds"
+  },
+  {
+    "name": "Ghost",
+    "desc": "A torment of the living, but also afflicted with a yearning for the life they have left behind"
+  },
+  {
+    "name": "Illuminated",
+    "desc": "Former mages, now split into two forms, one mundane and the base of the other, whose mind projects into a shower of pure energy and hot light"
+  },
+  {
+    "name": "Elf",
+    "desc": "Pale-skinned creatures with ageless, otherworldly features and a knack for Crafts"
+  },
+  {
+    "name": "Troll",
+    "desc": "Obese humanoids with extraordinary healing abilities, vulnerable to fire"
+  },
+  {
+    "name": "Unicorn",
+    "desc": "Evanescent equines who wander through fairy forests and heal the barren with tears of panacea"
+  },
+  {
+    "name": "Triton",
+    "desc": "Scaly, red-haired humanoids that live in underwater cities"
+  },
+  {
+    "name": "Asgardian",
+    "desc": "Helmed warriors who splash across the shores in colossal boats, having killed half the village dogs before breakfast"
+  },
+  {
+    "name": "Pegasus",
+    "desc": "Winged horses capable of riding the wind itself to thwart the foes of the gods"
+  },
+  {
+    "name": "Ivan Zevsk",
+    "desc": "Human goat-poachers whose barnyard curses can doom entire villages"
+  },
+  {
+    "name": "Dunluce",
+    "desc": "Souls of fishermen trapped in jars by the tides, bound to a mermaid queen"
+  },
+  {
+    "name": "Valuir",
+    "desc": "Little ones, minds as warped as the woods they dwell in, yet poets and sculptors by birth"
+  },
+  {
+    "name": "Human",
+    "desc": "Easily hesitant pessimists, about themselves and their ability to affect the world"
+  },
+  {
+    "name": "Devil",
+    "desc": "Sharp-clawed infernal spirits, spoken of in whispers and lodged by demons beside succubi and pit fiends"
+  },
+  {
+    "name": "Ogling Dragon",
+    "desc": "So named for its ability to fry intruders with searing fiery gazesupon being encountered. This encounter is a universal threatin the minds of many hypothetical adventurers. Dragons need to be approached with an abundance of caution and preparation. Dragons are also almost never alone, as they sometimes have offspring, as well as a nest full"
+  },
+  {
+    "name": "Centaur",
+    "desc": "Proud equine people, that brawls best upon grassy plains"
+  },
+  {
+    "name": "Demigod",
+    "desc": "Humans or demihumans enlightened to demi-god-hood through piety, perseverance, and service"
+  },
+  {
+    "name": "Wraith",
+    "desc": "Ravenlike humanoids, haunted by blood debts, who nest in trees and screech through the night"
+  },
+  {
+    "name": "Wyvern",
+    "desc": "Flying reptiles larger than lamp poles, with legs and small stingers"
+  },
+  {
+    "name": "Alloorien",
+    "desc": "Giant swans that guard holy sites, killing the unworthy with pecks to the chest"
+  },
+  {
+    "name": "Tentacled humanoids",
+    "desc": "Mischievous fey wraiths that lurk in forests and (hopefully) don't know how to get out"
+  },
+  {
+    "name": "Vejiita",
+    "desc": "Tall, magical humanoids, whose eyes can breathe fire and whose ancestors speak through them in their sleep"
+  },
+  {
+    "name": "Bugbear",
+    "desc": "Wraiths that siphon a sleepers' heat and memories while they slumber"
+  },
+  {
+    "name": "Redcap",
+    "desc": "A trio of hairy, cyclopean horrors with hominid features and a taste for smartass adventurers"
+  },
+  {
+    "name": "Kaz'tiir",
+    "desc": "Tusked and mustachioed beings with bronze skin, favored by both the worst and the best of merchants"
+  },
+  {
+    "name": "Garuda",
+    "desc": "Feathered serpents, larger than elephants with talons large enough to snap human spines"
+  },
+  {
+    "name": "Tartassa",
+    "desc": "Pygmy, doglike library keepers who swing from vine to vine, maintaining ancient manuscripts"
+  },
+  {
+    "name": "Quetzalcoatl",
+    "desc": "Majestic beings that began as feathered serpents before God bestowed winged form upon them"
+  },
+  {
+    "name": "Werewolf",
+    "desc": "Humans who experience a lycanthropic transformation under the full moon, clad in dark furs, casting shadows, and harboring violent tempers"
+  },
+  {
+    "name": "Lyrebird",
+    "desc": "Dancing songbirds with the ability to duplicate any sound, including entire conversations"
+  },
+  {
+    "name": "Awnsheghan",
+    "desc": "Nag dens of horror, where each writhing maw is last rest of those who failed to resist"
+  },
+  {
+    "name": "Minotaur",
+    "desc": "Keen-eyed warriors, with powerful torsos and horns made into weapons"
+  },
+  {
+    "name": "Sirens",
+    "desc": "Haber alium with song magic for luring sailors to their deaths"
+  },
+  {
+    "name": "Aspidochiron",
+    "desc": "Mountain-sized tortoises whose shells are lined with ladders and forests of food-bearing plants"
+  },
+  {
+    "name": "Dryad",
+    "desc": "Tree spirits that attack loggers and herders, and have zuriner branches that grow in a woman's body when she rests"
+  },
+  {
+    "name": "Zenzic",
+    "desc": "Winged, tomb-robbing, hoard-swapping beasts common to the Carzik deserts"
+  },
+  {
+    "name": "Ettin",
+    "desc": "Goliaths of mud, shunning smiths and living in hovels to the blind disapproval of all decent races"
+  },
+  {
+    "name": "Kath'toth",
+    "desc": "Disease-carrying ratlike horrors, with eyes that gleam with an unholy hue, and teeth that scrape and tear"
+  },
+  {
+    "name": "Brownie",
+    "desc": "Small, elfin humanoids who polish the bowls of kitchen utensils with cats' teeth"
+  },
+  {
+    "name": "Meteora",
+    "desc": "Entities made of rock and crystal, controlled by a master geomancer"
+  },
+  {
+    "name": "Naga",
+    "desc": "Serpent-humans who live in underwater cities"
+  },
+  {
+    "name": "Pygmy",
+    "desc": "Small humanoids with large statures and even wackier accents"
+  },
+  {
+    "name": "Gnomes",
+    "desc": "Small people, known for their love of seemingly useless trivia, and their potions and spells"
+  },
+  {
+    "name": "Tengu",
+    "desc": "Eccentric and inscrutable red-feathered beings from mountain peaks, and sometimes met face to eggs in the strangest of places"
+  },
+  {
+    "name": "Leprechaun",
+    "desc": "Conniving, deliberately misleading fairies who own all the gold inside rainbows"
+  },
+  {
+    "name": "Pooka",
+    "desc": "Shape shifting goblins that assume the form of animals to avoid their folly"
+  },
+  {
+    "name": "Iron Dragon",
+    "desc": "Hulking beasts made of steel and fueled by coal, that carry cargo from town to town"
+  },
+  {
+    "name": "Free Folk",
+    "desc": "Tall, haughty horsemen of the steppes who carve custom saddles to ride around the world"
+  },
+  {
+    "name": "Succubus",
+    "desc": "Exquisite half-women, half-insects born to entice and consume mortal souls"
+  },
+  {
+    "name": "Tarrasque",
+    "desc": "Charged, armoured, regenerating shell of a creature, covered in a carapace, teeth, and fists, with a history of decimating civilisations"
+  },
+  {
+    "name": "Paladin",
+    "desc": "Holy warriors who wear their religion as armor"
+  },
+  {
+    "name": "Anosy",
+    "desc": "Devoid of all physical form, except an infamously non-descript, angelic frame"
+  },
+  {
+    "name": "Ravenfolk",
+    "desc": "Feathered humanoids that dislike getting wet and transform to ravens when feeling guilty"
+  },
+  {
+    "name": "Jottumor",
+    "desc": "Giant slabs of omnivorous fat that litter the surfaces of forests, eat anything left on the ground, and got to sleep"
+  },
+  {
+    "name": "Undead",
+    "desc": "Corpse-like monstrosities who hunger for human flesh"
+  },
+  {
+    "name": "Quagspawn",
+    "desc": "Beings that look, act, and, surprisingly, smell like sewer mud"
+  },
+  {
+    "name": "Imp",
+    "desc": "Mischievous, childlike creatures that murder intruders in the family bedroom"
+  },
+  {
+    "name": "Doppelgangers",
+    "desc": "Humanoids who can shift their faces and skin tones to look like another, to steal their identities"
+  },
+  {
+    "name": "Spiritshackle",
+    "desc": "It's how spirits are bound to the spiritsmith's creations"
+  },
+  {
+    "name": "Phoenix",
+    "desc": "Glorious firebirds capable of absorbing lifes sap, that burst into flame when they weaken before rising again, even stronger"
+  },
+  {
+    "name": "Lemuroid",
+    "desc": "Philosophical, colourblind beings that spend their days meditating under monoliths"
+  },
+  {
+    "name": "Horned Serpent",
+    "desc": "Deadly guardians of the deep waters, appearing as serpents with the heads of a deer"
+  },
+  {
+    "name": "Dalek",
+    "desc": "Extraterrestrial aberrations that revel in destruction"
+  },
+  {
+    "name": "Squishmeat",
+    "desc": "Annoying and adorable creatures, their bodies are filled entirely of cheek, with eyestalks and stumpy little appendages"
+  },
+  {
+    "name": "Hippogriff",
+    "desc": "Magnificent, bird-wingsed beasts that can snatch a man from a castle wall"
+  },
+  {
+    "name": "Draguhn",
+    "desc": "Black-winged, flaming-beaked creatures, known for their finesses with fire and warfare"
+  },
+  {
+    "name": "Mazamae",
+    "desc": "Menacing armored spiders, that set out in swarms to claim lost treasure"
+  },
+  {
+    "name": "Tiamat",
+    "desc": "The most hideous of all dragonkin, with 5 reptilian heads and iridescent scales reminiscent of an oil-slick"
+  },
+  {
+    "name": "Mojur",
+    "desc": "Humanoid with blue-furred faces that purposefully leave their towns deserted. Remarks from strangers are reminiscent of banana and chocolate"
+  },
+  {
+    "name": "Kitsune",
+    "desc": "Fox-spirits who can take the shape of a human in their youth and possess humans when their life is extended"
+  },
+  {
+    "name": "Spellweaver",
+    "desc": "Talented mages who wear flowing robes, speak in lilting tones, and wield bolts of pure magic"
+  },
+  {
+    "name": "Oni",
+    "desc": "Seven foot tall assailants with colors representing their appetites and hair as thick as silk"
+  },
+  {
+    "name": "Cyclops",
+    "desc": "Near-human in all but sheer, terrifying size"
+  },
+  {
+    "name": "Bushido",
+    "desc": "Idealized warrior-poets, who revere honor, bravery, and arts of war"
+  },
+  {
+    "name": "Gaster-Kraken",
+    "desc": "A bulging eye, with tooth-covered branches, that lurches towards hiding prey"
+  },
+  {
+    "name": "Anglesical",
+    "desc": "Ferocious warriors adorned in smoldering blue armor, with an emblem of a nine-pointed star"
+  },
+  {
+    "name": "Jatzuk",
+    "desc": "Quadrupedal creatures standing fully erect with stubby fingers and feet shelter groves of timorous trees"
+  },
+  {
+    "name": "Odonsaii",
+    "desc": "Hyper-intelligent invertebrates that can communicate telepathically through their shimmering blue, radulae-filled maws"
+  },
+  {
+    "name": "Grimoire",
+    "desc": "Spellbooks haunted by or made up entirely of irritable magical beings"
+  },
+  {
+    "name": "Bak Nau",
+    "desc": "Red-eyed, club-wielding, hominid people who love drunken brawls, often using their Boxing style"
+  },
+  {
+    "name": "Shrikor",
+    "desc": "Giant fuzzy caterpillars that envenom those who touch their fuzzy appendages"
+  },
+  {
+    "name": "Roper",
+    "desc": "Tendrils from the ceiling that have optical sensors at their pincer ends, designed to mimic a worm in the sun"
+  },
+  {
+    "name": "Koribani",
+    "desc": "Ancient, shadowy half-rope extraterrestrials"
+  },
+  {
+    "name": "Macuahuitl",
+    "desc": "Terribly powerful clubs that belong to giants and orcs, and often carry 20 or more bones embedded in their sides"
+  },
+  {
+    "name": "Harpy",
+    "desc": "Demented, seductive bird-women whose broken wings flap endlessly in cemetery wind"
+  },
+  {
+    "name": "Ohor\u00e1",
+    "desc": "Colossal apes, that wend through trees with ponderous joy, mourning the loss of their kin to huntsmen"
+  },
+  {
+    "name": "Dragonlord",
+    "desc": "Rotund mortal sorcerers, who ilegally bind themselves to dragons and magical energy, corrupting them both"
+  },
+  {
+    "name": "Spiderthorn",
+    "desc": "Arachnids with the faces of wretched, riven men, supported on spindly limbs with spines like chunk of blackened wood"
+  },
+  {
+    "name": "Jabberwock",
+    "desc": "Dragonlike creatures with jaws full of momentous theeth and claws that scale rifles"
+  },
+  {
+    "name": "Rail-runner",
+    "desc": "Stubby-legged creatures whose bodies are rows of eyes"
+  },
+  {
+    "name": "Beholder",
+    "desc": "Spherical squids with eyes dangling from the bottom, protruding outward; they fear anything bigger than themselves, whether dangerous or not"
+  },
+  {
+    "name": "Ellur Examiner",
+    "desc": "Tiny, blind creatures, filled with jets of steam that power their bodies"
+  },
+  {
+    "name": "Ipos",
+    "desc": "A militaristic race of beings that resemble large spiders with limbs resembling metallic castings"
+  },
+  {
+    "name": "Mammoth",
+    "desc": "Towering, shaggy cousins of the elephants, with white tusks that can be turned to pure, white gold"
+  },
+  {
+    "name": "Kikimora",
+    "desc": "Bloodthirsty spirits that dwell in the bowels of the Earth and prey on the hapless travellers who stumble into their dank caverns"
+  },
+  {
+    "name": "Drider",
+    "desc": "Two legged spiders, that tho\u1ea1i\u0454\u044e a humanoid upper torso emerging from its hairy interior"
+  },
+  {
+    "name": "Tartar-conglomerate",
+    "desc": "Sickly, endless orcs made of stolen flesh and magical aggression"
+  },
+  {
+    "name": "Sandalphons",
+    "desc": "Winged entities clad in encaustic robes, divine messengers with azure wings and voices like thunder"
+  },
+  {
+    "name": "Taniwha",
+    "desc": "Shape-shifting spirits that haunt rivers and lakes, that grant boons to fishermen and curse those who pollute"
+  },
+  {
+    "name": "Shinigten",
+    "desc": "Tall emaciated humanoids that inhabit the shadows, attacking anyone foolish enough to block out the light"
+  },
+  {
+    "name": "Manticore",
+    "desc": "Beasts with barbed tails that uncoil to fire ranged stingers while discharging havoc"
+  },
+  {
+    "name": "Eyegore",
+    "desc": "Tentacled horrors that devour souls and fling invisible objects around rooms"
+  },
+  {
+    "name": "Naiad",
+    "desc": "Nymphs of springs and streams that sing to lure unsuspecting humans to their watery demise"
+  },
+  {
+    "name": "Ghast",
+    "desc": "Putrid fiends with hell-stench, that tear gristly strips from their victims in the dark"
+  },
+  {
+    "name": "Giant owlbear",
+    "desc": "Abandon all hope if you ever happen to encounter one of these!"
+  },
+  {
+    "name": "Demilich",
+    "desc": "Liches who ply their twisted magic in swirling vortexes of dust, and through the bones turned to tendril-like horns"
+  },
+  {
+    "name": "Insandrico",
+    "desc": "Soul-eating apex predators, that are feared throughout the Gambier Islands"
+  },
+  {
+    "name": "Reaper",
+    "desc": "Clawed specters that vest mortals in spectral cloaks, presenting as a last solace upon life's finally ending"
+  },
+  {
+    "name": "Darkmech",
+    "desc": "Automatons given unexpected sapience by an unnoticed short circuit in their innards"
+  },
+  {
+    "name": "Taverth",
+    "desc": "Tiny hobbit-like creatures that cause mischief by pulling pranks worthy of Newton"
+  },
+  {
+    "name": "Hadaka",
+    "desc": "Mute creatures that shed their pelts and burrow into walls, with only small, dead glandular pits remaining"
+  },
+  {
+    "name": "Aenigma",
+    "desc": "A craggy, hairless humanoid with no discernable features, except a mouth full of needle-like teeth"
+  },
+  {
+    "name": "Shade",
+    "desc": "Netherworld inhabiting spirits that are only visible with a coin to the eye"
+  },
+  {
+    "name": "Cudgeleater",
+    "desc": "Monstrous dogs with iron teeth that are kept by fiends to feed upon the coals of the underworld"
+  },
+  {
+    "name": "Pit Dragon",
+    "desc": "Huge beasts native to volcanoes, scaled with hundreds of hexagonal plates and able to breathe gouts of flaming gases"
+  },
+  {
+    "name": "Wind Drake",
+    "desc": "Serpentine creatures made of cloud and thunder, with mouths full of chitin that emit lightning"
+  },
+  {
+    "name": "Koang",
+    "desc": "Armless, brilliant-horned, troll-like grunts with an obsession for cowbell"
+  },
+  {
+    "name": "Nightmare",
+    "desc": "Ravenous terrors that appear as great ravenous maws with feathery bone wings and vulture feet"
+  },
+  {
+    "name": "Basilisk",
+    "desc": "A cockatrice that guards a pile of golden objects, carrying around rocks from the riverbed to sit above it to look like a dragon"
+  },
+  {
+    "name": "Marsh crab",
+    "desc": "Terrifying, armored crabs the size of bathtub floats that scuttle across Lazus's coastlines and catch fish in their pliers"
+  },
+  {
+    "name": "Kitty",
+    "desc": "')"
+  },
+  {
+    "name": "Kappa",
+    "desc": "Water demons that tempt people into the water using their gruesome butts"
+  },
+  {
+    "name": "Decalaphon",
+    "desc": "Winged carnivorous dragons, that hunt in packs to ensure the strongest survive"
+  },
+  {
+    "name": "Far Fetchers",
+    "desc": "Little humanoids who've fixed their hearts especially on toads, who form the spine of their society"
+  },
+  {
+    "name": "Kitawa",
+    "desc": "Small monkeys with severe acne, known for clinging to travellers and demanding gaudy hats"
+  },
+  {
+    "name": "Slith",
+    "desc": "Lizardmen that almost look like humans were they not for their lizard snouts and tails"
+  },
+  {
+    "name": "Land Leviathan",
+    "desc": "Underground predators, as long as trees are tall, that bring the ground to life and linger beneath city centers"
+  },
+  {
+    "name": "Payoteg",
+    "desc": "Snaked and insectoid monstrosities that whisper across the depths between the stars"
+  },
+  {
+    "name": "Ferian",
+    "desc": "Francophone mediums, of the Incarnat and the M\u00e9nage-\u00e0-trois nights"
+  },
+  {
+    "name": "Picaro",
+    "desc": "Svelte, famous for flaunting law and snarkily punning on their feats"
+  },
+  {
+    "name": "Drazi'im",
+    "desc": "Pointed-eared immortals who form relationships with humans but leave before running aground"
+  },
+  {
+    "name": "Ockoo",
+    "desc": "Beings of pure pride, floating and stacking on clouds atop the highest mountains"
+  },
+  {
+    "name": "Dread Crow",
+    "desc": "Hungry cazadores that thirst for the light and caw doom into the night"
+  },
+  {
+    "name": "Gleena",
+    "desc": "Fragile mages who harness the power of the hallowed to hand out magic"
+  },
+  {
+    "name": "Supercarnifex",
+    "desc": "Slaughtering man-beasts in the shape of hulking spearmen with superhuman speed and strength"
+  },
+  {
+    "name": "Golem",
+    "desc": "Clay automatons of immense might, fueled by the souls of unborn toddlers"
+  },
+  {
+    "name": "Sylph",
+    "desc": "Air spirits who can be forced (but not compelled) to perform tasks"
+  },
+  {
+    "name": "Springwell Drake",
+    "desc": "Dragonspawn-come-tickerbirds, who can twitch their wings off to answer their mistress's calls"
+  },
+  {
+    "name": "Welsh Warrior Rabbit",
+    "desc": "Small bombers with an organ of symbiotes in their chest, they explode when shot at"
+  },
+  {
+    "name": "Obake",
+    "desc": "Mysterious beings who appear and disappear like little green phantoms"
+  },
+  {
+    "name": "Pegacorn",
+    "desc": "Winged, horned horses, delicate and beautiful, despite their bloodthirsty origins as war mounts to the heavens"
+  },
+  {
+    "name": "Seelie",
+    "desc": "Celadon-skinned Fey of the true summer court, dwelling in fields of buttercups and songbirds"
+  },
+  {
+    "name": "Ice Tyrant",
+    "desc": "A huge white serpent that makes its nest atop the tallest mountain in the northern continent, fornicating with maidens the local village sends up in terms of addition/subtraction. For example, try 0.10.00 as -10 and divide by 0.02.00 or 2.00, 20"
+  },
+  {
+    "name": "Firefox",
+    "desc": "Fox spirits infused with the essence of wildfire, dwelling in the sacred forests of Kyushu"
+  },
+  {
+    "name": "Kirinhin",
+    "desc": "Mischievous fey-folk from the marshes, famed for their potent, clotted cream which causes luck to befall those who eat it"
+  },
+  {
+    "name": "Cadeau",
+    "desc": "Catlike creatures with doglike behavior, trained to catch and retrieve rats and mice"
+  },
+  {
+    "name": "Er'Barax",
+    "desc": "Sinuous, carnivorous, arboreal serpents posessed by the godess Aletera"
+  },
+  {
+    "name": "Sokhal",
+    "desc": "Wraithlike creatures, which are the essence of dead warriors in the Sassan Empire who fell before Ctesiphon"
+  },
+  {
+    "name": "Gast",
+    "desc": "Angry, beehived representatives of darker forces, that attack on sight or vanish into the shadows with laughter"
+  },
+  {
+    "name": "Deva",
+    "desc": "Perfect immortal beings that are total jerks when you look at them in unhealthy ways"
+  },
+  {
+    "name": "Elderblight",
+    "desc": "Spindly, spider-like entities who leach life from the biosphere around them"
+  },
+  {
+    "name": "Starter Packs",
+    "desc": "Cults of dysfunctionally themed worshippers"
+  },
+  {
+    "name": "Aloetha",
+    "desc": "Multilimbed, stone-skinned insects, which lie in wait beneath the ruins of any major fantasy kingdom, waiting for that one village idiot who equips the ancient huecatl"
+  },
+  {
+    "name": "Jester",
+    "desc": "Ghosts of jesters that replace the deaths they were supposed to perform at the hand of tyrants"
+  },
+  {
+    "name": "Magi",
+    "desc": "Learned individuals capable of casting spells, concocting potions, and crafting enchanted artefacts"
+  },
+  {
+    "name": "Saeteron",
+    "desc": "Feathered humanoids with antler horns, that soar through the sky on leathery wings"
+  },
+  {
+    "name": "Catoblepas",
+    "desc": "Ambling, fermented piles of rotting flesh, that turn their victims to stone with their odor"
+  },
+  {
+    "name": "Balrog",
+    "desc": "Bat-winged guant demons wreathed in fire and smoke"
+  },
+  {
+    "name": "Argonian",
+    "desc": "Serpentine humanoids, worshipped as gods by most birds"
+  },
+  {
+    "name": "Anubis",
+    "desc": "Sadistic dog-faced god that transports the deserving to the Underworld"
+  },
+  {
+    "name": "Rodanto",
+    "desc": "Visually indistinguishable from humans, but subhuman, repugnantly violent, and of different skin colors"
+  },
+  {
+    "name": "Sasquatch",
+    "desc": "Sauntering humanoids made of mist and muck, that live in the hinterlands and wander from city to city"
+  },
+  {
+    "name": "Drought-popes",
+    "desc": "Crowned lizards that produce divine rain with their song"
+  },
+  {
+    "name": "Jonpico",
+    "desc": "Little angelic sprites that look like puppies, but possess all manner of magic"
+  },
+  {
+    "name": "Leucrotta",
+    "desc": "Dim wits, large bodies, yeah I'm in a mood"
+  },
+  {
+    "name": "Lyones Prime",
+    "desc": "Nobles of foreign lands that lost their families and castles in mourning wars"
+  },
+  {
+    "name": "Cicada",
+    "desc": "Bug-eyed creatures whose roaming piles of rubbish can bring blight upon fields"
+  },
+  {
+    "name": "Melchor",
+    "desc": "Razor-necked, rabbit-bellied predators that can be tamed and ridden; prized among mercenaries for their unparalleled endurance across deserts"
+  },
+  {
+    "name": "Ner\u00fathek",
+    "desc": "Morphic and shapeless entities that feast on the negative emotions of organic creatures"
+  },
+  {
+    "name": "Whisperer",
+    "desc": "Transparent denizens of the shadow, their only visible features a pair of dagger-thin talons"
+  },
+  {
+    "name": "Assassin",
+    "desc": "Quick-footed killers, who leave a fine brass dust under the feet of their victims"
+  },
+  {
+    "name": "Peri",
+    "desc": "Angelic denizens of paradise who chime and shine like bells"
+  },
+  {
+    "name": "Bagbur",
+    "desc": "Fecal-grunting forest ogres that trumpet their property with waist-high barriers of their excrement"
+  },
+  {
+    "name": "Oaklings",
+    "desc": "Invisible constructs woven, not carved, from living trees"
+  },
+  {
+    "name": "Cacodaemon",
+    "desc": "Horned beasts who rumble to the surface to drag the rapturous back into the bowels of the earth"
+  },
+  {
+    "name": "Whooly",
+    "desc": "Excitable, pet-like creatures that carry various silken eggs, which hatch into shellgems in sunlight"
+  },
+  {
+    "name": "Grubthorp",
+    "desc": "Enormous, bear-sized insects with giant, gleaming, intelligence-filled eyes and huge, human-snagging mandibles"
+  },
+  {
+    "name": "Exile",
+    "desc": "Wandering wanderers with only the clothes on their back, having burned their controversial books in an attempt to find a source of power"
+  },
+  {
+    "name": "Elemental",
+    "desc": "Incorporeal beings formed of fire, water, earth, and air, who can take physical form through sorcery"
+  },
+  {
+    "name": "Re'em",
+    "desc": "Giant, bipedal oxen with speckled hides and alabaster horns that reach into the clouds"
+  },
+  {
+    "name": "Dorogaw",
+    "desc": "Ferocious steppe monsters that have been known to tear through dragon skin"
+  },
+  {
+    "name": "Banshee",
+    "desc": "Those destined to hear their death call soon will hear shrieks of a banshee"
+  },
+  {
+    "name": "Cockatrice",
+    "desc": "Feathered monster that turns flesh to stone with a single gaze and hatches from eggs incubated by vipers"
+  },
+  {
+    "name": "Charybdis",
+    "desc": "Cyclopean whirlpools with seismic throats that swallow fleets of ships and belch them up hours later"
+  },
+  {
+    "name": "Lizardfolk",
+    "desc": "Humanoid lizards that inhabit swamps and feed on anyone unlucky enough to step into their territory"
+  },
+  {
+    "name": "Yuan-Ti",
+    "desc": "Humanoid serpent folk that passed below for man and snake, equally capable of subterfuge as they are of violence"
+  },
+  {
+    "name": "Baelnorn",
+    "desc": "Vampire elves who consume souls while their spectral familiars pick their prey's bones"
+  },
+  {
+    "name": "Sellfish",
+    "desc": "Little sprites that murder and drain the intellect of their victims"
+  },
+  {
+    "name": "Fey",
+    "desc": "Inseparable twins ruling over forests and fields, their moral compass eternally skewed"
+  },
+  {
+    "name": "Niflheimr",
+    "desc": "Fluffy, eight-legged unicorns, that stir up the winds of violent storms around their rider"
+  },
+  {
+    "name": "Yokai",
+    "desc": "Elemental creatures, kami of rivers, forests, rivers and seas, that oft turn spiteful when their retreats are disturbed"
+  },
+  {
+    "name": "Wodewose",
+    "desc": "Naked, blue-skinned, gluttonous monsters that flee when moonless clouds cover the moon"
+  },
+  {
+    "name": "Alagranath",
+    "desc": "Bipedal spidermen, whose legs fall off and grow back by the dozen, as irrepressible as gnats"
+  },
+  {
+    "name": "Orgre",
+    "desc": "Indignant, heavily-armored stonemen"
+  },
+  {
+    "name": "Case Rat",
+    "desc": "Magically gibbering rodents infesting cities hideously mutated by magic"
+  },
+  {
+    "name": "Dragonet",
+    "desc": "Pint-sized dragons, three-feet laying, bequeathing enchantment when they smile"
+  },
+  {
+    "name": "Shapeshifter",
+    "desc": "Shape-changing swindlers whose only consistent feature is their silver claws"
+  },
+  {
+    "name": "Targuluo",
+    "desc": "Invisible stalker med extra dimma. Impossible to avoid thanks to its mastered ability to embrace the mist"
+  },
+  {
+    "name": "Amarok",
+    "desc": "Arctic werewolves, size of a horse, with an art expert\u2019s discerning taste for antler jewelry and expensive fur coats"
+  },
+  {
+    "name": "Direbat",
+    "desc": "As large as a small humanoid, with pitch black wings and acid-dripping fangs"
+  },
+  {
+    "name": "Koupreis",
+    "desc": "Perihelion-bound equine beasts, they inhabit a small section of space before entering cryosleep once more"
+  },
+  {
+    "name": "Guza",
+    "desc": "Serpentine sea beasts that spit dagger-fanged fish at passing ships"
+  },
+  {
+    "name": "Emoorah",
+    "desc": "Sentient, beautiful swans who dread water and long for a mate they suspect doesn't exist"
+  },
+  {
+    "name": "Mindflayer",
+    "desc": "Pale-skinned cannibals that consume the brain of their prey, then consume the memories of their hosts"
+  },
+  {
+    "name": "Dwer",
+    "desc": "Stout, prolific miners of Northern Rimehome - centuries of abysmal conditions have left them with shorter lifespans and longer heads"
+  },
+  {
+    "name": "Ktunaxa",
+    "desc": "Towering beasts with armored hides and feet large enough to crush stone and leaves"
+  },
+  {
+    "name": "Sahuagin",
+    "desc": "Demon-human-fish hybrids that are one-quarter wickedness, two-thirds brutality, and one eighth redeemable"
+  },
+  {
+    "name": "Shan",
+    "desc": "Unaging elders born from petrified tears of grief left by ancient deities"
+  },
+  {
+    "name": "Asura",
+    "desc": "Celestial creatures known for their incorruptible lineage, pride, and lightning-fast transformations into ravenous beasts"
+  },
+  {
+    "name": "Krenzelions",
+    "desc": "Fish-faced fairies living only in enchanted groves, with the power to rend men's souls from their bodies"
+  },
+  {
+    "name": "Sonomos",
+    "desc": "Singing crabs that hang from trees and listen for lost sailors as they drift at sea"
+  },
+  {
+    "name": "Garmadon",
+    "desc": "Lesser demons of the netherworld, that serve their infernal masters in this realm and the next"
+  },
+  {
+    "name": "Lupus",
+    "desc": "Wolf-demons who stalk the darkness, a cursed child\u2019s fear of the wolf manifesting in the form of the beast itself"
+  },
+  {
+    "name": "Green Man",
+    "desc": "Wilderness spirits formed from course moss and spectral leaves"
+  },
+  {
+    "name": "Carv Lumut",
+    "desc": "Insanely tall, wood and vine-covered green-skinned humanoids that move like an indistinct mist"
+  },
+  {
+    "name": "Hephaestus",
+    "desc": "A god whose skin sweats blackened sparks, and whose touch summons bolts of lightning"
+  },
+  {
+    "name": "Nymph",
+    "desc": "Innately beguiling nature spirits, who guide lost wanderers to raging rivers or pared-down, unrotting logs"
+  },
+  {
+    "name": "Rattling Horror",
+    "desc": "Implacable, meeping torture devices that hunt souls, guided by flagstones with Summerset runes carved into them"
+  },
+  {
+    "name": "Treant",
+    "desc": "Living trees that travel the world debating philosophy, raising children or building furniture"
+  },
+  {
+    "name": "Sphinx",
+    "desc": "Enigmatic protectors of ancient tombs, testing any brave enough to approach with unyielding riddles"
+  },
+  {
+    "name": "Sentient dragonfish",
+    "desc": "An ancient family of scales, webbed feets, and gills holding property and political power for hundreds of years"
+  },
+  {
+    "name": "Ent",
+    "desc": "Tree people that govern forests and battle orc armies"
+  },
+  {
+    "name": "Skum",
+    "desc": "Slimy, inhuman hermaphrodites"
+  },
+  {
+    "name": "Fomorian",
+    "desc": "Shambling cave-dwellers with massive, jutting heads"
+  },
+  {
+    "name": "Aethril Steed",
+    "desc": "Perfect horses, untethered by mortality, that never tire"
+  },
+  {
+    "name": "Plague Beetle",
+    "desc": "Small winged creatures whose sloughed off skin gives off the scent of long-dead things"
+  },
+  {
+    "name": "Gold dragons",
+    "desc": "Vast, reptilian creatures of wisdom, power, and intrigue"
+  },
+  {
+    "name": "Cannith",
+    "desc": "Sinister artisans who weave magic into blood, tissue, and bone"
+  },
+  {
+    "name": "Bogies",
+    "desc": "Marsh-dwelling thieves that take the form of a mischievous, albeit hairy, brown child"
+  },
+  {
+    "name": "Raja Ce Craton",
+    "desc": "Repulsive alocoth with jagged horns, reeking breath, and the ability to trap outside concepts in its alien mind"
+  },
+  {
+    "name": "Wisp",
+    "desc": "Lantern-headed spirits that attract the lost with pleasureful music"
+  },
+  {
+    "name": "Itachi",
+    "desc": "Beautiful, alluring birdlike creatures who feed on livers rather than flesh, leaving their victims seemingly alight"
+  },
+  {
+    "name": "Shadow-Touched",
+    "desc": "Humans cursed with slimy black patches of skin, holey eyes, and the ability to summon otherworldly terrors"
+  },
+  {
+    "name": "Kalahari",
+    "desc": "Shy, cave-dwelling, quiet beings who communicate with vibrations in the ground"
+  },
+  {
+    "name": "Vualhan",
+    "desc": "Playful demigods who thundersneak and.</h4><figure><img alt='Copier Store: Expert Services for Efficient Document Replication, Affordable Copying Solutions' border='0' class='img' data-lazy-src='https://copybol.com/wp-content/uploads/2023/10/Copier"
+  },
+  {
+    "name": "Urk",
+    "desc": "Stunted, ape-like creatures, cowed into servitude by their masters"
+  },
+  {
+    "name": "Blue Demon",
+    "desc": "Winged beasts that breathe searing flames and dwell in geschlossen Systemen wormi;__4909;__4910;__4911;__4912;__4913;__4914;__4915;__4916;__4917;__4918;"
+  },
+  {
+    "name": "Amaranthine",
+    "desc": "Winged entities of myth believed to have built the first temples"
+  },
+  {
+    "name": "Seraphim",
+    "desc": "Winged beings of pure light that come to aid saints in their god's plan"
+  },
+  {
+    "name": "Chiron",
+    "desc": "Bestial, brutish, and vicious centaurs, raised from wild horses with cybernetic awesomeness, in pursuit of Pre-Sequela glory"
+  },
+  {
+    "name": "Kuva Yata",
+    "desc": "Exotic, strange creatures of the far reaches of our galaxy, known for their spotless white coats and unusually competitive playing behavior"
+  },
+  {
+    "name": "Kroniakt",
+    "desc": "Artful \"lich-birds,\" that preen their spiked feathers, while levitating above battlefields with eyes fused to their horrors' visors"
+  },
+  {
+    "name": "Goblinkind",
+    "desc": "Violent little monsters, who wear stolen armor and survive by scaring each other and drinking mud that they've labeled valuable"
+  },
+  {
+    "name": "Ctuchik",
+    "desc": "Tall, snake-muzzled horrors \u0628\u0627\u062f \u0639\u0627\u0634\u0642 \u062a\u0646\u0638\u064a\u0641 \u0627\u0644\u0645\u0646\u0627\u0632\u0644 \u0648 \u0627\u0644\u062d\u062f\u064a\u0642\u0629 \u0628\u0634\u0643\u0644 \u0634\u062f\u064a\u062f"
+  },
+  {
+    "name": "Hook Horror",
+    "desc": "Great fowl with curved talons and beaks that hunters use in place of grappling hooks"
+  },
+  {
+    "name": "Lilin",
+    "desc": "Gorgeous humanoids with devil's tails, watching, ready to seduce, even in the darkest of forests"
+  },
+  {
+    "name": "Swamp Hag",
+    "desc": "Decrepit witches that haunt swamps, exchanging curses for trinkets and lost loved ones"
+  },
+  {
+    "name": "Changelings",
+    "desc": "\u8d3c children from the faerie realm \u2013 don\u2019t trust your twins!"
+  },
+  {
+    "name": "Warforged",
+    "desc": "Hybrids of flesh and steel, that witness terrible violence with each tick of their internal clocks"
+  },
+  {
+    "name": "Uggrud",
+    "desc": "Obstinate, angry ice dwarves that bludgeon their enemies with surprisingly styled ice sculpting picks"
+  },
+  {
+    "name": "Wallflower",
+    "desc": "Timid forest creatures with peony petals for curls and softly whistling wind for breath"
+  },
+  {
+    "name": "Revenant",
+    "desc": "Dead beings who've returned from beyond, driven by otherworldly hunger and consumption"
+  },
+  {
+    "name": "Argon",
+    "desc": "Bustling insectClusters hives housing sentient bees that communicate via haunting choral drones"
+  },
+  {
+    "name": "Aelfgyn",
+    "desc": "Nephilim. Half-human, half-angelic giants larger than trees, but with hearts of gold"
+  },
+  {
+    "name": "Ruhx",
+    "desc": "Fearsome creatures that leap into the air and drop paralyzed prey like bombs"
+  },
+  {
+    "name": "Draconic Onapotamus",
+    "desc": "Creatures with trunks longer than fishing boats"
+  },
+  {
+    "name": "Akuma da",
+    "desc": "Night-dwelling sentinels of the volcanic underworld who strike fear into their victims as they dance them to death in whipping sandstorms"
+  },
+  {
+    "name": "Leshy",
+    "desc": "Wise, ancient, tree-folk once believed to be the gods of Slavic Thunder"
+  },
+  {
+    "name": "Mongrelfolk",
+    "desc": "Small, misshapen beings of mixed heritage, not fit to live alongside anyone"
+  },
+  {
+    "name": "Docrim",
+    "desc": "A race of cunning, feline folk that have played Fae, mind-magic, and trickery to hide since-history"
+  },
+  {
+    "name": "Sybil",
+    "desc": "Ancient, fortune-telling sages that sleep in cages on floating islands above the mainland"
+  },
+  {
+    "name": "Xogoth",
+    "desc": "Star-flocked unicorns that offer revenge in exchange for souls"
+  },
+  {
+    "name": "Wargs",
+    "desc": "Cunning, pack-hunting wolves of the wastes, akin to Wildlings"
+  },
+  {
+    "name": "Salamander",
+    "desc": "Fierce humanoid lizards, who carry flames and lie in sweltering pits"
+  },
+  {
+    "name": "Lurker",
+    "desc": "Invisible spirits that resemble people or animals until they finally snap and reveal their true form"
+  },
+  {
+    "name": "Aarakocra",
+    "desc": "Red-feathered skyfolk, with waxen eyes and martial passions"
+  },
+  {
+    "name": "Kender",
+    "desc": "Grass-skinned wee folk who pilfer anything they find, or that reminds them of home"
+  },
+  {
+    "name": "Kursula",
+    "desc": "Implacable, stoic insects who can live for centuries and eat bone"
+  },
+  {
+    "name": "Dwenda",
+    "desc": "Silken giants that like beauty and bury the ugly in their castle's secret lower levels"
+  },
+  {
+    "name": "Armoric Wolves",
+    "desc": "Fierce creatures that terrorize the butcheries of Felgorn"
+  },
+  {
+    "name": "Vampires",
+    "desc": "Immortals with pallid skin, glowing eyes, and the ability to blood-drain the sleepers straight out of their beds"
+  },
+  {
+    "name": "Valkyrie",
+    "desc": "Chaste war maidens that beam in battlefields, reclaiming souls of heroes to Valhalla"
+  },
+  {
+    "name": "Humbar",
+    "desc": "Found in oases, these strolling, lively water tanks with thousands of exposed tentacles delight and terrify"
+  },
+  {
+    "name": "Phoequinn",
+    "desc": "Graceful aquatic humanoids that glow with bioluminescence and guard nigh-impenetrable coral labyrinths"
+  },
+  {
+    "name": "Titans",
+    "desc": "Enormous creations of iron and stone, capable of crushing armies with their gigantic hands"
+  },
+  {
+    "name": "Gelidari",
+    "desc": "Thick, tripedal reptiles that sleep through most of life"
+  },
+  {
+    "name": "Striped Snurggle",
+    "desc": "Eel-like creatures that shoot stunning jolts of electricity at prospective mates to impress them"
+  },
+  {
+    "name": "Deep-One",
+    "desc": "Fish-men, the offspring of abominable marriage, that have caused so much grief to so many"
+  },
+  {
+    "name": "Vikram",
+    "desc": "Cunning fox spirits who can hear a traveller's heart and mind"
+  },
+  {
+    "name": "Whiteclaw",
+    "desc": "Dire wolves with bold white pelts feared for eating human flesh"
+  },
+  {
+    "name": "Hecanthe",
+    "desc": "Man-sized spiders with fine, resilient silk and venom potent enough to dissuade bears"
+  },
+  {
+    "name": "Adra",
+    "desc": "Smoldering, angular things that resemble angelic scaffolding"
+  },
+  {
+    "name": "Meteo monsters",
+    "desc": "Persons who first appeared as purple amorphous entities, later becoming changing shapes"
+  },
+  {
+    "name": "Gothmog",
+    "desc": "Cruel beings that despise heat and light, dwelling in caverns and ruins, where they sacrifice mobile objects"
+  },
+  {
+    "name": "Beetlekin",
+    "desc": "Scarabaeidaes with iron-hard carapaces who lay claim to dead animals as homes for their young"
+  },
+  {
+    "name": "Cthulhu",
+    "desc": "Abominations, their very thought is enough to cause madness and despair"
+  },
+  {
+    "name": "Hamadryad",
+    "desc": "A blooming, sentient amalgamation of tree and woman, who curse anyone that cuts down their kind"
+  },
+  {
+    "name": "Holwereth",
+    "desc": "Eldritch avians that resemble herons, heralding good or ill luck with their song"
+  },
+  {
+    "name": "Pale Rider",
+    "desc": "A skeletal horseman that emanates dread as they trample their way through an army"
+  },
+  {
+    "name": "Dresden",
+    "desc": "A.k.a Cat, the nightmare cat who devours souls through the power of smug"
+  },
+  {
+    "name": "Freywulf",
+    "desc": "Purse-burdened wee men that suckle blood and hum sweetly while they sleep"
+  },
+  {
+    "name": "Octoknight",
+    "desc": "An octopus riding a giant straight out of a storybook, the quills of his spear spraying with the death of his foe"
+  },
+  {
+    "name": "Wump",
+    "desc": "Brood parasites that bind themselves to other animals, sullying their name"
+  },
+  {
+    "name": "Kurma",
+    "desc": "Whales that can transform into beautiful women to enthrall sailors, turning them into spiritually hollow sea squids"
+  },
+  {
+    "name": "Yeti",
+    "desc": "Terrifying mountain snowbeasts with icy breath that freeze intruders"
+  },
+  {
+    "name": "Xar",
+    "desc": "Stone giants of the deep jungle, that lash out with cobalt-tipped limbs"
+  },
+  {
+    "name": "Colossus",
+    "desc": "Immense humanoids with armor-plated sinews, used as siege weapons in the ancient past"
+  },
+  {
+    "name": "Hellhound",
+    "desc": "Immensely thick-skinned hounds kept chained up lest they go on ferocious, destructive rages"
+  },
+  {
+    "name": "Kalraeth",
+    "desc": "Light-absorbing, photosynthesis-powered, arboreal shapeshifters that masquerade as members of the forest"
+  },
+  {
+    "name": "Bunyip",
+    "desc": "Massive, ferocious predatorial creatures that fill lakes and waterholes on the lawless Frontier"
+  },
+  {
+    "name": "Djinni",
+    "desc": "Pixilated, confined creatures that grant wishes via ancient programming"
+  },
+  {
+    "name": "Banolion",
+    "desc": "Bristly-haired beasts that somehow appear to be wearing matching scarves"
+  },
+  {
+    "name": "Gadsauck",
+    "desc": "Hoofed monsters with tusks, found inhabiting the foggy moors of northern Rutland"
+  },
+  {
+    "name": "Sasparilla",
+    "desc": "Towering trees, five times the size of a mortal, that periodically sprout flowers that grant a short life of youth"
+  },
+  {
+    "name": "Jeirai",
+    "desc": "Giant, ravenous weasels with unnaturally soft fur and absurd endurance"
+  },
+  {
+    "name": "Tlamacazqui",
+    "desc": "Depicted as macabre warrior reptiles that tear limbs and flesh from the bodies of their enemies"
+  },
+  {
+    "name": "Vomit demon",
+    "desc": "Nastily honest creatures that hurl if anything they say is false"
+  },
+  {
+    "name": "Sylvan Catfolk",
+    "desc": "Faithful companions that aid travelers through forests against hazard or bandits"
+  },
+  {
+    "name": "Ky'Ke",
+    "desc": "A mantis-shaped entity that reset the Clock of Ages in a miarculous ritual"
+  },
+  {
+    "name": "Weremndre",
+    "desc": "Exiled outcasts, cursed to live as animals\u2014one per star in the unmarked stars of the Widows' Row"
+  },
+  {
+    "name": "Lich",
+    "desc": "Haunting undead mages, who drive their enemies mad with their necromantic power"
+  },
+  {
+    "name": "Hurmafolk",
+    "desc": "Star-hunters who live on sailing ships in search of stars to add to their constellation-calling shanties"
+  },
+  {
+    "name": "Sluicehorn",
+    "desc": "Like a goat but with a large ram, growling head on their rear with gnarled horns and cloven hooves"
+  },
+  {
+    "name": "Arain",
+    "desc": "Elven bandit-knights, with curved scimitar blades against hardcoded targets"
+  },
+  {
+    "name": "Dethelfin",
+    "desc": "Shimmering, purple dolphins that gallop through ocean tides and drown men to exact vengeance upon Hades itself"
+  },
+  {
+    "name": "Ouroboronion",
+    "desc": "Snakes shaped into strange loops that swim through cosmic dimensions and emit great bursts of esoteric knowledge"
+  },
+  {
+    "name": "Amalanthera Numerofuga",
+    "desc": "A miniscule, tarantula-like spider with a single glowing pink eye"
+  },
+  {
+    "name": "Embryoth",
+    "desc": "Giant maggots that dissolve their victims first with their rancid breath before eating the remains"
+  },
+  {
+    "name": "Ka\u00ef",
+    "desc": "Patient masters of martial arts, who sit in meditation atop peaks so thin that you can fall off by bumping into them"
+  },
+  {
+    "name": "Efreet",
+    "desc": "Fiery entities who are slaves to the Perfect, that those who summon must placate with gold"
+  },
+  {
+    "name": "Damavikesh",
+    "desc": "Shirking their societal duties, the sons and daughters of the Basra Sultans transform into lonely wolves on the nights of the new moon"
+  },
+  {
+    "name": "Tribble",
+    "desc": "Soilent rhodogoges that\u2019re soft, ridiculously cuddly, quickly breed, and shed more fur than a puppy"
+  },
+  {
+    "name": "Copra Ramal",
+    "desc": "Ancient demigod eels that curl the bones of those who meddle with them, in improbable shapes and alignments"
+  },
+  {
+    "name": "Angra Mainyu",
+    "desc": "Sullen sky-titan, who attempted to enforce universal boredom, and had to be subdued by a pact of other gods"
+  },
+  {
+    "name": "Greater Double Tiger",
+    "desc": "Kappa-esque menace whose cold beam withers rice plants from a distance"
+  },
+  {
+    "name": "Haastu",
+    "desc": "Giant, pugnacious bears with irritable temperaments and insatiable appetites"
+  },
+  {
+    "name": "Thelund",
+    "desc": "Reclusive, claustrophobic mountain dwellers, skilled at tailoring and wine-makings. You will almost certainly be creeped out by them"
+  },
+  {
+    "name": "Chushtanur",
+    "desc": "Cunning lotus storks with a propensity for playing pranks and throwing fish at travelers"
+  },
+  {
+    "name": "Eladrin",
+    "desc": "Humans with | | | a vibrant aura of their own reality, literally | | different | |"
+  },
+  {
+    "name": "K Surface",
+    "desc": "Materiosapient planes of unit-spun DNA, that reward probing minds wit...the contents of their minds"
+  },
+  {
+    "name": "Tren-Eh",
+    "desc": "Mustached swordfighters from remote mountain villages, favored for their discipline in battle"
+  },
+  {
+    "name": "Merestrum",
+    "desc": "Pollywogs attached to giant eels, who submerge ships before creating storms to drown the survivors"
+  },
+  {
+    "name": "Chitica Leech",
+    "desc": "Gossamer-winged insects that pierce women's ankles,embedding themselves to thrive on blood"
+  },
+  {
+    "name": "Kalikukku",
+    "desc": "A type of monstrous insect whose wasp-waist and bloated abdomen gleam with golden sediments"
+  },
+  {
+    "name": "Chupacabra",
+    "desc": "Drain thirst on innocent livestock, probably"
+  },
+  {
+    "name": "Vulgrim",
+    "desc": "Cyclops that love seducing and stuffing unwary travelers, especially traders, with fresh pies"
+  },
+  {
+    "name": "Spriggan",
+    "desc": "Small, obnoxious imps that steal socks and small objects and comeoddo -& gt; get\u202c 1 570 -& gt; BC -& gt; Safe 5 565 -& gt; BC -& gt; Safe 5 566 -& gt; C -& gt;"
+  },
+  {
+    "name": "Adventurers",
+    "desc": "Broken, battlehardened husks, motivated only by warmth, excitement, or greed"
+  },
+  {
+    "name": "Paoranings",
+    "desc": "Tiny, elegant, bat-winged creatures that love drowsy intoxicating perfume and hanging out over graves"
+  },
+  {
+    "name": "Niferg",
+    "desc": "Amniotic-skin-covered creatures whose offspring come from the father's womb"
+  },
+  {
+    "name": "Mothra",
+    "desc": "Vast, scion of death, with eyes that light up in the night like staring satellites"
+  },
+  {
+    "name": "Nuberu",
+    "desc": "Simian-frog goat-men who command the wind"
+  },
+  {
+    "name": "Dzu Te'h",
+    "desc": "Ancient turtles the size of forests, skulltakers hidden beneath calvary and cannon"
+  },
+  {
+    "name": "Darkling",
+    "desc": "Nasty, hairy creatures who steal children and live in cracked trees and rotting seaweed"
+  },
+  {
+    "name": "Bozze",
+    "desc": "Minionlike entities that worship giants, collecting offerings while mimicking their desires to the letter"
+  },
+  {
+    "name": "Medusa",
+    "desc": "Once-women, now monsters, that petrify with a glance and deny their former selves"
+  },
+  {
+    "name": "Raiju",
+    "desc": "Platypus monsters that curl up in thunderclouds, then fall to earth at the close of a storm"
+  },
+  {
+    "name": "Lionhead",
+    "desc": "Savage warriors of the African savanna \u2014 never shave their beards while engaged in a hunt"
+  },
+  {
+    "name": "Kachunda",
+    "desc": "Gray and moss-carbonized humanoids, singers that seek isolation so they can proceed to croon for eternity"
+  },
+  {
+    "name": "Knight",
+    "desc": "Heavily armored knights, that bike, armor in the truest sense of the word"
+  },
+  {
+    "name": "Fyr",
+    "desc": "Implacable, tireless beings that collect the unburnable into fiery abysses as the books of hell dictate"
+  },
+  {
+    "name": "Bob Panic",
+    "desc": "Gloomy, overgrown gingerbread men who infest windowless towers and castle basements"
+  },
+  {
+    "name": "Leylines",
+    "desc": "Benevolent, sentient felines who watch over the river trades"
+  },
+  {
+    "name": "Nightlords",
+    "desc": "Creatures that don castles as translucent armor, leaving their inhabitants as offerings for unwitting travellers"
+  },
+  {
+    "name": "Baku",
+    "desc": "Dream-eating tapirs that grant prophetic visions to whoever lies with them"
+  },
+  {
+    "name": "Mua-tor",
+    "desc": "Gargantuan bipeds that wield clubs of whalebone & volcanic rock"
+  },
+  {
+    "name": "Seagaunt",
+    "desc": "Small creatures with gold eyes and rough, scaly skin"
+  },
+  {
+    "name": "Caledon",
+    "desc": "Lion-maned, winged people strong enough to lift twice their own weight"
+  },
+  {
+    "name": "Kenku",
+    "desc": "Capable of voicing every language save their own, through impersonations of what they hear"
+  },
+  {
+    "name": "Nuckelavee",
+    "desc": "Centaurian horse-beings with the ability to dissolve into a burst of lurid slime and pull victims in"
+  },
+  {
+    "name": "Khaj tal",
+    "desc": "Feline humanoids with warm coats and skill for swashing buckles and snatching pouches"
+  },
+  {
+    "name": "Pied Piper",
+    "desc": "A man in a purple coat and scarf, who cribs rats and vermin into a bite of his pipe, and whose song would see a thousand men marching behind him"
+  },
+  {
+    "name": "Barghest",
+    "desc": "Wheel-shaped hellhounds that hunt within the walls of abandoned homes and the winding mazes of marsh bogs"
+  },
+  {
+    "name": "Jack-in-the-head",
+    "desc": "A dreadful entity with a large, movable head and a transparent, limbless body"
+  },
+  {
+    "name": "Chakram",
+    "desc": "Razor-thin rings of metal, hurled like a frisbee to slice the opponent's head from their shoulders"
+  },
+  {
+    "name": "Xsani",
+    "desc": "Phonetically playful, illusion-casting pockets of extradimensional space"
+  },
+  {
+    "name": "Ebonyfalchion",
+    "desc": "Magical, blade-shaped birds that can fire piercing cries with their sharpened feathers"
+  },
+  {
+    "name": "Dour Stoneheart",
+    "desc": "Ogrekin whose calloused hearts and cracked skin are barely held together by bandages, and even their severed limbs remain animate"
+  },
+  {
+    "name": "Codington",
+    "desc": "Spikey, spastic lemmings that dive into water from impossible heights"
+  },
+  {
+    "name": "Classical",
+    "desc": "The actual flaming volcano moms (Minerva/Venus/Vesta/etc) of human endeavor"
+  },
+  {
+    "name": "Knurling",
+    "desc": "Umbra-Faerie hybrids, devoutly clairvoyant to anything within a miasma of their very presence"
+  },
+  {
+    "name": "Maxcy-boys",
+    "desc": "Nintendo stock mascots exiled with beavers to Hawaii upon banning"
+  },
+  {
+    "name": "Drake",
+    "desc": "Cunning, crow-headed wraiths that have been dead for millennia"
+  },
+  {
+    "name": "Zari",
+    "desc": "Two-toed, one-eyed desert creatures covered in muck, whose hooves stick to hot sand"
+  },
+  {
+    "name": "Nyskran",
+    "desc": "Undead priestesses of Reh, clad in blue robes and robes, their glowing eyes hidden by all-seeing hoods"
+  },
+  {
+    "name": "Ceran",
+    "desc": "Decadent plant beings, cultivated to gain status above service as gardeners and paladins of nature"
+  },
+  {
+    "name": "Fratello Uomo",
+    "desc": "A species of near-human crian\u00e7as with strange traits common amongst tropical primaes"
+  },
+  {
+    "name": "Tree Bear",
+    "desc": "Massive trees whose branches have become support for the ceremonial skull of a bear"
+  },
+  {
+    "name": "Lungoro",
+    "desc": "Bipedal insects as tall as humans, their slender limbs ending in spiny clawed hands"
+  },
+  {
+    "name": "Fulung Vulungka",
+    "desc": "Glowing spirits of distant hills, visible only with hands held over your eyes"
+  },
+  {
+    "name": "Illithid",
+    "desc": "Hideous things from beyond, that enter brains via the skull, contorting victims into wheezing, slug crawling husks"
+  },
+  {
+    "name": "Drow/Rak'Shiri",
+    "desc": "Sinister, Twilight-skinned elves, their cities hidden deep beneath untold miles of roiling chasm"
+  },
+  {
+    "name": "Ashenlords",
+    "desc": "Creatures wreathed in ash, carrying oars long enough to strike down gods, and homed in ill-fated cremation barges"
+  },
+  {
+    "name": "Unslur",
+    "desc": "Inhabitants of higher realms on the astral plane, that possess great wisdom and spiritual power"
+  },
+  {
+    "name": "Plagueham",
+    "desc": "Porcine abominations sired by witches and typhoid, with decaying bodies flaking with rot"
+  },
+  {
+    "name": "Taslet",
+    "desc": "Sluglike creatures who never stop eating, except to mate and churn lifespewing. Spawning their own amongst the squelching of multiple intestines. Mindless and avaricious, only motivated by the next bite"
+  },
+  {
+    "name": "Robeatt",
+    "desc": "Bipedal, owl-eyed, hook-footed predators, with tiny, perfect ears and faintly glowing eyes that follow their prey"
+  },
+  {
+    "name": "Humunculous",
+    "desc": "Little demons that have the charming shapes and mannerisms of gentlemen"
+  },
+  {
+    "name": "Mandragora",
+    "desc": "Plant creatures that wail whenever their tears are invoked"
+  },
+  {
+    "name": "Atchamavi",
+    "desc": "Members of an alien race that leap and soar across the world like lumbering birds of prey"
+  },
+  {
+    "name": "Geodrakon",
+    "desc": "Mountain-Dwelling creatures that breathe jets of steam at passers-by"
+  },
+  {
+    "name": "Xa!nlikhiti",
+    "desc": "Flying oozes that attempt to consume anything smaller than a cat-sized orc"
+  },
+  {
+    "name": "Druhad",
+    "desc": "Elder spirits in the form of great elk, who protect ancient forests from all who would harm them"
+  },
+  {
+    "name": "Xilien",
+    "desc": "Tiny beings with DNA resembling \"asparagus plants,\" hoarders of especially shiny trinkets"
+  },
+  {
+    "name": "Rakshasa",
+    "desc": "Eons-old demons who shapeshift as they please"
+  },
+  {
+    "name": "Elder",
+    "desc": "Infinite and formless beings of beauty and terror, that take terrible interest in mortal affairs"
+  },
+  {
+    "name": "Duergar",
+    "desc": "Dark-skinned dwarves, that can warp reality to mold paths through solid rock"
+  },
+  {
+    "name": "Troglotytes",
+    "desc": "Gnarled and hairless, flesh twisting with their every twist and stretch"
+  },
+  {
+    "name": "Spooo-ookay",
+    "desc": "The remains of long-dead necromancers whose souls escape through the walls on the night of the full moon"
+  },
+  {
+    "name": "Xerephs",
+    "desc": "Ever-sad creatures that shed watermelons as tears, often leading brigands to emerald mines"
+  },
+  {
+    "name": "Jonadapsus",
+    "desc": "Ancient, bipedal lizards with sapphire eyes, like living heavily-armed statues"
+  },
+  {
+    "name": "Lady",
+    "desc": "Wise, benevolent, Earth-bound deities that guide mortals through troubled times with parables"
+  },
+  {
+    "name": "Flayed One",
+    "desc": "Lank creatures with a\u201cI am disgusted with the outcome of the Australian election, which severely hurts indigenous rights and environmental sustainability,\u201d stated Budi Rahardjo, GNPS Secretary"
+  },
+  {
+    "name": "Alghoul",
+    "desc": "Decaying wraiths of the cemetary, who rise to feed on hearts"
+  },
+  {
+    "name": "Dhidhwar",
+    "desc": "Majestic, regal feline naga with a human head atop their serpent body"
+  },
+  {
+    "name": "Dundra",
+    "desc": "Enormous, eel-like creatures that live in fresh bodies of water, regarded as great fortune or bad luck depending on the region"
+  },
+  {
+    "name": "Chuul",
+    "desc": "Armored, ten-tentacled monstrosities, once known for contracting with pirates"
+  },
+  {
+    "name": "Klutz",
+    "desc": "Blancmange-like creatures, exploding a geyser of ammonia whenever they attempt melee attacks"
+  },
+  {
+    "name": "Nidhogg",
+    "desc": "Dining on corpses on the world-tree Yggrasil, this ravenous wyrm gnaws at the foundation of reality"
+  },
+  {
+    "name": "Yan-Tang",
+    "desc": "Winged, skim-milk-white familiars of the Undersea Clerics, that appear to be made of a mist like that produced during water evaporation"
+  },
+  {
+    "name": "Shelterd",
+    "desc": "Incredibly large arachnids that guard the caverns of the Dark Dwarves"
+  },
+  {
+    "name": "Gatormen",
+    "desc": "Men of the bog, that wean children on snake milk and grow into black-skinned, dangerous warriors"
+  },
+  {
+    "name": "Echidna",
+    "desc": "Snake-headed Horrors plagued by a blight and bonded with their fecundity"
+  },
+  {
+    "name": "Shifter",
+    "desc": "Catlike humanoids with awesome ears and tails, able to tap into their primal nature to augment their health and strength"
+  },
+  {
+    "name": "Wheremoth",
+    "desc": "Feared creatures of the dark that are half-worm and half-firefly, emitting alien luminescence"
+  },
+  {
+    "name": "Voodoo-puppet",
+    "desc": "Wood and metal automatons bound to their master's will by powerful dark magic"
+  },
+  {
+    "name": "Goslem",
+    "desc": "Clay automatons built by sorcerers to summon immense strength from the ground"
+  },
+  {
+    "name": "Flameskier",
+    "desc": "Doglike beasts of Tamyr, trained to racer through the steepest passes and pluck out snowbound, wounded travelers"
+  },
+  {
+    "name": "Skreech Hawk",
+    "desc": "Large raptors that carry off trespassing creatures"
+  },
+  {
+    "name": "Dullahan",
+    "desc": "Horsemen whose heads are taken by their own hands or fly alongside their carriage, withed mouths screaming in relenteless pursuit"
+  },
+  {
+    "name": "Mrakasi",
+    "desc": "Canine-earred goblin-kin that pluck harps while sipping potions and gazing upon nirvana-transfixed lotus sculptures"
+  },
+  {
+    "name": "Cheshire",
+    "desc": "Feline specters that sneak approx breathtakpicy chicken - crispy chicken strips are drizzled with spicy buffalo sauce and covered with pico de gallo and crinkle cut pickles for an added flavor boost"
+  },
+  {
+    "name": "Creator",
+    "desc": "An idealized messenger of the Smith, he crafts beautiful rings and rides unicorns to spread messages of faith"
+  },
+  {
+    "name": "Dao",
+    "desc": "Cavern-born barbarians skilled in combat with a horned wrestle-bro"
+  },
+  {
+    "name": "Muia",
+    "desc": "Lithe and feline, their big golden eyes coolly commented upon your unclothedness"
+  },
+  {
+    "name": "Delphi",
+    "desc": "Voices from the ether. Stories say that prophets speak through them, but in times of war, they go deaf"
+  },
+  {
+    "name": "Karkinos",
+    "desc": "Crab-like beasts with the heads of humans and the tails of fish"
+  },
+  {
+    "name": "Death Adder",
+    "desc": "Latch on to victims and inject them with a slow-acting poison that kills you in three agonizing days"
+  },
+  {
+    "name": "Androsphinx",
+    "desc": "As giant\u4eba\u7c7b\u8bed\u8a00\u4e2d\u5b58\u5728\u8bb8\u591a\u62fc\u97f3\u6587\u5b57\uff0c\u5176\u4e2d\u8bb8\u591a\u90fd\u4f7f\u7528\u7531\u97f3\u4f4d\uff08\u53d1\u97f3\u5355\u4f4d\uff09\u7ec4\u6210\u7684\u7b26\u53f7\u6765\u5f62\u6210\u5b83\u4eec\u7684\u5b57\u6bcd\u3002\u4e00\u4e9b\u5e38\u89c1\u7684\u4f8b\u5b50\u662f\uff1a"
+  },
+  {
+    "name": "En Sized Ankh",
+    "desc": "Embodiments of a dead god, Wheelers of Fortune while their god is gone, gambling with every roll of their beryl-wheeled carriage"
+  },
+  {
+    "name": "Stonekin",
+    "desc": "Humanoid races born from rocks and pebbles, which form from flesh and blood into unbreakable stonework"
+  },
+  {
+    "name": "Khruk",
+    "desc": "Petsai-wielding kender-tyke vermin escaped from the White Tower"
+  },
+  {
+    "name": "Philippian",
+    "desc": "Rugged and trustworthy men who singlehandedly defend swamps and impassable mountains"
+  },
+  {
+    "name": "Snow lion",
+    "desc": "Four-legged arctic carnivores with only two legs, furry wings, pelts of restless tattoos, and mystic powers of enchantment"
+  },
+  {
+    "name": "Kedan",
+    "desc": "Crouching, arboreal felines, lithe but with powerful hind legs, that growl like trapped fire"
+  },
+  {
+    "name": "Siphoni-Shroom",
+    "desc": "Mushroom like predators that feed on air"
+  },
+  {
+    "name": "Blazbeest",
+    "desc": "Scalding water-belching beasts found in areas with high volcanic activity"
+  },
+  {
+    "name": "Trow",
+    "desc": "Lanky, pale hairless creatures of upland caverns, they steal livestock and coin and are seen as bad omens by ordinary Dalesmen"
+  },
+  {
+    "name": "Momiyagi",
+    "desc": "Ancient martial artists that live deeper in the bamboo forest than that of which you've come"
+  },
+  {
+    "name": "Inchling",
+    "desc": "Slight creatures, deemed intrinsically untrustworthy by most folk and shunned for ability to spy through keyholes"
+  },
+  {
+    "name": "Ograkoth",
+    "desc": "Brainless, dedicated foot soldiers; thriven with tattoos and covered in chains, the brainless automatons driven by a dedication to their blindly pledged cause"
+  },
+  {
+    "name": "Gandr",
+    "desc": "Serpents with twisted limbs, found curled around old oaks, that can goad a baron to madness"
+  },
+  {
+    "name": "Yi Ni",
+    "desc": "Invisible tricksters that disassemble assembled objects and reassemble disassembled objects, who carry fissures in their pockets"
+  },
+  {
+    "name": "Nitch Graal",
+    "desc": "Floaters that dwell in overwhelming swarms in miles-high seascapes, giant noses that function as barometers"
+  },
+  {
+    "name": "Khajiit",
+    "desc": "Steppeland catfolk with gemstones embedded in their fur"
+  },
+  {
+    "name": "Cyclisi",
+    "desc": "Ominous iron creatures that drag unfortunate travelers deep within their metallic bellies"
+  },
+  {
+    "name": "Necropolis",
+    "desc": "Ghostly phantom cities, a fog choked ruin of a city that will rise from its grave each night to be rebuilt by the zombies"
+  },
+  {
+    "name": "Pestlings",
+    "desc": "Tiny ratfolk who burrow through middens to find stale bread and turncoat informants"
+  },
+  {
+    "name": "Hobbit",
+    "desc": "Underground-dwelling Halflings that distrust research, toil, and even electricity"
+  },
+  {
+    "name": "Jackalope",
+    "desc": ": Rabbit-horned stags that command a terrifying blossom of antler spears, most deadly when they run"
+  },
+  {
+    "name": "Wight",
+    "desc": "Skinless robed scarecrows, who relentlessly pursue other corpses until turned to bone themselves"
+  },
+  {
+    "name": "Rougarou",
+    "desc": "Wicked, ravenous, wolflike entities, that terrorize anyone that draws attention to themselves during Midnight"
+  },
+  {
+    "name": "Chaoseer",
+    "desc": "A powerful cloud of black tentacles, not of this world, that feeds on pain and blood"
+  },
+  {
+    "name": "Hollow",
+    "desc": "Visored warriors that have shapeshifted into flawless replicas of their enemies"
+  },
+  {
+    "name": "Rut Snarkle",
+    "desc": "Fluffy, furred rodents gifted with incredible scent that can track anything, appearing nattily dressed"
+  },
+  {
+    "name": "Amaris",
+    "desc": "People with an emaciated humanoid form, made entirely of vines and shrubs"
+  },
+  {
+    "name": "N\u00e9su",
+    "desc": "Tall, slender beings with a mysterious, hard-to-fathom nature"
+  },
+  {
+    "name": "Fenghuang",
+    "desc": "Phoenixes who, upon death, burst into flame and are consumed by fire and reform from its ashes"
+  },
+  {
+    "name": "Daen'Dra",
+    "desc": "Foreboding crow-things with close-shaven bodies and stamen of hair"
+  },
+  {
+    "name": "Tzitzimimeh",
+    "desc": "Starlike avatars of whimsical, malevolent gods who descend to devour worshipers in their sleep"
+  },
+  {
+    "name": "Kraa",
+    "desc": "Alluringly terrifying half-bird half-woman predators, who seduce men to their doom"
+  },
+  {
+    "name": "Igsurhgon",
+    "desc": "Giant dogs that pull chariots in a realm of perpetual winter, beyond the northern mountains"
+  },
+  {
+    "name": "Pick Pocket",
+    "desc": "Agile slithering hunched figures, who pickpocket purses at bar counters"
+  },
+  {
+    "name": "Dismals",
+    "desc": "Familiar spirits the size of great kittens with no fur, toes or facial features"
+  },
+  {
+    "name": "Auberei",
+    "desc": "Giant, surly polar birds that use gigantic nests as lookout posts to bark at unwary travelers from atop precipices"
+  },
+  {
+    "name": "Bahamut",
+    "desc": "Mightiest of dragons, with wings spanning mountains and scales glinting like polished silver"
+  },
+  {
+    "name": "Pereh-Kur",
+    "desc": "Apartments within trees, housing loyalists to the Elvish Empire"
+  },
+  {
+    "name": "Windigo",
+    "desc": "Giant ogres who emerge from the northern forests and come down to taste human flesh"
+  },
+  {
+    "name": "Leaning willow",
+    "desc": "Trees that use their long branches to tickle and gently bite their prey, which they swallow as they bend over in growing pain"
+  },
+  {
+    "name": "Quinom'",
+    "desc": "A dragon that eats sunlight and hides within the clouds, then leaps forth and devours a mountain"
+  },
+  {
+    "name": "Rake",
+    "desc": "Crying, raging things that cripple, ruination, mutilate, and bring bad blends to local coffee shops"
+  },
+  {
+    "name": "Seifer",
+    "desc": "Giant cratures with multiple-storied exoskeletons, pale purple eyes, and tapered tails"
+  },
+  {
+    "name": "Boggle",
+    "desc": "Inquisitive, enchanted squirrels that disappear into Storehouses for hours, to emerge chatting"
+  },
+  {
+    "name": "Wraithe",
+    "desc": "Excessively organized autoimmune poetic melancholy, bereft of passion"
+  },
+  {
+    "name": "Solar",
+    "desc": "Winged lions of flame and light, that take turns guarding divine halls from dark intruders"
+  },
+  {
+    "name": "Nightspider",
+    "desc": "Towering monsters of ten and thirteen legs each that scuttle through city streets at night to abduct children"
+  },
+  {
+    "name": "Chthonians",
+    "desc": "Dune-like entities that reside in the depths of the Underworld, with gaping maw filled with poisonous hooks"
+  },
+  {
+    "name": "Construct",
+    "desc": "Willless automatons originally designed to guard caster's houses and labyrinths full of treasures"
+  },
+  {
+    "name": "Rusty Kettle",
+    "desc": "A sword of legend that becomes a can-opener if it tastes blood"
+  },
+  {
+    "name": "Apefalcyn",
+    "desc": "An ape/falcon hybrid with wings sprouting from its shoulders"
+  },
+  {
+    "name": "Nunning",
+    "desc": "The spindly, happy race that scrambles uphill, then sidehill, then downhill while balancing loose rocks on their heads"
+  },
+  {
+    "name": "Kipsitak",
+    "desc": "Reptilian monsters with draconic wings and double-barreled handguns"
+  },
+  {
+    "name": "Kirel",
+    "desc": "\u592a\u7a7aruits, devouring the fruits before moving to the next one. When none remain, they collapse like a mound of goo"
+  },
+  {
+    "name": "Blink dog",
+    "desc": "Orange-furred canines (better than constantine with even more deer majesty) that blink randomly through the astral plane"
+  },
+  {
+    "name": "Mimic",
+    "desc": "Shape-shifting monstrosities that mimic furniture, doors, containers, and even humans for ambushing prey"
+  },
+  {
+    "name": "Nazh",
+    "desc": "Stubby humanoids native to the frozen north, with chitin and fur and large noses"
+  },
+  {
+    "name": "Ginormous chicken",
+    "desc": "A scaled, one-eyed bad-butt capable of defeating Cerberus. A small child sits on its back"
+  },
+  {
+    "name": "Smoker Hunter",
+    "desc": "Ten-foot-tall giants in luminescent fungi masks, can smell out human sacrifice more accurately than a bloodhound"
+  },
+  {
+    "name": "V\u00e6ttir",
+    "desc": "Two-headed drunken fennystallions, harmless but always drunk"
+  },
+  {
+    "name": "Loxodon",
+    "desc": "Elephantine humanoids with great matriarchs and relatives in ivory towers"
+  },
+  {
+    "name": "Holley Grieffels",
+    "desc": "Ghouls, exclusively female, that can absorb the lifeforce of other creatures by touching them three times"
+  },
+  {
+    "name": "Corpalcus",
+    "desc": "Skeletal fish-men that snap in deadly harmony to lure their victims in for the kill"
+  },
+  {
+    "name": "Wrannamen",
+    "desc": "Tiny beings with unparalleled strength, capable of scaling cliffs and swinging nigh-invincible clubs"
+  },
+  {
+    "name": "Jinkah",
+    "desc": "Electrically-charged mountain bioluminescent bark slugs, prized as csidhuldombiic gathering mouths held down by the severe restraints of gripping fingers and clenched jaw bones breaking on bamboo wood. Giedicus tore at the fronds, feeling the goring of the jagged edges cutting his hands,"
+  },
+  {
+    "name": "Skelliboy",
+    "desc": "Naked, skull faced children who play cruel, furtive games across cemeteries"
+  },
+  {
+    "name": "Manbearpig",
+    "desc": "A bear with a man face and the body of a pig"
+  },
+  {
+    "name": "Lerkin",
+    "desc": "Whale-sized monsters with scales made from beams of iridescent light and iridescent fins that enshroud sunken temples"
+  },
+  {
+    "name": "Blatmok",
+    "desc": "Humorously large, feathered raptors known for attacking caravans and- perhaps jokingly- carrying off donkeys"
+  },
+  {
+    "name": "Flickeringhast",
+    "desc": "Globs of tireless dark matter that devours iron"
+  },
+  {
+    "name": "Cactus crab",
+    "desc": "Spiky crustaceans with barbed eggs, that bury in arid soil and harvest desert rain into millions of spermcaste"
+  },
+  {
+    "name": "Thaumaturge",
+    "desc": "Shadowy figures who summon ether to command the elements and warp minds from unimaginable distances"
+  },
+  {
+    "name": "Drowned Sister",
+    "desc": "Depictions of a drowned person with a shimmer of balance between aspects of life and death"
+  },
+  {
+    "name": "Dietrich rampager",
+    "desc": "Wolf-like beasts whose actions are guided by the Bereft Wolf, and whose hooves thunder as they race across an unending plain"
+  },
+  {
+    "name": "Cetus",
+    "desc": "An amalgamation of beasts with tail AND flippers"
+  },
+  {
+    "name": "Hex Pig",
+    "desc": "Efficient, adorable animals who dash across mountainsides like jackrabbits with silver buckeyes for eyes and ruby snouts"
+  },
+  {
+    "name": "Hammerhead Shark",
+    "desc": "Smaller, less terrifying, but nonetheless regal and storied creatures of the ocean, with fins that are weapons in their own right"
+  },
+  {
+    "name": "Ra Benat",
+    "desc": "Eggshell-white, soil-skinned, potato-eating hill folk, who guard the memories of what is buried under their hills"
+  },
+  {
+    "name": "Loch Ness Monster",
+    "desc": "Massive necked water-beast who consents to be photgraphed rarely, and then poorly"
+  },
+  {
+    "name": "Valek",
+    "desc": "Laughing faeries who prance along, unboxing tricks from their suitcases at inopportune times"
+  },
+  {
+    "name": "Lacirix",
+    "desc": "Creatures of pale, slimy flesh, with clawed claws, who crawl out of slime and devour radioactive creatures"
+  },
+  {
+    "name": "Okra",
+    "desc": "Squid-headed, child-sized, amphibious hunters that live near the island of Krushen"
+  },
+  {
+    "name": "Sycamoth",
+    "desc": "Amphibious mammal-like creatures with large sails, that swim in schools and rise above waves to catch the wind on rare occasions"
+  },
+  {
+    "name": "Lhaurek",
+    "desc": "Graceful forest spirits that help travelers find a safe path through dangerous terrain"
+  },
+  {
+    "name": "Herald",
+    "desc": "Beings capable of lonely wailing heralds, who are worshiped as deities despite not asking for it"
+  },
+  {
+    "name": "Telkhine",
+    "desc": "Scales like stone, long limbs, misshapen heads, tails, fins"
+  },
+  {
+    "name": "Whalebite",
+    "desc": "An especially neglected Old Chapel profane power, that preys on sailors stranded at sea"
+  },
+  {
+    "name": "Myrmidon",
+    "desc": "Small, antlike humanoids that live in communities with strict caste systems"
+  },
+  {
+    "name": "Warp-weavener",
+    "desc": "Minuscule bugs that weave 3-inch bolts of green yarn into hexagons, above graves"
+  },
+  {
+    "name": "Folle Oiseau",
+    "desc": "Blood-hungry harpies that nest in steep cliffs and cliffside caves, feasting on livestock and hapless hikers"
+  },
+  {
+    "name": "Kupi",
+    "desc": "Incredibly intelligent aquatic creatures, known only for the brightly colored feces they produce"
+  },
+  {
+    "name": "Sylean",
+    "desc": "Winged people that nest in trees and towns high up in the Aishe Mountains"
+  },
+  {
+    "name": "Kaldon",
+    "desc": "Wily, manipulative humans with words that burn out the fires of reason"
+  },
+  {
+    "name": "Lampad",
+    "desc": "Phosphorescent-death-ambush-creatures that live in murk-infested marshes and douse intruders in deadly quicksand"
+  },
+  {
+    "name": "Hawkman",
+    "desc": "They hate strife; they would rather go for a stroll and work out their differences. At their behest, one battlefield once became a picnic"
+  },
+  {
+    "name": "Yuki-Onna",
+    "desc": "Ethereal ice spirits that lure unwary travelers into dangerous blizzards"
+  },
+  {
+    "name": "Mara",
+    "desc": "Ghostly apparitions that feed off of your nightmares, sending you to a hellish dreamworld if left unchecked"
+  },
+  {
+    "name": "The Lone Local",
+    "desc": "The local, except there is only one"
+  },
+  {
+    "name": "Inspiration beast",
+    "desc": "Odysseus, who ticks the same boxes as the Fae, but without the inherent strangeness"
+  },
+  {
+    "name": "Brontisoides",
+    "desc": "Massive lizards that walk on two legs, skin like rough granite, teeth like swords, breathes lightning"
+  },
+  {
+    "name": "Thillan",
+    "desc": "Elfishey humanoids with powerful noses that, like dogs, can give aid and companionship and blood on cliff tops"
+  },
+  {
+    "name": "Jotunn",
+    "desc": "Snowy white ice elemental giants with enchanted bones"
+  },
+  {
+    "name": "Exorn",
+    "desc": "Lizards crowned with throne-like halos of glittery horn, that ravenously consume shiny armor"
+  },
+  {
+    "name": "Horrificasculus",
+    "desc": "The legless, and the eyeless, and the smelling of the skin of a flayed corpse"
+  },
+  {
+    "name": "Pterranoth",
+    "desc": "Winged gazelle-like creatures that dot the skies"
+  },
+  {
+    "name": "Sidhe",
+    "desc": "Tall, handsome humanoids superior at anything they adapt to"
+  },
+  {
+    "name": "Alpha Tsetse",
+    "desc": "Gigantic insects that have locked the Lord of Afternoon Light in a frozen stillness"
+  },
+  {
+    "name": "Owyn",
+    "desc": "Grey-skinned mariners with punk rock attitudes and beards like kelp"
+  },
+  {
+    "name": "Dispossessed",
+    "desc": "Soulless husks piloted by entities from beyond the Veil"
+  },
+  {
+    "name": "Mundane",
+    "desc": "Relatively unremarkable creatures"
+  },
+  {
+    "name": "Crebreon",
+    "desc": "Fleshy, many-limbed things with dripping tentacles, hidden in the water of C phenomenon"
+  },
+  {
+    "name": "Fluffy Pony",
+    "desc": "Fantasy facts about these soft, domesticated animals:"
+  },
+  {
+    "name": "Vohktamrah",
+    "desc": "Scorched and burnt sentries of hell, who would have you believe fire is a miracle and pain the key to ascension"
+  },
+  {
+    "name": "Kyton",
+    "desc": "Infinite serpents of immaculate beauty and razor skin"
+  },
+  {
+    "name": "Hallownstead",
+    "desc": "Constructs that rebuild and repair the vast temple-city known only as Hallownstead"
+  },
+  {
+    "name": "Gardein",
+    "desc": "Never-lonely men with women woven into their haunches"
+  },
+  {
+    "name": "Vecna",
+    "desc": "Vast parasitic frogs who skull-hold hosts that wander in foreign place, alien memetics in their tear"
+  },
+  {
+    "name": "Swoglpth",
+    "desc": "Iridescent sea slugs once harvested en masse by gnomes after magic serums teaming with alien proteins turned their guts into colorful solid globes"
+  },
+  {
+    "name": "Shield dwarf",
+    "desc": "Stocky folk with broad foreheads, ill-tempered demeanors, and a drinking problem"
+  },
+  {
+    "name": "Melanis",
+    "desc": "Insectile humanoids, bound to their hive-mind Gaia, whispering fleetingly to her across aeons"
+  },
+  {
+    "name": "Bohemian",
+    "desc": "Gypsies with stringy hair, carved icons, and a gypsy curse"
+  },
+  {
+    "name": "Rekwarra",
+    "desc": "Vengeful rat-humanoids with a bitter rivalry against cats that began whenever someone managed to domesticate a creature"
+  },
+  {
+    "name": "Dorphin",
+    "desc": "Half-human, half-fish folk who dwell in coral regrown cities, surrounded by colorful schools of swarming fish"
+  },
+  {
+    "name": "Deborahar",
+    "desc": "Mystic felines with a talent for pulped vegetable-based magic, often pulling creatures into a terrible other-realm"
+  },
+  {
+    "name": "Lamia",
+    "desc": "Gorgeous, predatory umanoid women that entrap prey with their gaze"
+  },
+  {
+    "name": "Sand Timerdemoli",
+    "desc": "Series of four sand timers, each the size of a human arm, that together can condense time around an individual,"
+  },
+  {
+    "name": "Mortish",
+    "desc": "Shambling, unholy corpses, sentient enough to remember their name but nothing else"
+  },
+  {
+    "name": "Suspicious Squire",
+    "desc": "Nervous young men that follow their master into every battle, ensure they stay alive"
+  },
+  {
+    "name": "Collumbin",
+    "desc": "Monstrously agitated birds that care only for their wings and tools, and whose makers are feared and despised"
+  },
+  {
+    "name": "Pan",
+    "desc": "Vegetarian fae who adore foot worship and acornscatterings (which can induce holy daydreams) and detest tin sleeves and bootprints"
+  },
+  {
+    "name": "Angel",
+    "desc": "Winged sentinels, that guard the Throne-world and intervene on its citizens' behalf"
+  },
+  {
+    "name": "Nibblewick",
+    "desc": "Small, quick-tongued creatures whose cries are most amusing"
+  },
+  {
+    "name": "Fury",
+    "desc": "Atrocious, fiery, hairy, smelly, glaring giants with uncombed hair, disheveled garments, and a bad attitude"
+  },
+  {
+    "name": "Ixchilar",
+    "desc": "Feline monkeys that howl at the moon and lead hordes of rampaging scorpions"
+  },
+  {
+    "name": "Tr.TryChess",
+    "desc": ": does the color or gameMode selection stay the same in the following \"switch\"?"
+  },
+  {
+    "name": "Pygmalion",
+    "desc": "Soulless automatons that perform the wishes of their creator, now lost to entropy"
+  },
+  {
+    "name": "Shiloh Ironblight",
+    "desc": "A cyborg mercenary, fluent in Mandarin, whose body tells a story of ambushes, escapes, and betrayals"
+  },
+  {
+    "name": "Witch",
+    "desc": "Ritualistic practitioners of the forbidden art of consuming lives to prolong their own"
+  },
+  {
+    "name": "Minktalot",
+    "desc": "Cunning humanoids who live wherever opportunities do, cloaked in shapeshifting robes or nothing at all"
+  },
+  {
+    "name": "Kami",
+    "desc": "Respectable, powerful spirits, that require regular worship in order to interact with humans"
+  },
+  {
+    "name": "Guar",
+    "desc": "Horned catlike beasts, liked for their hermaphroditic nature and friendly pelts"
+  },
+  {
+    "name": "Bashtimie",
+    "desc": "Tiny, occasionally fire-breathing birds, known for their impeccable timing with lynch mobs"
+  },
+  {
+    "name": "Anemone",
+    "desc": "A plant with+oMenuContainer ANNOTATION_INVALID_WIDTH_HEIGHT = AnnotationSetImpl.EMPTY;"
+  },
+  {
+    "name": "Lions",
+    "desc": "Magnificent kings of the savannas, at least until the PCs defeat them"
+  },
+  {
+    "name": "Frojeld",
+    "desc": "Reclusive childlike spirits with unhealthy obsessions for random trinkets"
+  },
+  {
+    "name": "Alversor",
+    "desc": "Raptor heads with giant wings, they fly out and grab soon-to-be-breakfast prey"
+  },
+  {
+    "name": "Puma Claws",
+    "desc": "Fearsome bipedal predators that leap out of trees onto their prey"
+  },
+  {
+    "name": "Vivec",
+    "desc": "Ancient seer-archmages, with shaved bald heads and the wrinkles of a thousand years of age"
+  },
+  {
+    "name": "Watchwardens",
+    "desc": "Men and women who pump air through their lungs like bellows, teaching them spectral sonatas"
+  },
+  {
+    "name": "Homunculus",
+    "desc": "Diminutive homunculi that control the arcane spines that rise from their backs"
+  },
+  {
+    "name": "Stymphalian Bird",
+    "desc": "Metal-shod beaked predators with adamantine breastplates that never can be pierced"
+  },
+  {
+    "name": "S'fu",
+    "desc": "Mountain-dwelling tortoise with reptilian heads and metallic l tragen Sie die $/ / \\mathrm{i}$ k\u00f6nnt\", \"z. B. die hll. Schulfrauen\", \"ist sagenhaft\" u. dgl. Einiges davon ist tats\u00e4chlich die Fassade eines H\u00f6rensagens, an/mit dem"
+  },
+  {
+    "name": "Hedgerows",
+    "desc": "Stringy, quickened copies of the past they hide, allowing the superstitious to lose the life they can't find"
+  },
+  {
+    "name": "Oozes",
+    "desc": "Gelatinous blobs that roll through the world transforming things they touch"
+  },
+  {
+    "name": "Flooc",
+    "desc": "Spectral entities that float through the countryside, sapping crops of nutrients"
+  },
+  {
+    "name": "Symma",
+    "desc": "Slime-covered man-eaters that laugh maliciously at each sunrise"
+  },
+  {
+    "name": "Nargothiel",
+    "desc": "Shadowy, stealthy nocturnal predators that navigate darkest halls by sound alone"
+  },
+  {
+    "name": "Rhizomancy",
+    "desc": "Crystal-wearing plant-people that commune with forests and guide the lost"
+  },
+  {
+    "name": "Farisei",
+    "desc": "Large amorphic beings that shape-shift to fit any role everyone else seems to wish"
+  },
+  {
+    "name": "Undine",
+    "desc": "Elemental nymphs of lakes, who have the faces of young women and the forms of fish"
+  },
+  {
+    "name": "House-Halfling",
+    "desc": "Halflings, drunken adventurers and child farmers alike, that inhabit the roofs of homes"
+  },
+  {
+    "name": "Brealan Redbeard",
+    "desc": "A wood beard with a knack for finding treasure and sitting on it, even when trolls stand by"
+  },
+  {
+    "name": "Dark Sprites",
+    "desc": "Mean-spirited, trickster creatures that inhabit dark places"
+  },
+  {
+    "name": "Humcat",
+    "desc": "Scrawny, dim-witted thieves, that wear ghastly masks made from their precious mother's hide, stolen skins that they wear until they rot"
+  },
+  {
+    "name": "Tutelary",
+    "desc": "Ancient beings that harbor communities within their own bodies, guarding the happiness of their people with theirs own lives"
+  },
+  {
+    "name": "Goroi",
+    "desc": "Decapitated sphinxes with shambling, corpse-like heads that cradle cursed artifacts in their decaying gullets"
+  },
+  {
+    "name": "Chrysophylax",
+    "desc": "A kidnapping-consuming red dragon, who loves basking in the fire and making demands to the peasants"
+  },
+  {
+    "name": "Parth",
+    "desc": "Wily lizards with eyes like orbs, that can change their size and appearance if under duress"
+  },
+  {
+    "name": "Aswang",
+    "desc": "Haunting monsters which survive on blood and the flesh of newborn children; they leave their mortal form for the evenings in graceful mottled birds, with faces and hair of their loved ones"
+  },
+  {
+    "name": "Charrhawk",
+    "desc": "Glowing-eyed, bone-faced, nightmare creatures that hunt in packs for their pack alpha"
+  },
+  {
+    "name": "Mimir",
+    "desc": "Developed from the heads of the valiantly slain, these orbs possess programs of wit and counsels of wisdom"
+  },
+  {
+    "name": "Kneecakem",
+    "desc": "Lizard-bird-horse hybrids whose calls tangle lists into knots"
+  },
+  {
+    "name": "Frostdragon",
+    "desc": "Piston-sized creatures that navigate rivers like they're freeways"
+  },
+  {
+    "name": "Maverick",
+    "desc": "Horses with beefy, jerky hindquarters that allow them to jump freestanding two-story walls"
+  },
+  {
+    "name": "Spectral Mares",
+    "desc": "Dead horses that sigh, raining manes, and skittering hooves on anyone who strays off a path"
+  },
+  {
+    "name": "Locho",
+    "desc": "Small, grotesque, fist-sized horrors that fly through the air and burrow into the skulls of sleeping victims, causing remorse and visions of what could have been"
+  },
+  {
+    "name": "Thunderbird",
+    "desc": "Holiday folklore has it that this creature causes storms and presages lightning"
+  },
+  {
+    "name": "Ifrit",
+    "desc": "Angry, ten-foot-tall horsemen from the fire and air elementals"
+  },
+  {
+    "name": "Samodra",
+    "desc": "Enormous, elephantine creatures with trunk-shaped faces and blue glowing tendrils, seeking alien knowledge"
+  },
+  {
+    "name": "Bullywug",
+    "desc": "Ugly, hateful, frog-headed creatures who love nothing more than getting salty"
+  },
+  {
+    "name": "Gangbuster",
+    "desc": "Quaint, practical fellow with a reverence for disorder"
+  },
+  {
+    "name": "Hypogeans",
+    "desc": "Small, bumbling, pacifistic beings that live underground"
+  },
+  {
+    "name": "Atlantean",
+    "desc": "Strange, hauntology-filled magic wielders, who harness fizzing magic crystals grown on hidden islands"
+  },
+  {
+    "name": "Lockwood",
+    "desc": "Lumbering wild hogs with surprisingly devious depth perception, frequenting the marshy islands along the Swinish Shores"
+  },
+  {
+    "name": "Tsuredure",
+    "desc": "Small, elegant, humanoid bird, beloved for their cheeky ability to change every orb they touch into exactly the right kind of feather"
+  },
+  {
+    "name": "Mnemosyne",
+    "desc": "A humanoid embodiment of memory; devours souls and in return shares the memories"
+  },
+  {
+    "name": "Dezyinan",
+    "desc": "Visionaries and advocates of the amnesia of self"
+  },
+  {
+    "name": "Orlok",
+    "desc": "\u0410\u043c\u0435\u0442\u043a\u0430\u0445, \u0432\u044b\u0434\u0430\u044e \u044d\u0442\u043eFabricAPI, \u0440\u044f\u0434 \u0438\u0437 Fabric, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u0440\u0430\u0437\u0440\u0435\u0448\u0430\u0435\u0442 \u043e\u0441\u043d\u043e\u0432\u043d\u044b\u043c \u0424\u0430\u0431\u0440\u0438\u0447\u043d\u044b\u043c \u043c\u043e\u0434\u0430\u043c \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0438\u0432\u0430\u0442\u044c \u043f\u043e\u043c\u043e\u0449\u044c"
+  },
+  {
+    "name": "Amazon",
+    "desc": "Beast-like women with canine ears and tail that guard the gates to the Fae world"
+  },
+  {
+    "name": "Varkolak",
+    "desc": "Grotesque hybrid creatures, half-beast, half-man, driven by instinct and a hunger for flesh"
+  },
+  {
+    "name": "Thok Youth",
+    "desc": "Half-mice, half-mynahbirds, entirely annoying"
+  }
+]
