@@ -1,0 +1,33 @@
+{
+  "_comment": "Canonical need merge-map. `merge`: canonical <- [variants/typos folded into it]. `drop`: unrecoverable junk tokens removed entirely. Everything NOT listed is kept as-is (the characterful singletons). Edit + re-run apply_canon.py.",
+  "merge": {
+    "social": ["socialization", "sociality", "companionship", "company", "companion", "companions", "friendship", "friends", "connection", "contact", "belonging", "community", "interaction", "interactions", "fellowship", "brethren", "sociability"],
+    "love": ["affection", "romance", "intimacy"],
+    "sunlight": ["sun", "sunshine", "daylight", "light", "lights"],
+    "nutrients": ["nutrition", "nutririon", "minerals", "vitamins", "nitrogen", "molybdenum", "sulfur", "nourishment"],
+    "water": ["hydration", "drink", "fluids"],
+    "moisture": ["humidity", "rainfall"],
+    "reproduction": ["mate", "mates", "mateship", "mating", "procreation", "procreating", "sex", "offspring", "fertility", "fertilization"],
+    "play": ["playfulness", "playtime", "playmates", "playground", "fun", "recreation", "amusement", "entertainment", "enrichment"],
+    "territory": ["terrirory", "space"],
+    "movement": ["exercise", "excersize", "mobility"],
+    "soil": ["soilmoisture", "earth", "dirt", "ground"],
+    "grooming": ["groomingcollection"],
+    "sleep": ["rest"],
+    "safety": ["security", "protection", "defense"],
+    "respect": ["admiration", "approval", "honor", "dignity"],
+    "novelty": ["stimulation", "stimulus", "variety", "curiosity"],
+    "happiness": ["joy", "contentment", "satisfaction", "pleasure"],
+    "purpose": ["employment", "work", "productivity", "occupation", "purposefulness"],
+    "health": ["healthy"],
+    "comfort": ["comfortable"],
+    "darkness": ["dark"],
+    "dreams": ["dream"],
+    "emotion": ["emotional", "emotions"],
+    "color": ["colors"],
+    "foraging": ["forage", "forager"],
+    "family": ["kin"],
+    "parenting": ["nurturing"]
+  },
+  "drop": ["ac", "none", "omniasseration", "engagefood", "infectionplace", "breating", "breath", "creativelife"]
+}
