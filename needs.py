@@ -22,40 +22,73 @@ UNIVERSAL_CORE = [
 # still RECORDS these (for transparency); they're just filtered out of the actionable have/extra.
 EXCLUDE_NEEDS = {"air", "oxygen", "breathing"}
 
+# Few-shot for the core yes/no sweep. Teaches REASON-FROM-DESCRIPTION so invented names ("Makit") and
+# disambiguated plants both work: each shot states "{species} is {desc}." then asks one need, mixed yes/no.
+# Spans living vs non-living (rock->no), and the SAME plant answering differently across needs (fern sleep
+# ->no but water->yes) so the model learns the need is judged against the description, not defaulted.
+CORE_FEWSHOT = (
+    "A wolf is a pack-hunting wild canine that roams northern forests.\n"
+    "If a wolf were real, would it have a food need (something it must regularly satisfy)? Answer yes or no.\nAnswer: yes\n\n"
+    "A granite boulder is a solid lump of cooled mineral rock.\n"
+    "If a granite boulder were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.\nAnswer: no\n\n"
+    "A fern is a leafy green plant that spreads across the shaded forest floor.\n"
+    "If a fern were real, would it have a sleep need (something it must regularly satisfy)? Answer yes or no.\nAnswer: no\n\n"
+    "A fern is a leafy green plant that spreads across the shaded forest floor.\n"
+    "If a fern were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.\nAnswer: yes\n\n"
+    "A honeybee is a small social insect that lives in a colony and gathers nectar.\n"
+    "If a honeybee were real, would it have a social need (something it must regularly satisfy)? Answer yes or no.\nAnswer: yes\n\n"
+)
 
-def need_applies_prompt(species, need):
+# Few-shot for the species-specific extras: description + known needs -> more single-word needs. The two
+# exemplars span an animal and a plant so the model proposes domain-appropriate extras (territory vs sunlight).
+# The answer sits inline after the colon (parsed to the newline) — no forced "\n- " bullet (the dash was
+# vestigial: iter_unique already stops at "\n" and LOCATION_GRAMMAR forbids "-").
+EXTRA_FEWSHOT = (
+    "A wolf is a pack-hunting wild canine that roams northern forests.\n"
+    "A wolf has needs such as: food, water, sleep.\n"
+    "Another need a wolf has is: territory\n\n"
+    "A fern is a leafy green plant that spreads across the shaded forest floor.\n"
+    "A fern has needs such as: water, health.\n"
+    "Another need a fern has is: sunlight\n\n"
+)
+
+
+def need_applies_prompt(species, need, desc=None):
     # "if it were real" sidesteps the model refusing needs to fictional beings (it fixated on
     # "dragons aren't real"); the counterfactual is harmless for species that already are real.
-    return (f"If a {species} were real, would it have a {need} need "
+    # An optional `desc` grounds invented names: a fantasy creature ("Makit") is unguessable from the
+    # name alone (empty core sweep), so we state "{species} is {desc}." above the question as context.
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return (CORE_FEWSHOT + f"{ctx}If a {species} were real, would it have a {need} need "
             f"(something it must regularly satisfy)? Answer yes or no.\nAnswer:")
 
 
-def extra_needs_prompt(species, have):
-    return (f"A {species} has needs such as: {', '.join(have)}.\n"
-            f"List other needs a {species} has, each a single word:\n"
-            f"Another single-word need a {species} has is:\n-")
+def extra_needs_prompt(species, have, desc=None):
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return (EXTRA_FEWSHOT + f"{ctx}A {species} has needs such as: {', '.join(have)}.\n"
+            f"Another need a {species} has is:")
 
 
-def discover_core(server, species, threshold=0.5):
+def discover_core(server, species, threshold=0.5, desc=None):
     """yes/no-sweep the whole UNIVERSAL_CORE against `species`; each entry keeps P(yes)."""
     out = []
     for need in UNIVERSAL_CORE:
-        p = server.yes_no_prob(need_applies_prompt(species, need))
+        p = server.yes_no_prob(need_applies_prompt(species, need, desc))
         out.append({"need": need, "applies": p >= threshold, "p": round(p, 3)})
     return out
 
 
-def discover_needs(server, species, n_extra=6, threshold=0.5):
+def discover_needs(server, species, n_extra=6, threshold=0.5, desc=None):
     """Full hybrid discovery: core sweep + dedup-suggested single-word species-specific extras.
     EXCLUDE_NEEDS are dropped from the returned have/extra (the prompt still sees them so the model
-    doesn't re-suggest them; the core sweep still records them)."""
-    core = discover_core(server, species, threshold)
+    doesn't re-suggest them; the core sweep still records them). `desc` grounds invented names."""
+    core = discover_core(server, species, threshold, desc)
     have_all = [c["need"] for c in core if c["applies"]]
     have = [n for n in have_all if n not in EXCLUDE_NEEDS]
     # extras dedup against the FULL core (not just the applying ones) so a dropped-but-borderline
     # core word can't resurface as an "extra"; reject non-single-word / non-alphabetic junk / excludes.
     extra = [e.lower() for e in iter_unique(
-        server, extra_needs_prompt(species, have_all), n=n_extra, grammar=LOCATION_GRAMMAR,
+        server, extra_needs_prompt(species, have_all, desc), n=n_extra, grammar=LOCATION_GRAMMAR,
         max_len=20, seed=UNIVERSAL_CORE,
         reject=lambda x: len(x.split()) != 1 or not x.replace("-", "").replace("'", "").isalpha()
                          or x.lower() in EXCLUDE_NEEDS)]
