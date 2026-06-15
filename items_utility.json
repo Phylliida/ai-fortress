@@ -1,0 +1,18 @@
+[
+  {"name": "Glass of water", "desc": "Clean drinking water in a simple glass"},
+  {"name": "Well", "desc": "A deep stone well drawing up groundwater"},
+  {"name": "Watering can", "desc": "A spouted can for watering plants"},
+  {"name": "Toilet", "desc": "A flushing porcelain toilet"},
+  {"name": "Outhouse", "desc": "A small outdoor latrine"},
+  {"name": "Bar of soap", "desc": "A bar of cleansing soap"},
+  {"name": "Bathtub", "desc": "A tub for bathing in warm water"},
+  {"name": "Hairbrush", "desc": "A bristled brush for grooming hair or fur"},
+  {"name": "Broom", "desc": "A stiff-bristled broom for sweeping floors clean"},
+  {"name": "Bag of soil", "desc": "A sack of rich planting soil"},
+  {"name": "Compost heap", "desc": "A pile of decomposing organic matter"},
+  {"name": "Bed", "desc": "A soft bed for sleeping"},
+  {"name": "Fireplace", "desc": "A stone hearth with a crackling fire"},
+  {"name": "Tent", "desc": "A canvas tent for shelter"},
+  {"name": "Bandage", "desc": "A clean cloth bandage for dressing wounds"},
+  {"name": "Lantern", "desc": "An oil lantern giving off light"}
+]
