@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-gen_species.py — scaffolding to generate a fantasy-species list with GLM, in two human-in-the-loop steps.
+gen_species.py — generate a fantasy-species list (name + description together) with GLM, in two steps.
 
-Base-model few-shots beat hand-written ones (in-distribution examples generalize better) AND hand-picked
-ones beat raw ones — so we generate MANY base-model candidates and you keep your favourites as the few-shot:
+Each entry is generated in ONE pass as a Monster-Manual line "Name: description", so the description is
+coherent with the name instead of bolted on after. Two human-in-the-loop steps, because base-model
+few-shots beat hand-written ones AND hand-picked ones beat raw ones:
 
-  STEP 1 — candidate few-shot examples (curate these down to your favourites):
-      python3 gen_species.py fewshot [N=24] [out=fewshot_candidates.json]
-    Generates N candidate (name, description) pairs in the model's OWN voice — bootstrapped from a tiny
-    hand-written seed of *names only*; every description is written by the model (no hand-written style).
-    Hand-curate -> keep your favourites -> save as species_fewshot.json.
+  STEP 1 — candidates from a tiny HAND-WRITTEN seed (bootstrap only):
+      python3 gen_species.py fewshot [N=150] [out=fewshot_candidates.json]
+    Generate N entries with the hand-written SEED_ENTRIES few-shot. Pick your top ~3 favourites into
+    species_fewshot.json — those base-model entries REPLACE the hand-written ones.
 
-  STEP 2 — the full list, few-shotting from your hand-picked examples:
-      python3 gen_species.py generate [N=60] [fewshot=species_fewshot.json] [out=species_raw.json]
+  STEP 2 — the polished list, few-shotting from your hand-picked entries:
+      python3 gen_species.py generate [N=1000] [fewshot=species_fewshot.json] [out=species_raw.json]
     Curate the result into your final species list.
 
-Both resample one species at a time (warm temp), semantic-dedup with embeddinggemma (iter_unique), write
-incrementally (a kill won't lose progress), and are resumable (re-running tops up to N).
+Resamples one entry at a time (warm temp), dedups on the NAME with embeddinggemma, writes incrementally
+(a kill won't lose progress), and is resumable (re-running tops up to N).
 """
 import json
 import os
@@ -24,72 +24,98 @@ import re
 import sys
 import baseModelPrimitives as bmp
 
-# Hand-written seeds — NAMES ONLY, used solely to bootstrap STEP 1's candidate generation, then dropped.
-# There are NO hand-written descriptions anywhere; the model writes every description in its own voice.
-SEED_SPECIES = ["goblin", "treant", "basilisk", "merfolk", "gargoyle", "wyvern"]
+# Hand-written bootstrap entries — used ONLY to seed STEP 1, then replaced by your base-model-generated
+# picks. (Off-distribution hand-written examples are exactly what we want to get OUT of the few-shot.)
+SEED_ENTRIES = [   # capitalized, and each opens DIFFERENTLY so the model doesn't start every line with "A"
+    ("Dragon", "Colossal winged reptiles that hoard gold and breathe gouts of fire."),
+    ("Goblin", "Green-skinned humanoids, cunning but cowardly, that raid farms in chittering packs."),
+    ("Treant", "Guardians of the oldest forests — slow, towering tree-folk that wake once a century."),
+]
 
 
-def species_prompt(examples):
-    return ("A sprawling fantasy world is home to countless species — peoples, beasts, monsters, "
-            "spirits, and constructs.\nExamples: " + ", ".join(examples) + ".\n\n"
-            "Name one more fantasy species: ")
+def manual_prompt(entries):
+    """A Monster-Manual table of contents the model continues; each line is 'Name: description', so one
+    completion yields a NAME and a matching DESCRIPTION together."""
+    lines = "".join(f"- {n[:1].upper() + n[1:]}: {d}\n" for n, d in entries)
+    return "Monster Manual, Table of Contents:\n" + lines + "- "
 
 
-def describe(server, name, exemplars):
-    """One-line bestiary description. exemplars = (name, desc) pairs for few-shot; pass [] to let the
-    model write in its own voice (just a title prime — used while generating candidates)."""
-    shots = "".join(f"{n[:1].upper() + n[1:]}: {d}\n" for n, d in exemplars)
-    return server.gen_text("A fantasy bestiary, one line each.\n\n" + shots +
-                           f"{name[:1].upper() + name[1:]}:", stop=["\n"], n_predict=56).strip()
+def parse_entry(raw):
+    """'Dragonkin: a draconic warrior...' -> ('Dragonkin', 'a draconic warrior...'); None if malformed."""
+    if ":" not in raw:
+        return None
+    name, desc = raw.split(":", 1)
+    name, desc = name.strip(), desc.strip()
+    desc = desc[:1].upper() + desc[1:]                     # capitalize the description (belt-and-suspenders)
+    return (name, desc) if name and desc else None
 
 
 def _reject(name):
-    """Drop obvious degenerate samples (the curator shouldn't have to)."""
+    """Drop obvious degenerate names (the curator shouldn't have to)."""
     return (bool(re.search(r'[:;,\d"*|()_]', name))        # punctuation/markdown that signals garbled output
             or len(name.split()) > 3                        # real species names are short
             or any(ord(c) > 0x024F for c in name))          # non-Latin script (GLM occasionally drifts)
 
 
-def _run(server, prompt_examples, desc_exemplars, n, out, species, seed_extra=()):
-    """Resample names off `prompt_examples`, describe each with `desc_exemplars`, save incrementally."""
-    have = {s["name"].lower() for s in species}
-    seed = [s["name"] for s in species] + list(seed_extra)
-    for name in bmp.iter_unique(server, species_prompt(prompt_examples), n=max(0, n - len(species)),
-                                seed=seed or list(SEED_SPECIES), max_len=30, reject=_reject):
-        species.append({"name": name, "desc": describe(server, name, desc_exemplars)})
-        have.add(name.lower())
-        json.dump(species, open(out, "w"), indent=2)
-        print(f"  [{len(species):3d}] {name} — {species[-1]['desc'][:64]}")
+def _key(name):
+    return re.sub(r"\s+", "", name.lower())               # collapse case/spacing: 'umber Hulk' == 'umberhulk'
+
+
+def generate(server, fewshot, n, existing, sim_threshold=0.78):
+    """Yield (name, desc): resample the manual prompt, parse one entry, dedup on the NAME (embeddinggemma)."""
+    embs, seen = [], set()
+    for name, _ in existing:                               # seed dedup with what we already have
+        seen.add(_key(name))
+        try:
+            embs.append(bmp.embed_texts([name])[0])
+        except Exception:
+            pass
+    prompt = manual_prompt(fewshot)
+    got, attempts = 0, 0
+    while got < n and attempts < max(50, n * 12):
+        attempts += 1
+        parsed = parse_entry(server.gen_text(prompt, stop=["\n"], n_predict=70))
+        if not parsed:
+            continue
+        name, desc = parsed
+        if _reject(name) or _key(name) in seen:
+            continue
+        try:
+            e = bmp.embed_texts([name])[0]
+            if embs and max(bmp.cosine(e, pe) for pe in embs) >= sim_threshold:
+                continue
+        except Exception:
+            e = None
+        seen.add(_key(name))
+        if e is not None:
+            embs.append(e)
+        got += 1
+        yield name, desc
+
+
+def run(fewshot, n, out):
+    server = bmp.LlamaServer(timeout=60, retries=3)
+    species = json.load(open(out)) if os.path.exists(out) else []
+    existing = [(s["name"], s["desc"]) for s in species]
+    print(f"have {len(species)} / want {n} -> {out}  (few-shot: {', '.join(nm for nm, _ in fewshot)})")
+    for name, desc in generate(server, fewshot, n - len(species), existing):
+        species.append({"name": name, "desc": desc})
+        json.dump(species, open(out, "w"), indent=2)        # incremental save
+        print(f"  [{len(species):4d}] {name} — {desc[:66]}")
+    return species
 
 
 def cmd_fewshot(n, out):
-    """STEP 1: a pool of base-model candidate (name, desc) pairs to hand-pick the few-shot from."""
-    server = bmp.LlamaServer(timeout=60, retries=3)
-    species = json.load(open(out)) if os.path.exists(out) else []
-    have = {s["name"].lower() for s in species}
-    print(f"generating {n} candidate few-shot examples (model writes its own descriptions) -> {out}")
-    for name in SEED_SPECIES:                              # offer the well-known ones too (model-described)
-        if name not in have and len(species) < n:
-            species.append({"name": name, "desc": describe(server, name, [])})
-            have.add(name)
-            json.dump(species, open(out, "w"), indent=2)
-            print(f"  [{len(species):3d}] {name} — {species[-1]['desc'][:64]}")
-    _run(server, SEED_SPECIES, [], n, out, species)        # prompt seed = hand-written; descriptions = model-voice
+    species = run(SEED_ENTRIES, n, out)
     print(f"\ndone: {len(species)} candidates in {out}\n"
-          f"-> hand-pick your favourites into species_fewshot.json, then run: gen_species.py generate")
+          f"-> pick your top ~3 favourites into species_fewshot.json, then: gen_species.py generate")
 
 
 def cmd_generate(n, fewshot_path, out):
-    """STEP 2: the full list, few-shotting from your hand-picked base-model examples."""
     if not os.path.exists(fewshot_path):
         sys.exit(f"no few-shot file at {fewshot_path} — run `gen_species.py fewshot` and curate it first.")
-    fs = json.load(open(fewshot_path))
-    ex_names = [s["name"] for s in fs][:16]
-    ex_descs = [(s["name"], s["desc"]) for s in fs][:6]
-    server = bmp.LlamaServer(timeout=60, retries=3)
-    species = json.load(open(out)) if os.path.exists(out) else []
-    print(f"generating {n} species with {len(fs)} hand-picked few-shot examples -> {out}")
-    _run(server, ex_names, ex_descs, n, out, species, seed_extra=ex_names)
+    fewshot = [(s["name"], s["desc"]) for s in json.load(open(fewshot_path))]
+    species = run(fewshot, n, out)
     print(f"\ndone: {len(species)} species in {out} — now curate by hand (delete the duds).")
 
 
@@ -97,14 +123,11 @@ def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "fewshot"
     rest = sys.argv[2:]
     if cmd == "fewshot":
-        n = int(rest[0]) if rest else 24
-        out = rest[1] if len(rest) > 1 else "fewshot_candidates.json"
-        cmd_fewshot(n, out)
+        cmd_fewshot(int(rest[0]) if rest else 150, rest[1] if len(rest) > 1 else "fewshot_candidates.json")
     elif cmd == "generate":
-        n = int(rest[0]) if rest else 60
-        fewshot = rest[1] if len(rest) > 1 else "species_fewshot.json"
-        out = rest[2] if len(rest) > 2 else "species_raw.json"
-        cmd_generate(n, fewshot, out)
+        cmd_generate(int(rest[0]) if rest else 1000,
+                     rest[1] if len(rest) > 1 else "species_fewshot.json",
+                     rest[2] if len(rest) > 2 else "species_raw.json")
     else:
         sys.exit("usage: gen_species.py fewshot [N] [out] | generate [N] [fewshot.json] [out]")
 
