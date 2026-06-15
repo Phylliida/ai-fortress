@@ -1,0 +1,88 @@
+# need MODE — argmax of P(yes) over 5 per-mode yes/no prompts
+# example args: need='hunger', all 5 modes shown
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+### MODE: consume ###
+Question: Is a person's hunger need mainly satisfied by eating, drinking, or swallowing something?
+Answer: Yes
+Question: Is a person's thirst need mainly satisfied by eating, drinking, or swallowing something?
+Answer: Yes
+Question: Is a person's medicine need mainly satisfied by eating, drinking, or swallowing something?
+Answer: Yes
+Question: Is a person's sleep need mainly satisfied by eating, drinking, or swallowing something?
+Answer: No
+Question: Is a person's safety need mainly satisfied by eating, drinking, or swallowing something?
+Answer: No
+Question: Is a person's friendship need mainly satisfied by eating, drinking, or swallowing something?
+Answer: No
+Question: Is a person's hunger need mainly satisfied by eating, drinking, or swallowing something?
+Answer:
+
+
+### MODE: restore ###
+Question: Is a person's sleep need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: Yes
+Question: Is a person's cleanliness need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: Yes
+Question: Is a person's toileting need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: Yes
+Question: Is a person's hunger need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: No
+Question: Is a person's shelter need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: No
+Question: Is a person's friendship need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer: No
+Question: Is a person's hunger need mainly satisfied by spending time on a personal activity like sleeping, washing, or using a bathroom?
+Answer:
+
+
+### MODE: ambient ###
+Question: Is a person's shelter need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: Yes
+Question: Is a person's safety need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: Yes
+Question: Is a person's warmth need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: Yes
+Question: Is a person's hunger need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: No
+Question: Is a person's friendship need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: No
+Question: Is a person's sleep need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer: No
+Question: Is a person's hunger need mainly satisfied by simply being in a safe, sheltered, or warm place?
+Answer:
+
+
+### MODE: social ###
+Question: Is a person's friendship need mainly satisfied by spending time with or near other people?
+Answer: Yes
+Question: Is a person's love need mainly satisfied by spending time with or near other people?
+Answer: Yes
+Question: Is a person's companionship need mainly satisfied by spending time with or near other people?
+Answer: Yes
+Question: Is a person's hunger need mainly satisfied by spending time with or near other people?
+Answer: No
+Question: Is a person's shelter need mainly satisfied by spending time with or near other people?
+Answer: No
+Question: Is a person's novelty need mainly satisfied by spending time with or near other people?
+Answer: No
+Question: Is a person's hunger need mainly satisfied by spending time with or near other people?
+Answer:
+
+
+### MODE: experiential ###
+Question: Is a person's novelty need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: Yes
+Question: Is a person's fun need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: Yes
+Question: Is a person's creativity need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: Yes
+Question: Is a person's hunger need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: No
+Question: Is a person's shelter need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: No
+Question: Is a person's sleep need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer: No
+Question: Is a person's hunger need mainly satisfied by doing something new, enjoyable, or personally meaningful?
+Answer:

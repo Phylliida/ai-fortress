@@ -1,0 +1,30 @@
+# deadband — fullness at which a need demands attention (gen_number_median)
+# example args: ('hygiene')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+A person's needs slowly run low. At what fullness do they stop and take care of each one? (100 = fully satisfied, 0 = empty — lower means they tolerate it longer.)
+
+Need: hygiene
+At what percent full do they deal with it?
+Answer: 15
+
+Need: sleep
+At what percent full do they deal with it?
+Answer: 25
+
+Need: hunger
+At what percent full do they deal with it?
+Answer: 35
+
+Need: thirst
+At what percent full do they deal with it?
+Answer: 50
+
+Need: safety
+At what percent full do they deal with it?
+Answer: 80
+
+Need: hygiene
+At what percent full do they deal with it?
+Answer:

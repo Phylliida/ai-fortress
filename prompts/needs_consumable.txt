@@ -1,0 +1,15 @@
+# is the item used up after one use? PER SPECIES (yes/no)
+# example args: ('termite','wooden beam')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: After a person uses a loaf of bread once, is it used up and gone?
+Answer: Yes
+Question: After a person uses a bed once, is it used up and gone?
+Answer: No
+Question: After a termite uses a wooden beam once, is it used up and gone?
+Answer: Yes
+Question: After a person uses a wooden beam once, is it used up and gone?
+Answer: No
+Question: After a termite uses a wooden beam once, is it used up and gone?
+Answer:

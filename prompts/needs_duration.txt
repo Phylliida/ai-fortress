@@ -1,0 +1,15 @@
+# how long using an item takes (gen_duration -> minutes)
+# example args: ('person','bed','sleep')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: How long does a person spend using a glass of water to satisfy their water need?
+Answer: 1 minute
+Question: How long does a person spend using a hot meal to satisfy their food need?
+Answer: 20 minutes
+Question: How long does a person spend using a shower to satisfy their hygiene need?
+Answer: 10 minutes
+Question: How long does a person spend using a bed to satisfy their sleep need?
+Answer: 8 hours
+Question: How long does a person spend using a bed to satisfy their sleep need?
+Answer:

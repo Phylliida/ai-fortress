@@ -1,0 +1,15 @@
+# species-specific extra needs (iter_unique, inline answer)
+# example args: ('Tiger', have=['food','water','sleep'])
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+A wolf is a pack-hunting wild canine that roams northern forests.
+A wolf has needs such as: food, water, sleep.
+Another need a wolf has is: territory
+
+A fern is a leafy green plant that spreads across the shaded forest floor.
+A fern has needs such as: water, health.
+Another need a fern has is: sunlight
+
+A Tiger has needs such as: food, water, sleep.
+Another need a Tiger has is:

@@ -1,0 +1,15 @@
+# does an OBJECT-KIND affect a need at all? (yes/no gate)
+# example args: ('person','fireplace','warmth')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: Is a bowl of soup relevant to satisfying a person's food need?
+Answer: Yes
+Question: Is a wall mirror relevant to satisfying a person's food need?
+Answer: No
+Question: Is a hammock relevant to satisfying a person's sleep need?
+Answer: Yes
+Question: Is a brick relevant to satisfying a person's water need?
+Answer: No
+Question: Is a fireplace relevant to satisfying a person's warmth need?
+Answer:

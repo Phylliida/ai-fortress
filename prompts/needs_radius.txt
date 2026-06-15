@@ -1,0 +1,17 @@
+# ambient field RADIUS in grid cells (gen_number_median)
+# example args: ('watchtower','safety')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+On a grid where each cell is about one meter:
+
+Question: Within how many cells does the warmth from a campfire reach?
+Answer: 4
+Question: Within how many cells does the shelter from a tent reach?
+Answer: 3
+Question: Within how many cells does the warmth from a fireplace reach?
+Answer: 3
+Question: Within how many cells does the safety from a watchtower reach?
+Answer: 15
+Question: Within how many cells does the safety from a watchtower reach?
+Answer:
