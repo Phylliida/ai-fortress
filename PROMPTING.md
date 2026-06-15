@@ -14,6 +14,28 @@ words** instead of coerced numbers, clean **adjective questions** instead of awk
 hybrids, framing that matches a **real document type it knows**, and reading its **whole distribution**
 (prob-weighted) instead of just the argmax. Each is below.
 
+## The other core lens: minimize indirection
+
+> **Every layer of indirection is work the model can get wrong. Make the path from question to answer as
+> direct as possible — nothing to resolve, map, or convert.**
+
+This is the *why* behind several rules below; once you see it, it gives you a pre-flight test. The
+indirection we kept removing, and the direct form that fixed it:
+
+- **Pronouns** ("does *it* give off light?") → name the **explicit subject** every shot ("does a {item}…").
+  A pronoun is a reference the model pays to resolve — and paying costs.
+- **State-question-once + list** → **repeat the full question** each shot. The list format makes the model
+  map the header question onto each row; repeating it removes that hop (and stops the confabulation).
+- **Arbitrary number scales** ("rate rarity 1–10") → a **category word**. A 1–10 is a concept→arbitrary-code
+  mapping the model has to invent; with a word the meaning *is* the answer. (This was the exact reason
+  rarity/worth moved to words — "it has to map to its worth; just doing category words reduces the indirection.")
+- **A quantity question answered with a category** ("how much would X sell for? (worthless…priceless)") →
+  a **direct adjective** ("how expensive is X?"). The mismatch — asking a number, wanting a word — is itself
+  indirection.
+
+**Pre-flight test:** before sending a prompt, ask *"is the model being asked to resolve a reference, map a
+header onto items, or convert a concept into an arbitrary code?"* If yes, remove it.
+
 ---
 
 ## Few-shot format (the foundation)
