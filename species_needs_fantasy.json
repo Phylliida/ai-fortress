@@ -1,0 +1,5220 @@
+[
+  {
+    "species": "Makit",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.099
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.427
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.032
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.487
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.043
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.014
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.06
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.138
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.095
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.039
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.392
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.045
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.034
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.318
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.245
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.047
+      }
+    ],
+    "have": [],
+    "extra": [
+      "sunlight",
+      "moisture",
+      "nutrients",
+      "memories",
+      "nutrition",
+      "none"
+    ],
+    "name": "Makit",
+    "kingdom": "Fantasy",
+    "queried_as": "Makit"
+  },
+  {
+    "species": "Wallflower",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.29
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.659
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.53
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.536
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.524
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.094
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.165
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.561
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.806
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.467
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.24
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.494
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.292
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.366
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.347
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.424
+      }
+    ],
+    "have": [
+      "water",
+      "sleep",
+      "warmth",
+      "health",
+      "safety"
+    ],
+    "extra": [
+      "affection",
+      "companionship",
+      "personality",
+      "sunlight",
+      "wilderness",
+      "company"
+    ],
+    "name": "Wallflower",
+    "kingdom": "Fantasy",
+    "queried_as": "Wallflower"
+  },
+  {
+    "species": "Emoorah",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.811
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.271
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.754
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.552
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.623
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.205
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.374
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.75
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.754
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.479
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.83
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.866
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.548
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.766
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.609
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.646
+      }
+    ],
+    "have": [
+      "food",
+      "sleep",
+      "warmth",
+      "health",
+      "safety",
+      "social",
+      "love",
+      "respect",
+      "purpose",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "company",
+      "beauty",
+      "mate",
+      "companionship",
+      "freedom",
+      "sunlight"
+    ],
+    "name": "Emoorah",
+    "kingdom": "Fantasy",
+    "queried_as": "Emoorah"
+  },
+  {
+    "species": "Treant",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.152
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.914
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.111
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.625
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.11
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.047
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.05
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.577
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.594
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.137
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.879
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.458
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.648
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.814
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.58
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.553
+      }
+    ],
+    "have": [
+      "water",
+      "health",
+      "safety",
+      "social",
+      "respect",
+      "purpose",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "autonomy",
+      "sunlight",
+      "light",
+      "territory",
+      "ethics",
+      "nutrition"
+    ],
+    "name": "Treant",
+    "kingdom": "Fantasy",
+    "queried_as": "Treant"
+  },
+  {
+    "species": "Aspidochiron",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.366
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.679
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.678
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.34
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.503
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.421
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.196
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.678
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.361
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.136
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.091
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.293
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.092
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.321
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.33
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.452
+      }
+    ],
+    "have": [
+      "water",
+      "sleep",
+      "warmth",
+      "health"
+    ],
+    "extra": [
+      "sunlight",
+      "forager",
+      "mate",
+      "amphetamines",
+      "playground",
+      "nutrition"
+    ],
+    "name": "Aspidochiron",
+    "kingdom": "Fantasy",
+    "queried_as": "Aspidochiron"
+  },
+  {
+    "species": "Saketachew",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.064
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.222
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.103
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.213
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.164
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.055
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.084
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.353
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.333
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.091
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.051
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.119
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.195
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.387
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.295
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.169
+      }
+    ],
+    "have": [],
+    "extra": [
+      "anger",
+      "freedom",
+      "creativelife",
+      "stability",
+      "caprice",
+      "sky"
+    ],
+    "name": "Saketachew",
+    "kingdom": "Fantasy",
+    "queried_as": "Saketachew"
+  },
+  {
+    "species": "Baku",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.764
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.85
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.491
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.888
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.524
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.591
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.477
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.853
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.772
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.788
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.397
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.407
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.383
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.855
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.46
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.768
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "enlightenment",
+      "dream",
+      "companionship",
+      "dreams",
+      "happiness",
+      "emotions"
+    ],
+    "name": "Baku",
+    "kingdom": "Fantasy",
+    "queried_as": "Baku"
+  },
+  {
+    "species": "Moonlight dragon",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.919
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.506
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.933
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.623
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.383
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.614
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.258
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.78
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.818
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.802
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.131
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.374
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.289
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.233
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.223
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.75
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "territory",
+      "mateship",
+      "oil",
+      "freedom",
+      "sunlight",
+      "temperature"
+    ],
+    "name": "Moonlight dragon",
+    "kingdom": "Fantasy",
+    "queried_as": "Moonlight dragon"
+  },
+  {
+    "species": "Unicorn",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.587
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.727
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.588
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.424
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.349
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.178
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.178
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.492
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.417
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.282
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.226
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.353
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.267
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.723
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.58
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.756
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "purpose",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "idealism",
+      "grazing",
+      "goals",
+      "sparkling",
+      "helplessness",
+      "mate"
+    ],
+    "name": "Unicorn",
+    "kingdom": "Fantasy",
+    "queried_as": "Unicorn"
+  },
+  {
+    "species": "Yi Ni",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.07
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.092
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.122
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.169
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.086
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.104
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.132
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.176
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.238
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.198
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.133
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.152
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.124
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.437
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.395
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.538
+      }
+    ],
+    "have": [
+      "movement"
+    ],
+    "extra": [
+      "silence",
+      "mischief",
+      "music",
+      "metamorphism",
+      "invisibility",
+      "connection"
+    ],
+    "name": "Yi Ni",
+    "kingdom": "Fantasy",
+    "queried_as": "Yi Ni"
+  },
+  {
+    "species": "Xerephs",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.684
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.447
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.595
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.56
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.533
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.279
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.304
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.865
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.813
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.652
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.297
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.449
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.277
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.429
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.42
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.599
+      }
+    ],
+    "have": [
+      "food",
+      "sleep",
+      "warmth",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "hydration",
+      "society",
+      "company",
+      "sadness",
+      "relaxation",
+      "romance"
+    ],
+    "name": "Xerephs",
+    "kingdom": "Fantasy",
+    "queried_as": "Xerephs"
+  },
+  {
+    "species": "Odonsaii",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.947
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.59
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.469
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.44
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.596
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.639
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.262
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.884
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.839
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.683
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.753
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.495
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.443
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.533
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.758
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.748
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "purpose",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "connection",
+      "minerals",
+      "stimulation",
+      "information",
+      "touch",
+      "belonging"
+    ],
+    "name": "Odonsaii",
+    "kingdom": "Fantasy",
+    "queried_as": "Odonsaii"
+  },
+  {
+    "species": "Squishmeat",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.834
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.55
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.725
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.562
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.633
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.417
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.29
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.865
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.796
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.598
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.585
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.753
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.227
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.23
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.399
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.619
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "movement"
+    ],
+    "extra": [
+      "play",
+      "comfort",
+      "playfulness",
+      "mind",
+      "contentment",
+      "fun"
+    ],
+    "name": "Squishmeat",
+    "kingdom": "Fantasy",
+    "queried_as": "Squishmeat"
+  },
+  {
+    "species": "Whooly",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.706
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.259
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.54
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.63
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.502
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.159
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.202
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.709
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.557
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.342
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.394
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.51
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.086
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.405
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.651
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.682
+      }
+    ],
+    "have": [
+      "food",
+      "sleep",
+      "warmth",
+      "health",
+      "safety",
+      "love",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "order",
+      "bondage",
+      "sunlight",
+      "attention",
+      "friendship",
+      "companionship"
+    ],
+    "name": "Whooly",
+    "kingdom": "Fantasy",
+    "queried_as": "Whooly"
+  },
+  {
+    "species": "Striped Snurggle",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.953
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.885
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.581
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.05
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.376
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.258
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.059
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.813
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.697
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.359
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.737
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.736
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.147
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.31
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.387
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.76
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "health",
+      "safety",
+      "social",
+      "love",
+      "movement"
+    ],
+    "extra": [
+      "companionship",
+      "electricity",
+      "rattlesnake",
+      "pleasure",
+      "fun",
+      "territory"
+    ],
+    "name": "Striped Snurggle",
+    "kingdom": "Fantasy",
+    "queried_as": "Striped Snurggle"
+  },
+  {
+    "species": "Grimoire",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.035
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.02
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.039
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.104
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.072
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.017
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.025
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.1
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.512
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.087
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.145
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.088
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.773
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.404
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.285
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.08
+      }
+    ],
+    "have": [
+      "safety",
+      "respect"
+    ],
+    "extra": [
+      "admiration",
+      "privacy",
+      "attention",
+      "obscurity",
+      "information",
+      "knowledge"
+    ],
+    "name": "Grimoire",
+    "kingdom": "Fantasy",
+    "queried_as": "Grimoire"
+  },
+  {
+    "species": "Tsuredure",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.704
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.671
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.717
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.587
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.679
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.331
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.45
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.733
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.77
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.627
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.576
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.72
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.425
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.472
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.571
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.759
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "feathers",
+      "ornamentation",
+      "affection",
+      "belonging",
+      "light",
+      "growth"
+    ],
+    "name": "Tsuredure",
+    "kingdom": "Fantasy",
+    "queried_as": "Tsuredure"
+  },
+  {
+    "species": "Hex Pig",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.963
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.9
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.925
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.455
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.883
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.832
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.624
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.909
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.921
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.859
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.523
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.546
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.211
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.378
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.372
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.872
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "movement"
+    ],
+    "extra": [
+      "company",
+      "bedding",
+      "sunlight",
+      "affection",
+      "foraging",
+      "enrichment"
+    ],
+    "name": "Hex Pig",
+    "kingdom": "Fantasy",
+    "queried_as": "Hex Pig"
+  },
+  {
+    "species": "Mundane",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.792
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.566
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.699
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.379
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.591
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.557
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.44
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.682
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.799
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.723
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.313
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.285
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.333
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.252
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.225
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.575
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "clothing",
+      "lights",
+      "happiness",
+      "comfort",
+      "sociality",
+      "entertainment"
+    ],
+    "name": "Mundane",
+    "kingdom": "Fantasy",
+    "queried_as": "Mundane"
+  },
+  {
+    "species": "The Lone Local",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.698
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.296
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.601
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.303
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.444
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.364
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.556
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.603
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.575
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.586
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.116
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.272
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.232
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.36
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.531
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.332
+      }
+    ],
+    "have": [
+      "food",
+      "sleep",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "novelty"
+    ],
+    "extra": [
+      "sociality",
+      "money",
+      "knowledge",
+      "entertainment",
+      "employment",
+      "familiarity"
+    ],
+    "name": "The Lone Local",
+    "kingdom": "Fantasy",
+    "queried_as": "The Lone Local"
+  },
+  {
+    "species": "Brownie",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.916
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.834
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.878
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.642
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.833
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.783
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.694
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.825
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.81
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.874
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.661
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.551
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.689
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.605
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.371
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.79
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "respect",
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "purposefulness",
+      "happiness",
+      "employment",
+      "freedom",
+      "belonging",
+      "fun"
+    ],
+    "name": "Brownie",
+    "kingdom": "Fantasy",
+    "queried_as": "Brownie"
+  },
+  {
+    "species": "Ogre",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.97
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.812
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.952
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.825
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.822
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.908
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.444
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.876
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.581
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.889
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.392
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.275
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.497
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.379
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.348
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.891
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "territory",
+      "exercise",
+      "income",
+      "approval",
+      "laughter",
+      "entertainment"
+    ],
+    "name": "Ogre",
+    "kingdom": "Fantasy",
+    "queried_as": "Ogre"
+  },
+  {
+    "species": "Sabertooth",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.99
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.916
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.966
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.765
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.813
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.914
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.27
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.906
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.755
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.808
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.107
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.214
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.271
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.232
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.195
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.936
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "territory",
+      "affection",
+      "attention",
+      "stimulation",
+      "defense",
+      "playtime"
+    ],
+    "name": "Sabertooth",
+    "kingdom": "Fantasy",
+    "queried_as": "Sabertooth"
+  },
+  {
+    "species": "Banolion",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.925
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.7
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.843
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.523
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.506
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.645
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.435
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.861
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.853
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.706
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.357
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.418
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.214
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.239
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.494
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.801
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "territory",
+      "companionship",
+      "friendship",
+      "colors",
+      "wool",
+      "family"
+    ],
+    "name": "Banolion",
+    "kingdom": "Fantasy",
+    "queried_as": "Banolion"
+  },
+  {
+    "species": "Kitawa",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.983
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.949
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.958
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.637
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.903
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.778
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.651
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.938
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.941
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.912
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.851
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.747
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.345
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.25
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.631
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.901
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "footrubs",
+      "territory",
+      "amusement",
+      "belonging",
+      "variety",
+      "hat"
+    ],
+    "name": "Kitawa",
+    "kingdom": "Fantasy",
+    "queried_as": "Kitawa"
+  },
+  {
+    "species": "Ginormous chicken",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.953
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.786
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.898
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.456
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.688
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.872
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.519
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.892
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.792
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.686
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.369
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.505
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.516
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.377
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.476
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.841
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "love",
+      "respect",
+      "movement"
+    ],
+    "extra": [
+      "exercise",
+      "affection",
+      "awareness",
+      "territory",
+      "space",
+      "color"
+    ],
+    "name": "Ginormous chicken",
+    "kingdom": "Fantasy",
+    "queried_as": "Ginormous chicken"
+  },
+  {
+    "species": "Manbearpig",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.975
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.871
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.925
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.897
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.851
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.809
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.421
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.891
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.902
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.843
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.303
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.368
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.285
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.239
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.286
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.88
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "play",
+      "territory",
+      "attention",
+      "fun",
+      "garments",
+      "companionship"
+    ],
+    "name": "Manbearpig",
+    "kingdom": "Fantasy",
+    "queried_as": "Manbearpig"
+  },
+  {
+    "species": "Deva",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.056
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.135
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.082
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.305
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.104
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.046
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.132
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.181
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.165
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.106
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.392
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.225
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.673
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.54
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.298
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.317
+      }
+    ],
+    "have": [
+      "respect",
+      "purpose"
+    ],
+    "extra": [
+      "freedom",
+      "worship",
+      "achievement",
+      "worshippers",
+      "contentment",
+      "power"
+    ],
+    "name": "Deva",
+    "kingdom": "Fantasy",
+    "queried_as": "Deva"
+  },
+  {
+    "species": "Eyegore",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.773
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.127
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.177
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.353
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.088
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.084
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.061
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.618
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.293
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.29
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.08
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.061
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.055
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.322
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.158
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.49
+      }
+    ],
+    "have": [
+      "food",
+      "health"
+    ],
+    "extra": [
+      "mischief",
+      "souls",
+      "cruelty",
+      "sunlight",
+      "snacks",
+      "rage"
+    ],
+    "name": "Eyegore",
+    "kingdom": "Fantasy",
+    "queried_as": "Eyegore"
+  },
+  {
+    "species": "Locho",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.622
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.349
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.173
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.62
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.131
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.105
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.07
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.691
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.412
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.352
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.092
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.133
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.068
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.366
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.19
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.808
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "movement"
+    ],
+    "extra": [
+      "ground",
+      "darkness",
+      "light",
+      "surface",
+      "nonexistence",
+      "sunlight"
+    ],
+    "name": "Locho",
+    "kingdom": "Fantasy",
+    "queried_as": "Locho"
+  },
+  {
+    "species": "Horrificasculus",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.568
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.278
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.2
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.251
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.243
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.145
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.172
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.536
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.619
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.326
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.048
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.118
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.138
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.248
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.225
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.266
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "safety"
+    ],
+    "extra": [
+      "mate",
+      "expression",
+      "mobility",
+      "territory",
+      "ac",
+      "environment"
+    ],
+    "name": "Horrificasculus",
+    "kingdom": "Fantasy",
+    "queried_as": "Horrificasculus"
+  },
+  {
+    "species": "Embryoth",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.959
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.752
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.426
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.421
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.342
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.459
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.096
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.73
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.67
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.519
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.094
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.089
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.074
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.265
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.107
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.634
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "secrecy",
+      "sunlight",
+      "light",
+      "comfort",
+      "kin",
+      "darkness"
+    ],
+    "name": "Embryoth",
+    "kingdom": "Fantasy",
+    "queried_as": "Embryoth"
+  },
+  {
+    "species": "Hollow",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.774
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.164
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.216
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.394
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.257
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.07
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.119
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.612
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.662
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.426
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.282
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.131
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.39
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.559
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.372
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.648
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "safety",
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "companionship",
+      "territory",
+      "lust",
+      "rest",
+      "freedom",
+      "friendship"
+    ],
+    "name": "Hollow",
+    "kingdom": "Fantasy",
+    "queried_as": "Hollow"
+  },
+  {
+    "species": "Nuckelavee",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.856
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.352
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.613
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.639
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.551
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.517
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.238
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.837
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.754
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.519
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.194
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.189
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.226
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.296
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.319
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.754
+      }
+    ],
+    "have": [
+      "food",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "movement"
+    ],
+    "extra": [
+      "heartbeats",
+      "play",
+      "company",
+      "fun",
+      "stimulus",
+      "morale"
+    ],
+    "name": "Nuckelavee",
+    "kingdom": "Fantasy",
+    "queried_as": "Nuckelavee"
+  },
+  {
+    "species": "Charrhawk",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.982
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.601
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.888
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.558
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.691
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.607
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.21
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.878
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.828
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.71
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.885
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.204
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.733
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.356
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.246
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.904
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "respect",
+      "movement"
+    ],
+    "extra": [
+      "territory",
+      "power",
+      "emotional",
+      "balance",
+      "touch",
+      "sunlight"
+    ],
+    "name": "Charrhawk",
+    "kingdom": "Fantasy",
+    "queried_as": "Charrhawk"
+  },
+  {
+    "species": "Thousand Pox",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.028
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.05
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.016
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.115
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.032
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.018
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.056
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.167
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.068
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.019
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.011
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.012
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.016
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.116
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.062
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.775
+      }
+    ],
+    "have": [
+      "movement"
+    ],
+    "extra": [
+      "growth",
+      "reproduction",
+      "nutrition",
+      "contamination",
+      "expansion",
+      "disease"
+    ],
+    "name": "Thousand Pox",
+    "kingdom": "Fantasy",
+    "queried_as": "Thousand Pox"
+  },
+  {
+    "species": "Charybdis",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.314
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.173
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.018
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.026
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.019
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.019
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.01
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.075
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.071
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.014
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.009
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.013
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.034
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.208
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.04
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.126
+      }
+    ],
+    "have": [],
+    "extra": [
+      "quiet",
+      "prey",
+      "power",
+      "fish",
+      "oil",
+      "pain"
+    ],
+    "name": "Charybdis",
+    "kingdom": "Fantasy",
+    "queried_as": "Charybdis"
+  },
+  {
+    "species": "Quinom'",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.927
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.289
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.454
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.51
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.304
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.287
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.196
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.717
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.397
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.437
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.065
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.217
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.292
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.436
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.366
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.738
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "movement"
+    ],
+    "extra": [
+      "rest",
+      "flight",
+      "territory",
+      "sunlight",
+      "secrets",
+      "moisture"
+    ],
+    "name": "Quinom'",
+    "kingdom": "Fantasy",
+    "queried_as": "Quinom'"
+  },
+  {
+    "species": "Nidhogg",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.912
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.487
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.231
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.426
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.185
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.337
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.058
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.647
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.366
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.15
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.057
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.037
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.05
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.472
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.138
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.679
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "movement"
+    ],
+    "extra": [
+      "exercise",
+      "happiness",
+      "pleasure",
+      "brethren",
+      "temperance",
+      "territory"
+    ],
+    "name": "Nidhogg",
+    "kingdom": "Fantasy",
+    "queried_as": "Nidhogg"
+  },
+  {
+    "species": "Bahamut",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.913
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.625
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.889
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.465
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.744
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.548
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.391
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.812
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.168
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.406
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.227
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.251
+      },
+      {
+        "need": "respect",
+        "applies": true,
+        "p": 0.541
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.387
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.298
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.749
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "respect",
+      "movement"
+    ],
+    "extra": [
+      "sunshine",
+      "territory",
+      "vision",
+      "security",
+      "action",
+      "honor"
+    ],
+    "name": "Bahamut",
+    "kingdom": "Fantasy",
+    "queried_as": "Bahamut"
+  },
+  {
+    "species": "Kraken",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.969
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.839
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.836
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.058
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.446
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.456
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.11
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.79
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.622
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.254
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.047
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.083
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.098
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.175
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.294
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.817
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "health",
+      "safety",
+      "movement"
+    ],
+    "extra": [
+      "area",
+      "territory",
+      "boredom",
+      "sunlight",
+      "sexorium",
+      "reproduction"
+    ],
+    "name": "Kraken",
+    "kingdom": "Fantasy",
+    "queried_as": "Kraken"
+  },
+  {
+    "species": "Couatl",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.892
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.556
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.836
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.65
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.595
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.535
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.268
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.828
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.762
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.575
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.441
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.418
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.457
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.532
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.509
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.806
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "purpose",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "adventure",
+      "territory",
+      "exploring",
+      "terrirory",
+      "pride",
+      "curiosity"
+    ],
+    "name": "Couatl",
+    "kingdom": "Fantasy",
+    "queried_as": "Couatl"
+  },
+  {
+    "species": "Nightmare",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.865
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.244
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.206
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.593
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.343
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.248
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.146
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.778
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.53
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.358
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.086
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.052
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.145
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.306
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.19
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.692
+      }
+    ],
+    "have": [
+      "food",
+      "health",
+      "safety",
+      "movement"
+    ],
+    "extra": [
+      "darkness",
+      "emotion",
+      "nightfall",
+      "disguise",
+      "dreams",
+      "territory"
+    ],
+    "name": "Nightmare",
+    "kingdom": "Fantasy",
+    "queried_as": "Nightmare"
+  },
+  {
+    "species": "Dethelfin",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.931
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.906
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.861
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.081
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.668
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.506
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.194
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.831
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.662
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.259
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.516
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.41
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.24
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.656
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.369
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.826
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "social",
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "freedom",
+      "consciousness",
+      "aura",
+      "territory",
+      "sunscreen",
+      "swimming"
+    ],
+    "name": "Dethelfin",
+    "kingdom": "Fantasy",
+    "queried_as": "Dethelfin"
+  },
+  {
+    "species": "Mnemosyne",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.739
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.143
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.222
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.505
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.105
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.145
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.186
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.397
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.418
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.266
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.345
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.22
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.434
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.691
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.447
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.408
+      }
+    ],
+    "have": [
+      "food",
+      "purpose"
+    ],
+    "extra": [
+      "power",
+      "release",
+      "loneliness",
+      "creativity",
+      "souls",
+      "connection"
+    ],
+    "name": "Mnemosyne",
+    "kingdom": "Fantasy",
+    "queried_as": "Mnemosyne"
+  },
+  {
+    "species": "Mimir",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.014
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.025
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.05
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.168
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.037
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.009
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.022
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.037
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.076
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.032
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.121
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.048
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.154
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.49
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.162
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.098
+      }
+    ],
+    "have": [],
+    "extra": [
+      "entertainment",
+      "credits",
+      "interactions",
+      "wisdom"
+    ],
+    "name": "Mimir",
+    "kingdom": "Fantasy",
+    "queried_as": "Mimir"
+  },
+  {
+    "species": "Ouroboronion",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.408
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.323
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.196
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.175
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.186
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.125
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.096
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.408
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.35
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.178
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.14
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.156
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.183
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.545
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.451
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.544
+      }
+    ],
+    "have": [
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "audience",
+      "omniscience",
+      "direction",
+      "awareness",
+      "stability",
+      "vision"
+    ],
+    "name": "Ouroboronion",
+    "kingdom": "Fantasy",
+    "queried_as": "Ouroboronion"
+  },
+  {
+    "species": "Lyrebird",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.983
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.909
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.955
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.582
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.779
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.661
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.431
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.791
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.863
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.84
+      },
+      {
+        "need": "social",
+        "applies": true,
+        "p": 0.82
+      },
+      {
+        "need": "love",
+        "applies": true,
+        "p": 0.561
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.382
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.344
+      },
+      {
+        "need": "novelty",
+        "applies": true,
+        "p": 0.751
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.866
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "health",
+      "safety",
+      "shelter",
+      "social",
+      "love",
+      "novelty",
+      "movement"
+    ],
+    "extra": [
+      "communication",
+      "territory",
+      "terrain",
+      "friendship",
+      "socialization",
+      "church"
+    ],
+    "name": "Lyrebird",
+    "kingdom": "Fantasy",
+    "queried_as": "Lyrebird"
+  },
+  {
+    "species": "Dresden",
+    "core": [
+      {
+        "need": "food",
+        "applies": true,
+        "p": 0.938
+      },
+      {
+        "need": "water",
+        "applies": true,
+        "p": 0.821
+      },
+      {
+        "need": "sleep",
+        "applies": true,
+        "p": 0.905
+      },
+      {
+        "need": "air",
+        "applies": true,
+        "p": 0.699
+      },
+      {
+        "need": "warmth",
+        "applies": true,
+        "p": 0.869
+      },
+      {
+        "need": "bathroom",
+        "applies": true,
+        "p": 0.826
+      },
+      {
+        "need": "hygiene",
+        "applies": true,
+        "p": 0.598
+      },
+      {
+        "need": "health",
+        "applies": true,
+        "p": 0.854
+      },
+      {
+        "need": "safety",
+        "applies": true,
+        "p": 0.854
+      },
+      {
+        "need": "shelter",
+        "applies": true,
+        "p": 0.877
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.332
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.484
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.454
+      },
+      {
+        "need": "purpose",
+        "applies": true,
+        "p": 0.521
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.314
+      },
+      {
+        "need": "movement",
+        "applies": true,
+        "p": 0.864
+      }
+    ],
+    "have": [
+      "food",
+      "water",
+      "sleep",
+      "warmth",
+      "bathroom",
+      "hygiene",
+      "health",
+      "safety",
+      "shelter",
+      "purpose",
+      "movement"
+    ],
+    "extra": [
+      "cleanliness",
+      "grooming",
+      "curiosity",
+      "attention",
+      "affection",
+      "entertainment"
+    ],
+    "name": "Dresden",
+    "kingdom": "Fantasy",
+    "queried_as": "Dresden"
+  },
+  {
+    "species": "Anosy",
+    "core": [
+      {
+        "need": "food",
+        "applies": false,
+        "p": 0.057
+      },
+      {
+        "need": "water",
+        "applies": false,
+        "p": 0.056
+      },
+      {
+        "need": "sleep",
+        "applies": false,
+        "p": 0.138
+      },
+      {
+        "need": "air",
+        "applies": false,
+        "p": 0.192
+      },
+      {
+        "need": "warmth",
+        "applies": false,
+        "p": 0.125
+      },
+      {
+        "need": "bathroom",
+        "applies": false,
+        "p": 0.022
+      },
+      {
+        "need": "hygiene",
+        "applies": false,
+        "p": 0.121
+      },
+      {
+        "need": "health",
+        "applies": false,
+        "p": 0.154
+      },
+      {
+        "need": "safety",
+        "applies": false,
+        "p": 0.217
+      },
+      {
+        "need": "shelter",
+        "applies": false,
+        "p": 0.046
+      },
+      {
+        "need": "social",
+        "applies": false,
+        "p": 0.201
+      },
+      {
+        "need": "love",
+        "applies": false,
+        "p": 0.285
+      },
+      {
+        "need": "respect",
+        "applies": false,
+        "p": 0.36
+      },
+      {
+        "need": "purpose",
+        "applies": false,
+        "p": 0.461
+      },
+      {
+        "need": "novelty",
+        "applies": false,
+        "p": 0.358
+      },
+      {
+        "need": "movement",
+        "applies": false,
+        "p": 0.247
+      }
+    ],
+    "have": [],
+    "extra": [
+      "dead",
+      "omniasseration",
+      "comfort",
+      "energy",
+      "obedience",
+      "knowledge"
+    ],
+    "name": "Anosy",
+    "kingdom": "Fantasy",
+    "queried_as": "Anosy"
+  }
+]
