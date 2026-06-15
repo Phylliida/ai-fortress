@@ -1,0 +1,21 @@
+# source — one category word (grown/mined/hunted/...)
+# example args: ('a diamond')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: How is wheat obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: grown
+Question: How is a wild mushroom obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: foraged
+Question: How is iron ore obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: mined
+Question: How is venison obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: hunted
+Question: How is a wooden chair obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: crafted
+Question: How is a plastic bottle obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: manufactured
+Question: How is a seashell obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer: found
+Question: How is a diamond obtained? (grown, foraged, mined, hunted, crafted, manufactured, or found)
+Answer:

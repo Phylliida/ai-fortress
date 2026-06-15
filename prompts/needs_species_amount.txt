@@ -1,0 +1,7 @@
+# how much a target species refills the consumer's need (gen_percent)
+# example args: ('consume','wolf','rabbit','food')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Q: How much does eating a rabbit satisfy a wolf's food need?
+A: It satisfies their food need

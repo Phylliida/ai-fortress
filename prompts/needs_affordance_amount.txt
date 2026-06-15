@@ -1,0 +1,7 @@
+# how much an object refills a need (gen_percent degree)
+# example args: ('person','hot meal','food')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Q: How much does using a hot meal satisfy a person's food need?
+A: It satisfies their food need

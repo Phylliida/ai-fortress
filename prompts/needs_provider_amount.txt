@@ -1,0 +1,7 @@
+# ambient field STRENGTH (gen_percent degree)
+# example args: ('campfire','warmth')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Q: How much does being near a campfire satisfy a person's warmth need?
+A: It satisfies their warmth need

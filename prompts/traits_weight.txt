@@ -1,0 +1,17 @@
+# weight — shrink-the-unit cascade (kilograms rung shown; retries g/mg/ug)
+# example args: ('a diamond')  unit=kilograms
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: About how much does a feather weigh, in kilograms?
+Answer: 0.001
+Question: About how much does an apple weigh, in kilograms?
+Answer: 0.2
+Question: About how much does a brick weigh, in kilograms?
+Answer: 2
+Question: About how much does a person weigh, in kilograms?
+Answer: 70
+Question: About how much does a car weigh, in kilograms?
+Answer: 1500
+Question: About how much does a diamond weigh, in kilograms?
+Answer:

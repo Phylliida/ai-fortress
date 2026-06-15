@@ -1,0 +1,15 @@
+# per-person rate — times/day a person satisfies a need (gen_number_median)
+# example args: ('a hardworking baker', 'social')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: On a typical day, how many times does a weary laborer satisfy their sleep need?
+Answer: 1
+Question: On a typical day, how many times does an active child running around outside satisfy their water need?
+Answer: 8
+Question: On a typical day, how many times does a hardworking farmhand satisfy their food need?
+Answer: 4
+Question: On a typical day, how many times does a content hermit who treasures solitude satisfy their social need?
+Answer: 1
+Question: On a typical day, how many times does a hardworking baker satisfy their social need?
+Answer:

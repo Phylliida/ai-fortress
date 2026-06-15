@@ -1,0 +1,15 @@
+# ambient: does an item PROVIDE the condition to the area around it? (yes/no)
+# example args: ('campfire','warmth')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: Does a roof provide shelter to the area around it?
+Answer: Yes
+Question: Does a coffee mug provide shelter to the area around it?
+Answer: No
+Question: Does a campfire provide warmth to the area around it?
+Answer: Yes
+Question: Does a bookshelf provide warmth to the area around it?
+Answer: No
+Question: Does a campfire provide warmth to the area around it?
+Answer:

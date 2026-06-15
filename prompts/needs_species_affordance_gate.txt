@@ -1,0 +1,29 @@
+# can a CONSUMER species satisfy a need via a TARGET species? (mode-appropriate yes/no)
+# example args: consume: ('wolf','rabbit','food')   |   social: ('person','dog','social')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+### CONSUME mode (eat the target) ###
+Question: Can a wolf satisfy its food need by eating a rabbit?
+Answer: Yes
+Question: Can a person satisfy its food need by eating another person?
+Answer: No
+Question: Can a fox satisfy its food need by eating a chicken?
+Answer: Yes
+Question: Can a deer satisfy its food need by eating a wolf?
+Answer: No
+Question: Can a wolf satisfy its food need by eating a rabbit?
+Answer:
+
+
+### SOCIAL/AMBIENT mode (be near the target) ###
+Question: Can a person satisfy its social need by spending time with another person?
+Answer: Yes
+Question: Can a person satisfy its social need by spending time with a chair?
+Answer: No
+Question: Can a dog satisfy its social need by spending time with a person?
+Answer: Yes
+Question: Can a person satisfy its social need by spending time with a rock?
+Answer: No
+Question: Can a person satisfy its social need by spending time with a dog?
+Answer:

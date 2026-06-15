@@ -1,0 +1,17 @@
+# emission STRENGTH — gen_percent over intensity WORDS (faint..blinding)
+# example args: light channel, ('a candle')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: How bright is the light from a firefly? (faint, dim, bright, brilliant, or blinding)
+Answer: faint
+Question: How bright is the light from a candle? (faint, dim, bright, brilliant, or blinding)
+Answer: dim
+Question: How bright is the light from a lamp? (faint, dim, bright, brilliant, or blinding)
+Answer: bright
+Question: How bright is the light from a floodlight? (faint, dim, bright, brilliant, or blinding)
+Answer: brilliant
+Question: How bright is the light from the sun? (faint, dim, bright, brilliant, or blinding)
+Answer: blinding
+Question: How bright is the light from a candle? (faint, dim, bright, brilliant, or blinding)
+Answer:

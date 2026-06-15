@@ -1,0 +1,17 @@
+# worth — gen_percent over tier WORDS -> 0-10 (worthless..priceless)
+# example args: ('a diamond')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: How expensive is a pebble? (worthless, cheap, valuable, precious, or priceless)
+Answer: worthless
+Question: How expensive is an apple? (worthless, cheap, valuable, precious, or priceless)
+Answer: cheap
+Question: How expensive is a steel sword? (worthless, cheap, valuable, precious, or priceless)
+Answer: valuable
+Question: How expensive is a diamond? (worthless, cheap, valuable, precious, or priceless)
+Answer: precious
+Question: How expensive is the crown jewels? (worthless, cheap, valuable, precious, or priceless)
+Answer: priceless
+Question: How expensive is a diamond? (worthless, cheap, valuable, precious, or priceless)
+Answer:

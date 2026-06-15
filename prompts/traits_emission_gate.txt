@@ -1,0 +1,15 @@
+# emission — does the item give off light/heat/sound? (yes/no per channel)
+# example args: light channel, ('a candle')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: Does a candle give off light?
+Answer: Yes
+Question: Does a brick give off light?
+Answer: No
+Question: Does a lantern give off light?
+Answer: Yes
+Question: Does a wooden chair give off light?
+Answer: No
+Question: Does a a candle give off light?
+Answer:

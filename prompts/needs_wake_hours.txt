@@ -1,0 +1,8 @@
+# waking hours per day (gen_number_median)
+# example args: ('A hardworking baker who rises before dawn.')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+A hardworking baker who rises before dawn.
+On a typical day, how many hours is this person awake (not asleep)?
+Answer:

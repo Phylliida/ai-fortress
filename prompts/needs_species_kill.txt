@@ -1,0 +1,15 @@
+# does feeding kill the target? PER (consumer,target) (yes/no)
+# example args: ('wolf','rabbit')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: After a wolf eats a rabbit once, is the rabbit dead and gone?
+Answer: Yes
+Question: After a person spends time with a friend once, is the friend dead and gone?
+Answer: No
+Question: After a bear eats a salmon once, is the salmon dead and gone?
+Answer: Yes
+Question: After a mosquito bites a person once, is the person dead and gone?
+Answer: No
+Question: After a wolf feeds on a rabbit once, is the rabbit dead and gone?
+Answer:

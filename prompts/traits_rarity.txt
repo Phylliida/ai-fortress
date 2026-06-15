@@ -1,0 +1,17 @@
+# rarity — gen_percent over tier WORDS -> 0-10 (everywhere..legendary)
+# example args: ('a diamond')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: How rare is water? (everywhere, common, uncommon, rare, or legendary)
+Answer: everywhere
+Question: How rare is a loaf of bread? (everywhere, common, uncommon, rare, or legendary)
+Answer: common
+Question: How rare is a steel sword? (everywhere, common, uncommon, rare, or legendary)
+Answer: uncommon
+Question: How rare is a diamond? (everywhere, common, uncommon, rare, or legendary)
+Answer: rare
+Question: How rare is Excalibur? (everywhere, common, uncommon, rare, or legendary)
+Answer: legendary
+Question: How rare is a diamond? (everywhere, common, uncommon, rare, or legendary)
+Answer:

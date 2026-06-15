@@ -1,0 +1,15 @@
+# emission RADIUS in cells (gen_number_median)
+# example args: light channel, ('a candle')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+On a grid where each cell is about one meter:
+
+Question: Within how many cells does the light from a campfire reach?
+Answer: 5
+Question: Within how many cells does the heat from a fireplace reach?
+Answer: 3
+Question: Within how many cells does the sound from a church bell reach?
+Answer: 40
+Question: Within how many cells does the light from a a candle reach?
+Answer:

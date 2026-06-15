@@ -1,0 +1,19 @@
+# size — shrink-the-unit cascade (centimeters rung shown; retries mm/um)
+# example args: ('a diamond')  unit=centimeters
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: About how large is a grain of rice across its longest dimension, in centimeters?
+Answer: 0.5
+Question: About how large is a coin across its longest dimension, in centimeters?
+Answer: 2
+Question: About how large is a book across its longest dimension, in centimeters?
+Answer: 25
+Question: About how large is a chair across its longest dimension, in centimeters?
+Answer: 100
+Question: About how large is a car across its longest dimension, in centimeters?
+Answer: 400
+Question: About how large is a house across its longest dimension, in centimeters?
+Answer: 1200
+Question: About how large is a diamond across its longest dimension, in centimeters?
+Answer:

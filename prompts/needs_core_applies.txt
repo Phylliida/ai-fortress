@@ -1,0 +1,54 @@
+# core need sweep — does this species have need X? (yes/no, P(yes))
+# example args: real: ('Tomato plant','water')   |   fantasy: ('Makit','food', desc=...)
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+### REAL (no description) ###
+A wolf is a pack-hunting wild canine that roams northern forests.
+If a wolf were real, would it have a food need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+A granite boulder is a solid lump of cooled mineral rock.
+If a granite boulder were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.
+Answer: no
+
+A fern is a leafy green plant that spreads across the shaded forest floor.
+If a fern were real, would it have a sleep need (something it must regularly satisfy)? Answer yes or no.
+Answer: no
+
+A fern is a leafy green plant that spreads across the shaded forest floor.
+If a fern were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+A honeybee is a small social insect that lives in a colony and gathers nectar.
+If a honeybee were real, would it have a social need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+If a Tomato plant were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.
+Answer:
+
+
+### FANTASY (description grounds the invented name) ###
+A wolf is a pack-hunting wild canine that roams northern forests.
+If a wolf were real, would it have a food need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+A granite boulder is a solid lump of cooled mineral rock.
+If a granite boulder were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.
+Answer: no
+
+A fern is a leafy green plant that spreads across the shaded forest floor.
+If a fern were real, would it have a sleep need (something it must regularly satisfy)? Answer yes or no.
+Answer: no
+
+A fern is a leafy green plant that spreads across the shaded forest floor.
+If a fern were real, would it have a water need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+A honeybee is a small social insect that lives in a colony and gathers nectar.
+If a honeybee were real, would it have a social need (something it must regularly satisfy)? Answer yes or no.
+Answer: yes
+
+Makit is Satisfyingly smooth-skinned, porous mushrooms that absorb any memories they hear or overhear.
+If a Makit were real, would it have a food need (something it must regularly satisfy)? Answer yes or no.
+Answer:
