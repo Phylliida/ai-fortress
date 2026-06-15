@@ -469,5 +469,105 @@
   "Shamisen": {
     "play": 0.628,
     "novelty": 0.637
+  },
+  "Glass of water": {
+    "water": 0.987,
+    "moisture": 0.971
+  },
+  "Well": {
+    "water": 0.997,
+    "moisture": 0.986
+  },
+  "Watering can": {
+    "water": 0.984,
+    "moisture": 0.988,
+    "growth": 0.894,
+    "foraging": 0.808
+  },
+  "Toilet": {
+    "bathroom": 0.811,
+    "hygiene": 0.619,
+    "comfort": 0.751,
+    "cleanliness": 0.73
+  },
+  "Outhouse": {
+    "shelter": 0.616,
+    "bathroom": 0.642,
+    "hygiene": 0.446,
+    "comfort": 0.527,
+    "cleanliness": 0.565,
+    "privacy": 0.704
+  },
+  "Bar of soap": {
+    "bathroom": 0.837,
+    "hygiene": 0.831,
+    "comfort": 0.825,
+    "grooming": 0.872,
+    "cleanliness": 0.911
+  },
+  "Bathtub": {
+    "water": 0.979,
+    "bathroom": 0.77,
+    "hygiene": 0.917,
+    "comfort": 0.874,
+    "grooming": 0.891,
+    "cleanliness": 0.914,
+    "relaxation": 0.881
+  },
+  "Hairbrush": {
+    "bathroom": 0.571,
+    "hygiene": 0.618,
+    "grooming": 0.746,
+    "cleanliness": 0.742
+  },
+  "Broom": {},
+  "Bag of soil": {
+    "soil": 0.991,
+    "fertilizer": 0.987,
+    "growth": 0.866,
+    "foraging": 0.941
+  },
+  "Compost heap": {
+    "soil": 0.874,
+    "fertilizer": 0.974,
+    "foraging": 0.881
+  },
+  "Bed": {
+    "safety": 0.798,
+    "sleep": 0.984,
+    "shelter": 0.933,
+    "comfort": 0.904,
+    "energy": 0.917,
+    "habitat": 0.921,
+    "relaxation": 0.859
+  },
+  "Fireplace": {
+    "warmth": 0.877,
+    "temperature": 0.859
+  },
+  "Tent": {
+    "warmth": 0.92,
+    "safety": 0.799,
+    "territory": 0.899,
+    "sleep": 0.916,
+    "shelter": 0.978,
+    "comfort": 0.783,
+    "moisture": 0.922,
+    "darkness": 0.972,
+    "stability": 0.828,
+    "temperature": 0.942,
+    "shade": 0.942,
+    "environment": 0.83,
+    "habitat": 0.913,
+    "privacy": 0.823
+  },
+  "Bandage": {
+    "health": 0.698,
+    "safety": 0.624
+  },
+  "Lantern": {
+    "darkness": 0.968,
+    "awareness": 0.881,
+    "vision": 0.949
   }
 }
