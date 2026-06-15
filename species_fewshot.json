@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Cerberus",
+    "desc": "Three-headed dogs that guard the portals to the underworld"
+  },
+  {
+    "name": "Leviathan",
+    "desc": "Colossal sea beasts with rows of chitinous plates, eyes like moons, and mouths large enough to swallow a ship"
+  },
+  {
+    "name": "Fae",
+    "desc": "Innately capricious entities that look like perfect versions of their mortal counterparts"
+  },
+  {
+    "name": "Gorgon",
+    "desc": "Snakelike-haired horrors who turn intruders to stone with their piercing gaze"
+  },
+  {
+    "name": "Korrakloth",
+    "desc": "Fluffy, comically strong creatures that sprint across mountainsides like thunder"
+  },
+  {
+    "name": "Linh Dai",
+    "desc": "Ethereal spirits of rivers and lakes, that grant boons to fishermen and curse those who pollute"
+  },
+  {
+    "name": "Halfling",
+    "desc": "Small, round humanoids, beloved for their food, drink, and ability to land their cursed horseshoes inside buildings"
+  }
+]

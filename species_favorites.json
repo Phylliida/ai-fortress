@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Makit",
+    "desc": "Satisfyingly smooth-skinned, porous mushrooms that absorb any memories they hear or overhear"
+  },
+  {
+    "name": "Wallflower",
+    "desc": "Timid forest creatures with peony petals for curls and softly whistling wind for breath"
+  },
+  {
+    "name": "Emoorah",
+    "desc": "Sentient, beautiful swans who dread water and long for a mate they suspect doesn't exist"
+  },
+  {
+    "name": "Treant",
+    "desc": "Living trees that travel the world debating philosophy, raising children or building furniture"
+  },
+  {
+    "name": "Aspidochiron",
+    "desc": "Mountain-sized tortoises whose shells are lined with ladders and forests of food-bearing plants"
+  },
+  {
+    "name": "Saketachew",
+    "desc": "A rain spirit, rainfall falls as colored, spherical resin that sticks to targets"
+  },
+  {
+    "name": "Baku",
+    "desc": "Dream-eating tapirs that grant prophetic visions to whoever lies with them"
+  },
+  {
+    "name": "Moonlight dragon",
+    "desc": "Serpentine creatures that sculpt spans from trunk-like appendages and retract their wings into their necks. They sleep beneath ice-caves glimmering with minuscule, cold luminous crystals"
+  },
+  {
+    "name": "Unicorn",
+    "desc": "Evanescent equines who wander through fairy forests and heal the barren with tears of panacea"
+  },
+  {
+    "name": "Yi Ni",
+    "desc": "Invisible tricksters that disassemble assembled objects and reassemble disassembled objects, who carry fissures in their pockets"
+  },
+  {
+    "name": "Xerephs",
+    "desc": "Ever-sad creatures that shed watermelons as tears, often leading brigands to emerald mines"
+  },
+  {
+    "name": "Odonsaii",
+    "desc": "Hyper-intelligent invertebrates that can communicate telepathically through their shimmering blue, radulae-filled maws"
+  },
+  {
+    "name": "Squishmeat",
+    "desc": "Annoying and adorable creatures, their bodies are filled entirely of cheek, with eyestalks and stumpy little appendages"
+  },
+  {
+    "name": "Whooly",
+    "desc": "Excitable, pet-like creatures that carry various silken eggs, which hatch into shellgems in sunlight"
+  },
+  {
+    "name": "Striped Snurggle",
+    "desc": "Eel-like creatures that shoot stunning jolts of electricity at prospective mates to impress them"
+  },
+  {
+    "name": "Grimoire",
+    "desc": "Spellbooks haunted by or made up entirely of irritable magical beings"
+  },
+  {
+    "name": "Tsuredure",
+    "desc": "Small, elegant, humanoid bird, beloved for their cheeky ability to change every orb they touch into exactly the right kind of feather"
+  },
+  {
+    "name": "Hex Pig",
+    "desc": "Efficient, adorable animals who dash across mountainsides like jackrabbits with silver buckeyes for eyes and ruby snouts"
+  },
+  {
+    "name": "Mundane",
+    "desc": "Relatively unremarkable creatures"
+  },
+  {
+    "name": "The Lone Local",
+    "desc": "The local, except there is only one"
+  },
+  {
+    "name": "Brownie",
+    "desc": "Small, elfin humanoids who polish the bowls of kitchen utensils with cats' teeth"
+  },
+  {
+    "name": "Ogre",
+    "desc": "Hulking humanoid brutes that roar at loud insects and eat massive meals at diners"
+  },
+  {
+    "name": "Sabertooth",
+    "desc": "Cats with fangs longer than their tiny brains"
+  },
+  {
+    "name": "Banolion",
+    "desc": "Bristly-haired beasts that somehow appear to be wearing matching scarves"
+  },
+  {
+    "name": "Kitawa",
+    "desc": "Small monkeys with severe acne, known for clinging to travellers and demanding gaudy hats"
+  },
+  {
+    "name": "Ginormous chicken",
+    "desc": "A scaled, one-eyed bad-butt capable of defeating Cerberus. A small child sits on its back"
+  },
+  {
+    "name": "Manbearpig",
+    "desc": "A bear with a man face and the body of a pig"
+  },
+  {
+    "name": "Deva",
+    "desc": "Perfect immortal beings that are total jerks when you look at them in unhealthy ways"
+  },
+  {
+    "name": "Eyegore",
+    "desc": "Tentacled horrors that devour souls and fling invisible objects around rooms"
+  },
+  {
+    "name": "Locho",
+    "desc": "Small, grotesque, fist-sized horrors that fly through the air and burrow into the skulls of sleeping victims, causing remorse and visions of what could have been"
+  },
+  {
+    "name": "Horrificasculus",
+    "desc": "The legless, and the eyeless, and the smelling of the skin of a flayed corpse"
+  },
+  {
+    "name": "Embryoth",
+    "desc": "Giant maggots that dissolve their victims first with their rancid breath before eating the remains"
+  },
+  {
+    "name": "Hollow",
+    "desc": "Visored warriors that have shapeshifted into flawless replicas of their enemies"
+  },
+  {
+    "name": "Nuckelavee",
+    "desc": "Centaurian horse-beings with the ability to dissolve into a burst of lurid slime and pull victims in"
+  },
+  {
+    "name": "Charrhawk",
+    "desc": "Glowing-eyed, bone-faced, nightmare creatures that hunt in packs for their pack alpha"
+  },
+  {
+    "name": "Thousand Pox",
+    "desc": "Itching, yellow, foot-high lumps that crawl across the countryside leaving a path of diseased scabs"
+  },
+  {
+    "name": "Charybdis",
+    "desc": "Cyclopean whirlpools with seismic throats that swallow fleets of ships and belch them up hours later"
+  },
+  {
+    "name": "Quinom'",
+    "desc": "A dragon that eats sunlight and hides within the clouds, then leaps forth and devours a mountain"
+  },
+  {
+    "name": "Nidhogg",
+    "desc": "Dining on corpses on the world-tree Yggrasil, this ravenous wyrm gnaws at the foundation of reality"
+  },
+  {
+    "name": "Bahamut",
+    "desc": "Mightiest of dragons, with wings spanning mountains and scales glinting like polished silver"
+  },
+  {
+    "name": "Kraken",
+    "desc": "Monstrous cephalopods with tentacles like hundred-meter chainsaws"
+  },
+  {
+    "name": "Couatl",
+    "desc": "Vast rainbow serpents with wings of iridescent pheasant tail feathers, native to the middle world"
+  },
+  {
+    "name": "Nightmare",
+    "desc": "Ravenous terrors that appear as great ravenous maws with feathery bone wings and vulture feet"
+  },
+  {
+    "name": "Dethelfin",
+    "desc": "Shimmering, purple dolphins that gallop through ocean tides and drown men to exact vengeance upon Hades itself"
+  },
+  {
+    "name": "Mnemosyne",
+    "desc": "A humanoid embodiment of memory; devours souls and in return shares the memories"
+  },
+  {
+    "name": "Mimir",
+    "desc": "Developed from the heads of the valiantly slain, these orbs possess programs of wit and counsels of wisdom"
+  },
+  {
+    "name": "Ouroboronion",
+    "desc": "Snakes shaped into strange loops that swim through cosmic dimensions and emit great bursts of esoteric knowledge"
+  },
+  {
+    "name": "Lyrebird",
+    "desc": "Dancing songbirds with the ability to duplicate any sound, including entire conversations"
+  },
+  {
+    "name": "Dresden",
+    "desc": "A.k.a Cat, the nightmare cat who devours souls through the power of smug"
+  },
+  {
+    "name": "Anosy",
+    "desc": "Devoid of all physical form, except an infamously non-descript, angelic frame"
+  }
+]
