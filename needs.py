@@ -201,6 +201,49 @@ def bake_affordances(server, species, obj_kinds, need_list, gate_threshold=0.5):
     return table
 
 
+# --- ITEM affordance (SPECIES-AGNOSTIC): which needs an item can fill in principle, for whatever creature
+#     has that need. Same two-step (gate + gen_percent degree), no species in the frame — a bed fills sleep,
+#     a fire warmth, a wooden beam food (for wood-eaters). The species join (which of an item's needs a given
+#     species actually has) is downstream and free. Species-specific quirks ride the species-as-target path.
+ITEM_AFFORDANCE_FEWSHOT = (
+    "Question: Is a bowl of soup relevant to satisfying a food need?\nAnswer: Yes\n"
+    "Question: Is a wall mirror relevant to satisfying a food need?\nAnswer: No\n"
+    "Question: Is a hammock relevant to satisfying a sleep need?\nAnswer: Yes\n"
+    "Question: Is a brick relevant to satisfying a water need?\nAnswer: No\n"
+    "Question: Is a campfire relevant to satisfying a warmth need?\nAnswer: Yes\n"
+    "Question: Is a {item} relevant to satisfying a {need} need?\nAnswer:"
+)
+
+
+def item_affordance_applies_prompt(item, need):
+    return ITEM_AFFORDANCE_FEWSHOT.format(item=item, need=need)
+
+
+def item_affordance_amount_prompt(item, need):
+    """Degree framed for gen_percent (no species/possessive — species-agnostic)."""
+    return (f"Q: How much does using a {item} satisfy a {need} need?\n"
+            f"A: It satisfies the {need} need")
+
+
+def bake_item_affordance(server, item, need, gate_threshold=0.5):
+    """One (item, need): gate (yes_no) then degree (gen_percent). {applies, p, refill}."""
+    p = server.yes_no_prob(item_affordance_applies_prompt(item, need))
+    if p < gate_threshold:
+        return {"applies": False, "p": round(p, 3), "refill": 0.0}
+    pct = server.gen_percent(item_affordance_amount_prompt(item, need))
+    return {"applies": True, "p": round(p, 3), "refill": round(pct["value"], 3) if pct else 0.0}
+
+
+def bake_item_affordances(server, item, need_list, gate_threshold=0.5):
+    """{need: refill} for the needs an item fills (gate-passing, refill>0) — the item's intrinsic profile."""
+    served = {}
+    for need in need_list:
+        r = bake_item_affordance(server, item, need, gate_threshold)
+        if r["applies"] and r["refill"] > 0:
+            served[need] = r["refill"]
+    return served
+
+
 # --- durations: how long using an item TAKES (gen_duration -> minutes), baked PER ITEM. We DON'T
 #     name a free-form "action" (that step was hopelessly noisy — empty strings, "water need",
 #     "mugging", rambling tails). The affordance gate already told us which NEED the item serves, and
