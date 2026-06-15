@@ -36,7 +36,8 @@ for r in recs:
 
 for r in recs:
     r["have"] = clean(r["have"])
-    r["extra"] = clean([e for e in r["extra"] if e not in r["have"]])  # extra shouldn't repeat a (now-merged) core
+    # merge/clean extras FIRST, then drop any that a merge collapsed onto a core need (socialization->social)
+    r["extra"] = [e for e in clean(r["extra"]) if e not in r["have"]]
 
 json.dump(recs, open("species_needs_clean.json", "w"), indent=2, ensure_ascii=False)
 

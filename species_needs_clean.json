@@ -104,8 +104,6 @@
       "territory",
       "play",
       "environment",
-      "movement",
-      "novelty",
       "strength"
     ],
     "name": "Human",
@@ -316,7 +314,6 @@
     ],
     "extra": [
       "territory",
-      "social",
       "attention",
       "reproduction"
     ],
@@ -638,7 +635,6 @@
       "moisture",
       "social",
       "reproduction",
-      "safety",
       "sunlight"
     ],
     "name": "Platypus",
@@ -852,8 +848,7 @@
     "extra": [
       "territory",
       "communication",
-      "reproduction",
-      "social"
+      "reproduction"
     ],
     "name": "Cattle",
     "kingdom": "Animals",
@@ -1056,12 +1051,10 @@
       "movement"
     ],
     "extra": [
-      "social",
       "comfort",
       "happiness",
       "territory",
-      "reproduction",
-      "movement"
+      "reproduction"
     ],
     "name": "Horse",
     "kingdom": "Animals",
@@ -1164,7 +1157,6 @@
     ],
     "extra": [
       "territory",
-      "movement",
       "reproduction"
     ],
     "name": "Tiger",
@@ -1271,8 +1263,6 @@
     "extra": [
       "territory",
       "play",
-      "social",
-      "safety",
       "communication"
     ],
     "name": "Hippopotamus",
@@ -1685,7 +1675,6 @@
       "movement"
     ],
     "extra": [
-      "safety",
       "territory",
       "disapproval",
       "competition",
@@ -1904,7 +1893,6 @@
     ],
     "extra": [
       "territory",
-      "social",
       "play",
       "happiness",
       "soundscape"
@@ -2604,7 +2592,6 @@
     ],
     "extra": [
       "purpose",
-      "safety",
       "sunlight",
       "water",
       "social",
@@ -2913,7 +2900,6 @@
     "extra": [
       "sunlight",
       "territory",
-      "safety",
       "reproduction",
       "camouflage"
     ],
@@ -3019,12 +3005,10 @@
       "movement"
     ],
     "extra": [
-      "safety",
       "territory",
       "flight",
       "foliage",
-      "reproduction",
-      "love"
+      "reproduction"
     ],
     "name": "Secretarybird",
     "kingdom": "Animals",
@@ -3134,9 +3118,7 @@
       "territory",
       "attention",
       "reproduction",
-      "play",
-      "social",
-      "love"
+      "play"
     ],
     "name": "Chimpanzee",
     "kingdom": "Animals",
@@ -4034,7 +4016,6 @@
       "movement"
     ],
     "extra": [
-      "social",
       "reproduction",
       "boundaries",
       "novelty",
@@ -4144,7 +4125,6 @@
     "extra": [
       "family",
       "territory",
-      "social",
       "purpose"
     ],
     "name": "Przewalski's horse",
@@ -4944,7 +4924,6 @@
       "territory",
       "sunlight",
       "habitat",
-      "social",
       "foraging"
     ],
     "name": "Pronghorn",
@@ -5051,9 +5030,7 @@
     "extra": [
       "comfort",
       "play",
-      "social",
-      "territory",
-      "safety"
+      "territory"
     ],
     "name": "Quokka",
     "kingdom": "Animals",
@@ -5777,11 +5754,9 @@
       "movement"
     ],
     "extra": [
-      "social",
       "territory",
       "reproduction",
-      "parenting",
-      "movement"
+      "parenting"
     ],
     "name": "Emu",
     "kingdom": "Animals",
@@ -6085,7 +6060,6 @@
       "territory",
       "communication",
       "freedom",
-      "safety",
       "reproduction",
       "leadership"
     ],
@@ -6395,7 +6369,6 @@
     "extra": [
       "play",
       "territory",
-      "safety",
       "noise",
       "energy",
       "birdcage"
@@ -7406,10 +7379,7 @@
     "extra": [
       "territory",
       "play",
-      "social",
-      "movement",
-      "comfort",
-      "safety"
+      "comfort"
     ],
     "name": "Dugong",
     "kingdom": "Animals",
@@ -7728,9 +7698,7 @@
       "territory",
       "energy",
       "comfort",
-      "partner",
-      "safety",
-      "sleep"
+      "partner"
     ],
     "name": "Swan",
     "kingdom": "Animals",
@@ -8754,7 +8722,6 @@
     "extra": [
       "territory",
       "sawdust",
-      "social",
       "habitat",
       "grooming"
     ],
@@ -9155,8 +9122,7 @@
     "extra": [
       "sunlight",
       "nutrients",
-      "soil",
-      "water"
+      "soil"
     ],
     "name": "Khat",
     "kingdom": "Plants",
@@ -9464,8 +9430,7 @@
       "sunlight",
       "territory",
       "relaxation",
-      "individuality",
-      "social"
+      "individuality"
     ],
     "name": "Giant golden-crowned flying fox",
     "kingdom": "Animals",
@@ -9869,7 +9834,6 @@
       "movement"
     ],
     "extra": [
-      "social",
       "pets",
       "birdsong",
       "territory",
@@ -10069,7 +10033,6 @@
       "movement"
     ],
     "extra": [
-      "safety",
       "growth",
       "territory",
       "smell",
@@ -10181,10 +10144,8 @@
     ],
     "extra": [
       "territory",
-      "safety",
       "social",
-      "freedom",
-      "sleep"
+      "freedom"
     ],
     "name": "Aye-aye",
     "kingdom": "Animals",
@@ -10582,7 +10543,6 @@
       "movement"
     ],
     "extra": [
-      "social",
       "beauty",
       "reproduction",
       "freedom",
@@ -11513,9 +11473,7 @@
       "movement"
     ],
     "extra": [
-      "social",
       "nutrients",
-      "novelty",
       "information",
       "touch"
     ],
@@ -11829,7 +11787,6 @@
       "movement"
     ],
     "extra": [
-      "social",
       "electricity",
       "rattlesnake",
       "happiness",
@@ -11929,7 +11886,6 @@
       "respect"
     ],
     "extra": [
-      "respect",
       "privacy",
       "attention",
       "obscurity",
@@ -12040,8 +11996,6 @@
     "extra": [
       "feathers",
       "ornamentation",
-      "love",
-      "social",
       "sunlight",
       "growth"
     ],
@@ -12148,10 +12102,8 @@
       "movement"
     ],
     "extra": [
-      "social",
       "bedding",
       "sunlight",
-      "love",
       "foraging",
       "play"
     ],
@@ -12472,10 +12424,8 @@
       "movement"
     ],
     "extra": [
-      "purpose",
       "happiness",
       "freedom",
-      "social",
       "play"
     ],
     "name": "Brownie",
@@ -12579,7 +12529,6 @@
     ],
     "extra": [
       "territory",
-      "movement",
       "income",
       "respect",
       "laughter",
@@ -12689,7 +12638,6 @@
       "love",
       "attention",
       "novelty",
-      "safety",
       "play"
     ],
     "name": "Sabertooth",
@@ -12905,8 +12853,6 @@
       "footrubs",
       "territory",
       "play",
-      "social",
-      "novelty",
       "hat"
     ],
     "name": "Kitawa",
@@ -13012,8 +12958,6 @@
       "movement"
     ],
     "extra": [
-      "movement",
-      "love",
       "awareness",
       "territory",
       "color"
@@ -14334,7 +14278,6 @@
       "movement"
     ],
     "extra": [
-      "movement",
       "happiness",
       "social",
       "temperance",
@@ -14443,8 +14386,7 @@
       "territory",
       "vision",
       "safety",
-      "action",
-      "respect"
+      "action"
     ],
     "name": "Bahamut",
     "kingdom": "Fantasy",
@@ -14655,8 +14597,7 @@
       "adventure",
       "territory",
       "exploring",
-      "pride",
-      "novelty"
+      "pride"
     ],
     "name": "Couatl",
     "kingdom": "Fantasy",
@@ -15269,7 +15210,6 @@
       "communication",
       "territory",
       "terrain",
-      "social",
       "church"
     ],
     "name": "Lyrebird",
