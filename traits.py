@@ -33,7 +33,7 @@ RARITY_ANCHORS = [("water", "everywhere"), ("a loaf of bread", "common"), ("a st
                   ("a diamond", "rare"), ("Excalibur", "legendary")]
 RARITY_SCALE = [("everywhere", 0.0), ("common", 2.5), ("uncommon", 5.0), ("rare", 7.5), ("legendary", 10.0)]
 
-WORTH_Q = "How much would {s} sell for? (worthless, cheap, valuable, precious, or priceless)"
+WORTH_Q = "How expensive is {s}? (worthless, cheap, valuable, precious, or priceless)"
 WORTH_ANCHORS = [("a pebble", "worthless"), ("an apple", "cheap"), ("a steel sword", "valuable"),
                  ("a diamond", "precious"), ("the crown jewels", "priceless")]
 WORTH_SCALE = [("worthless", 0.0), ("cheap", 2.5), ("valuable", 5.0), ("precious", 7.5), ("priceless", 10.0)]
