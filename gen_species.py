@@ -34,10 +34,12 @@ SEED_ENTRIES = [   # capitalized, and each opens DIFFERENTLY so the model doesn'
 
 
 def manual_prompt(entries):
-    """A Monster-Manual table of contents the model continues; each line is 'Name: description', so one
-    completion yields a NAME and a matching DESCRIPTION together."""
-    lines = "".join(f"- {n[:1].upper() + n[1:]}: {d}\n" for n, d in entries)
-    return "Monster Manual, Table of Contents:\n" + lines + "- "
+    """A bestiary the model continues; each line is 'Name: description', so one completion yields a NAME
+    and a matching DESCRIPTION together. NOTE: a 'Monster Manual, Table of Contents' header made GLM emit
+    page/sidebar META ('18 more monsters', insert-tab text) — ~0/10 usable; 'a bestiary, one per line'
+    yields actual creature entries, ~9/10."""
+    lines = "".join(f"{n[:1].upper() + n[1:]}: {d}\n" for n, d in entries)
+    return "A bestiary of fantasy creatures, one described per line:\n\n" + lines
 
 
 def parse_entry(raw):
@@ -66,10 +68,7 @@ def generate(server, fewshot, n, existing, sim_threshold=0.78):
     embs, seen = [], set()
     for name, _ in existing:                               # seed dedup with what we already have
         seen.add(_key(name))
-        try:
-            embs.append(bmp.embed_texts([name])[0])
-        except Exception:
-            pass
+        embs.append(bmp.embed_texts([name])[0])
     prompt = manual_prompt(fewshot)
     got, attempts = 0, 0
     while got < n and attempts < max(50, n * 12):
@@ -80,21 +79,23 @@ def generate(server, fewshot, n, existing, sim_threshold=0.78):
         name, desc = parsed
         if _reject(name) or _key(name) in seen:
             continue
-        try:
-            e = bmp.embed_texts([name])[0]
-            if embs and max(bmp.cosine(e, pe) for pe in embs) >= sim_threshold:
-                continue
-        except Exception:
-            e = None
+        e = bmp.embed_texts([name])[0]                     # no try/except — if embeddinggemma dies, crash loud
+        if embs and max(bmp.cosine(e, pe) for pe in embs) >= sim_threshold:
+            continue
         seen.add(_key(name))
-        if e is not None:
-            embs.append(e)
+        embs.append(e)
         got += 1
         yield name, desc
 
 
 def run(fewshot, n, out):
     server = bmp.LlamaServer(timeout=60, retries=3)
+    try:
+        bmp.embed_texts(["ping"])      # dedup REQUIRES embeddinggemma — fail loud upfront, never fall back
+    except Exception as e:
+        sys.exit(f"embeddinggemma ({bmp.EMBED_URL}) is down — start it first "
+                 f"(llama-server -m embeddinggemma-300M-Q8_0.gguf --embedding --pooling mean --port 8062). "
+                 f"[{type(e).__name__}]")
     species = json.load(open(out)) if os.path.exists(out) else []
     existing = [(s["name"], s["desc"]) for s in species]
     print(f"have {len(species)} / want {n} -> {out}  (few-shot: {', '.join(nm for nm, _ in fewshot)})")
