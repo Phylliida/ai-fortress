@@ -1,0 +1,473 @@
+{
+  "Wallet": {},
+  "Cigarette": {
+    "comfort": 0.642,
+    "relaxation": 0.678
+  },
+  "Marshmallow": {
+    "food": 0.795,
+    "nutrients": 0.647
+  },
+  "Bottlecap": {},
+  "Chalkboard": {
+    "information": 0.802
+  },
+  "Lead pencil": {
+    "play": 0.498,
+    "novelty": 0.538,
+    "communication": 0.639,
+    "knowledge": 0.685,
+    "information": 0.806
+  },
+  "Spork": {
+    "food": 0.786,
+    "nutrients": 0.792,
+    "energy": 0.87,
+    "foraging": 0.826
+  },
+  "Bee": {
+    "novelty": 0.668,
+    "pollination": 0.958
+  },
+  "Book": {
+    "novelty": 0.652,
+    "happiness": 0.795,
+    "communication": 0.888,
+    "growth": 0.717,
+    "knowledge": 0.993,
+    "relaxation": 0.803,
+    "information": 0.931
+  },
+  "Sawdust": {},
+  "Linoleum": {},
+  "Snowfall": {
+    "play": 0.662,
+    "novelty": 0.65,
+    "moisture": 0.952,
+    "environment": 0.898
+  },
+  "Moonlight": {},
+  "Sunshine": {
+    "health": 0.773,
+    "warmth": 0.906,
+    "sunlight": 0.984,
+    "novelty": 0.636,
+    "happiness": 0.893,
+    "energy": 0.98,
+    "growth": 0.672,
+    "temperature": 0.912,
+    "pollination": 0.966,
+    "environment": 0.937,
+    "relaxation": 0.864,
+    "souls": 0.827
+  },
+  "Lace": {},
+  "Spider silk": {
+    "novelty": 0.785
+  },
+  "Bead curtain": {
+    "novelty": 0.666,
+    "shade": 0.831,
+    "privacy": 0.623
+  },
+  "Crown nautilus": {
+    "novelty": 0.681
+  },
+  "Chandeliers": {},
+  "Stalactite": {
+    "novelty": 0.644
+  },
+  "Honeycomb": {
+    "food": 0.929,
+    "nutrients": 0.93,
+    "novelty": 0.669,
+    "energy": 0.926,
+    "growth": 0.739,
+    "foraging": 0.926
+  },
+  "Saffron": {
+    "health": 0.761,
+    "food": 0.943,
+    "nutrients": 0.799,
+    "growth": 0.702,
+    "foraging": 0.917
+  },
+  "Guano": {
+    "fertilizer": 0.977,
+    "foraging": 0.906
+  },
+  "Etherseed": {
+    "seeds": 0.888,
+    "pollination": 0.975
+  },
+  "Electric lollipop": {
+    "food": 0.81,
+    "play": 0.68,
+    "novelty": 0.631,
+    "happiness": 0.707
+  },
+  "Gel-pack": {
+    "temperature": 0.942
+  },
+  "Brae seed": {
+    "food": 0.903,
+    "fertilizer": 0.966,
+    "seeds": 0.912,
+    "foraging": 0.884
+  },
+  "Clockwork heart": {
+    "novelty": 0.762
+  },
+  "Self-weaving cloth": {
+    "warmth": 0.791,
+    "novelty": 0.689,
+    "comfort": 0.761
+  },
+  "Pearlescent shell": {
+    "novelty": 0.692,
+    "foraging": 0.887
+  },
+  "Seed pod": {
+    "food": 0.969,
+    "reproduction": 0.944,
+    "nutrients": 0.972,
+    "novelty": 0.866,
+    "fertilizer": 0.985,
+    "growth": 0.967,
+    "seeds": 0.934,
+    "foraging": 0.932,
+    "pollination": 0.963
+  },
+  "The Internet": {
+    "social": 0.488,
+    "play": 0.611,
+    "novelty": 0.585,
+    "attention": 0.572,
+    "happiness": 0.555,
+    "communication": 0.722,
+    "growth": 0.506,
+    "knowledge": 0.821,
+    "information": 0.894,
+    "awareness": 0.642
+  },
+  "AI": {
+    "novelty": 0.562,
+    "communication": 0.652,
+    "knowledge": 0.83,
+    "information": 0.86
+  },
+  "Clockwork tree": {
+    "novelty": 0.652
+  },
+  "Computronium": {
+    "energy": 0.953,
+    "power": 0.967,
+    "information": 0.927
+  },
+  "Womb in a can": {
+    "social": 0.541,
+    "reproduction": 0.868,
+    "love": 0.884,
+    "novelty": 0.748,
+    "comfort": 0.827,
+    "happiness": 0.802,
+    "emotion": 0.809,
+    "parenting": 0.768,
+    "relaxation": 0.854,
+    "mischief": 0.893,
+    "souls": 0.877
+  },
+  "Faustian Window": {},
+  "Silk stasis bag": {
+    "health": 0.851,
+    "safety": 0.79,
+    "sleep": 0.902,
+    "shelter": 0.874,
+    "comfort": 0.883,
+    "temperature": 0.958,
+    "habitat": 0.935,
+    "dreams": 0.916,
+    "souls": 0.883
+  },
+  "Spacial stabilizer": {
+    "stability": 0.978
+  },
+  "Quantum computer": {
+    "novelty": 0.682,
+    "knowledge": 0.826,
+    "information": 0.815
+  },
+  "Holo-visor": {
+    "social": 0.538,
+    "play": 0.648,
+    "novelty": 0.707,
+    "information": 0.872,
+    "awareness": 0.875,
+    "vision": 0.902
+  },
+  "Hyperloop pod": {
+    "movement": 0.995,
+    "novelty": 0.758
+  },
+  "Self-driving car": {
+    "movement": 0.764,
+    "safety": 0.644,
+    "novelty": 0.602,
+    "comfort": 0.643,
+    "freedom": 0.578
+  },
+  "Microcomputer": {
+    "play": 0.654,
+    "novelty": 0.618,
+    "communication": 0.668,
+    "knowledge": 0.844,
+    "information": 0.827
+  },
+  "Fibre optic cable": {
+    "communication": 0.93,
+    "information": 0.849
+  },
+  "Carbon nanotube": {
+    "novelty": 0.683
+  },
+  "Warframe": {
+    "play": 0.688,
+    "purpose": 0.692
+  },
+  "Power armor": {
+    "shelter": 0.889,
+    "temperature": 0.944
+  },
+  "Jump drive": {
+    "information": 0.815
+  },
+  "Sleeping pod": {
+    "safety": 0.816,
+    "territory": 0.919,
+    "sleep": 0.931,
+    "shelter": 0.932,
+    "comfort": 0.899,
+    "darkness": 0.979,
+    "shade": 0.976,
+    "habitat": 0.881,
+    "privacy": 0.908,
+    "relaxation": 0.906,
+    "dreams": 0.918
+  },
+  "Bio-printing chamber": {
+    "health": 0.791,
+    "reproduction": 0.867,
+    "growth": 0.929
+  },
+  "Nanites": {},
+  "Ice cream": {
+    "food": 0.872,
+    "nutrients": 0.597,
+    "comfort": 0.739,
+    "happiness": 0.727,
+    "energy": 0.793
+  },
+  "Truffle": {
+    "food": 0.941,
+    "nutrients": 0.891,
+    "energy": 0.932,
+    "growth": 0.666,
+    "foraging": 0.885,
+    "power": 0.656
+  },
+  "Baguette": {
+    "food": 0.916,
+    "nutrients": 0.842,
+    "energy": 0.905
+  },
+  "Salted butter": {
+    "food": 0.828,
+    "nutrients": 0.714,
+    "energy": 0.813
+  },
+  "Strawberry": {
+    "health": 0.759,
+    "food": 0.943,
+    "nutrients": 0.888,
+    "energy": 0.855,
+    "growth": 0.62,
+    "foraging": 0.927
+  },
+  "Chapati": {
+    "food": 0.921,
+    "nutrients": 0.719,
+    "energy": 0.877
+  },
+  "Panko": {
+    "food": 0.829
+  },
+  "Yule log cake": {
+    "food": 0.938,
+    "nutrients": 0.644,
+    "novelty": 0.747,
+    "comfort": 0.816,
+    "energy": 0.886
+  },
+  "Caviar": {
+    "health": 0.795,
+    "food": 0.91,
+    "nutrients": 0.875,
+    "novelty": 0.712,
+    "energy": 0.949,
+    "growth": 0.629,
+    "foraging": 0.944,
+    "power": 0.64
+  },
+  "Sashimi platter": {
+    "food": 0.948,
+    "nutrients": 0.923,
+    "energy": 0.919,
+    "power": 0.775
+  },
+  "Foxglove": {
+    "novelty": 0.69,
+    "foraging": 0.857,
+    "privacy": 0.707,
+    "color": 0.982
+  },
+  "Datura": {
+    "foraging": 0.881,
+    "mischief": 0.858
+  },
+  "Lotus": {
+    "novelty": 0.692,
+    "foraging": 0.858,
+    "pollination": 0.916
+  },
+  "Aloe": {
+    "health": 0.777,
+    "nutrients": 0.89,
+    "growth": 0.625,
+    "foraging": 0.874,
+    "pollination": 0.903
+  },
+  "Nettle": {
+    "health": 0.793,
+    "food": 0.86,
+    "nutrients": 0.908,
+    "novelty": 0.64,
+    "fertilizer": 0.97,
+    "growth": 0.835,
+    "foraging": 0.883
+  },
+  "Turmeric": {
+    "health": 0.772,
+    "food": 0.892,
+    "nutrients": 0.748,
+    "growth": 0.617,
+    "foraging": 0.903
+  },
+  "Tree of life": {
+    "novelty": 0.576,
+    "purpose": 0.856,
+    "growth": 0.71,
+    "shade": 0.889,
+    "environment": 0.857,
+    "habitat": 0.955,
+    "souls": 0.902
+  },
+  "Sugarcane": {
+    "foraging": 0.889
+  },
+  "Basil seeds": {
+    "health": 0.739,
+    "food": 0.803,
+    "nutrients": 0.696,
+    "novelty": 0.591,
+    "energy": 0.718,
+    "growth": 0.589,
+    "seeds": 0.839,
+    "foraging": 0.764
+  },
+  "Coal": {
+    "warmth": 0.942,
+    "energy": 0.97,
+    "temperature": 0.976
+  },
+  "Neutron star": {},
+  "Cold iron": {},
+  "Volcanic glass": {
+    "novelty": 0.746
+  },
+  "Pyrite": {},
+  "Meteoric iron": {
+    "novelty": 0.797
+  },
+  "Geode": {
+    "novelty": 0.716
+  },
+  "Ferrofluid": {
+    "novelty": 0.72,
+    "mischief": 0.795
+  },
+  "Bismuth": {},
+  "Gold bar": {},
+  "Loom": {},
+  "Grain mill": {
+    "food": 0.829,
+    "nutrients": 0.845,
+    "energy": 0.873,
+    "growth": 0.581
+  },
+  "Camera obscura": {
+    "novelty": 0.692,
+    "information": 0.87,
+    "vision": 0.882
+  },
+  "Compass": {
+    "information": 0.871
+  },
+  "Potter's wheel": {},
+  "Anvil": {},
+  "Hourglass": {},
+  "Greek fire": {
+    "mischief": 0.846
+  },
+  "Excalibur": {
+    "power": 0.653
+  },
+  "Cutlass": {
+    "safety": 0.609
+  },
+  "Railgun": {
+    "novelty": 0.738
+  },
+  "Pixie dust": {},
+  "Magic ring": {
+    "novelty": 0.711,
+    "power": 0.706
+  },
+  "Wizard cloak": {
+    "temperature": 0.917,
+    "shade": 0.87
+  },
+  "Mana potion": {
+    "health": 0.791,
+    "food": 0.911,
+    "nutrients": 0.879,
+    "energy": 0.954,
+    "power": 0.91
+  },
+  "Lava lamp": {
+    "novelty": 0.66
+  },
+  "Talaria": {
+    "movement": 0.988,
+    "novelty": 0.67,
+    "flight": 0.747
+  },
+  "Burkinabé kora": {
+    "play": 0.757,
+    "novelty": 0.692,
+    "relaxation": 0.811
+  },
+  "Shamisen": {
+    "play": 0.628,
+    "novelty": 0.637
+  }
+}
