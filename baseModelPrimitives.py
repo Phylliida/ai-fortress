@@ -433,6 +433,19 @@ class LlamaServer:
             result["reasons"] = self._reasons(prompt, dist[0][0], explain_n)
         return result
 
+    def gen_categorical(self, prompt, options, leading_space=True):
+        """Distribution over a fixed set of option strings — the categorical analog of yes_no_prob
+        (binary) and gen_percent (ordinal->value). Scores each option's raw teacher-forced sequence-
+        logprob as the continuation and softmaxes over them; returns {option: probability}. Deterministic
+        (reads the model's distribution, no sampling), so a 0.5/0.4 split is a real ambiguity signal, not
+        sampler noise. `prompt` should end where the option word is the natural next text (e.g. 'Answer:')."""
+        sp = " " if leading_space else ""
+        lps = {o: self._phrase_logprob(prompt, sp + o) for o in options}
+        hi = max(lps.values())
+        e = {o: math.exp(lp - hi) for o, lp in lps.items()}
+        z = sum(e.values()) or 1.0
+        return {o: e[o] / z for o in options}
+
     # --- list of items ---
     # NB: JSON-schema also compiles to a grammar and would hit the same special-token
     # crash, so we generate a newline list and split (terminator-safe via "\n\n" stop).
