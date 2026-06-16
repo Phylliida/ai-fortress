@@ -47,11 +47,15 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
   - repeat-question format → coal 1–2 kg, sword 1 kg, diamond rare(8), Excalibur legendary(10)
   - When numbers come back insane, suspect the *format* before you suspect the model.
 - Mixed Yes/No exemplars in a gate (the base model has a reflexive-"No" bias; mixed examples fix it).
-- **Interleave the example *patterns*, don't group them.** If exemplars come in shapes — multi-ingredient
-  vs single, Yes vs No — alternate them (`multi / single / multi`, `Yes / No / Yes / No`) so the model can't
-  read a positional trend into the order. Two multi-ingredient examples *then* a single one primes "the
-  answer is a list" and the raw item over-lists; moving the single one to the middle fixes it. (Most gates
-  already alternate Yes/No — easy to slip on for non-binary shapes.)
+- **Make the answer-shape *order* unpredictable — don't group, and don't regularly alternate either.** When
+  exemplars come in shapes (Yes vs No, multi-ingredient vs single), the *sequence* of shapes should carry no
+  signal, so the model is forced onto the content mapping instead of a positional one. **Both extremes leak
+  and are learnable:** grouping (`YYYN` → "N is the trend now") *and* strict alternation (`YNYN` → "Y comes
+  next"). Aim for a high-perplexity order where the next shape is genuinely unclear — `YYNY`, `YNYYN`.
+  (Concrete miss: two multi-ingredient exemplars *then* a single one primed "the answer is a list" and raw
+  items over-listed — but a strict `multi/single/multi/single` would have its own rhythm; pick an irregular
+  mix.) NB: several of our gates currently use `YNYN` — fine where the content margin is huge (plant-gate
+  0.96 vs 0.04), worth shuffling for borderline ones.
 - For numeric anchors: **span the range** (feather 0.001 … house 100000) and **vary the subject** each shot.
 
 ## Categorical vs. numeric extraction
