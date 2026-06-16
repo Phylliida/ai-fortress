@@ -47,6 +47,11 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
   - repeat-question format → coal 1–2 kg, sword 1 kg, diamond rare(8), Excalibur legendary(10)
   - When numbers come back insane, suspect the *format* before you suspect the model.
 - Mixed Yes/No exemplars in a gate (the base model has a reflexive-"No" bias; mixed examples fix it).
+- **Interleave the example *patterns*, don't group them.** If exemplars come in shapes — multi-ingredient
+  vs single, Yes vs No — alternate them (`multi / single / multi`, `Yes / No / Yes / No`) so the model can't
+  read a positional trend into the order. Two multi-ingredient examples *then* a single one primes "the
+  answer is a list" and the raw item over-lists; moving the single one to the middle fixes it. (Most gates
+  already alternate Yes/No — easy to slip on for non-binary shapes.)
 - For numeric anchors: **span the range** (feather 0.001 … house 100000) and **vary the subject** each shot.
 
 ## Categorical vs. numeric extraction
