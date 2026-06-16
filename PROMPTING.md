@@ -62,6 +62,13 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
 - **Fine-grained ordinal score = prob-weighted expected value over the tier words** (the `gen_percent`
   trick), not argmax. Score each tier word's probability, take Σ p·value → a continuous 0–10. Then items
   land *between* tiers (lava lamp rarity 4.5, gold bar 5.1) instead of snapping to one bucket.
+- **Pure categorical → read the distribution, don't sample.** `gen_categorical(prompt, options)` scores each
+  option's teacher-forced sequence-logprob and softmaxes → `{option: prob}` — the categorical sibling of
+  `yes_no_prob` (binary) and `gen_percent` (ordinal). The distribution's **argmax beats a single sample**
+  (diet-classify *sampled* Loquat → "omnivore", a minority draw, but the distribution is sunlight 0.83), and
+  you get **confidence** (Lion meat 0.99 vs Axolotl 0.56), **ambiguity-flagging** (top-prob < floor → route
+  to "other"/review), and **determinism** for free. Sample only when you need a *generative* answer, not a
+  classification.
 - **source stays a plain category word** because it's *non-ordinal* (grown/mined/hunted/crafted/found) —
   no scale to be fine-grained over. (It's also the weakest trait: defaults to "found" on ambiguous names;
   feed the description as context if you need better.)
@@ -75,6 +82,35 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
 - **Unit choice matters.** *Meters* made everyday items round to 0 (a TV is 0.8 m → "0"); *centimeters*
   fixed it (TV 150 cm). Pick a unit where typical values are whole numbers ≥ 1.
 - **median over ~7 samples** to absorb the wild confabulated outliers (3 was too few for wide ranges).
+
+## Ambiguous inputs: ground from the model, re-ask don't assign
+
+When a bare name is *ambiguous*, the fix isn't a better option-set — it's grounding the input. Lessons from
+the diet-classifier (a crop name reads as the food, not the organism):
+
+- **Open-ended FIRST to discover the categories.** Before fixing an option set, ask open-ended and read what
+  the model *naturally* says. It revealed the missing category (plants → "autotroph / it doesn't eat", not
+  "eats sunlight") *and* that the confusion is **name-inherent**, not the options' fault: bare "Garlic" → *"can
+  eat meat and vegetables"* even with no categories given. If the open answer is wrong, fixing the options
+  won't save you — fix the input.
+- **Disambiguate by RE-ASKING with grounding — derived from the model, not from metadata.** Gate *"is X a
+  plant?"* (a model query) → if yes, re-ask *"what does the X **plant** eat?"*. Two principles make this work:
+  - *Model-derived beats a metadata field.* Deriving "is it a plant?" from a model gate (not a `kingdom`
+    column) lets **exceptions surface**: a kingdom-rule forces a Venus flytrap to photosynthetic, but the
+    model gate flags it as a plant *and the re-ask still answers carnivore*. (The gate matched the curated
+    kingdom labels 43/43 with zero false-fires — as good as the metadata, and exception-aware.)
+  - *Grounding ≠ assignment.* A re-ask clarifies the organism but lets the model's species-knowledge win —
+    Venus-flytrap-*plant* → both 0.79, **not** forced to photosynthetic. *Assigning* the category from the
+    gate would have hidden the exception. Re-ask, never assign.
+- **Composition over taxonomy for "who can use this".** Frame compatibility by what a thing is *made of*
+  ("made from animals/plants/both/neither"), not a taxonomy ("what kind of food"). It's the axis that
+  actually decides compatibility, dodges the "other" dumping-ground (processed sweets → eaten by no one),
+  and the "neither" bucket usefully flags inputs that aren't really the thing (a Spork "made from neither" →
+  not food; it slipped a food-gate).
+- **A derived filter should be CONSERVATIVE — drop only on a confident mismatch.** Its job is to remove
+  *false* affordances, so keep everything ambiguous and fire only on clear cases (carnivore × pure-plant,
+  herbivore × pure-animal). Over-eager filtering (an "other" food eaten by no one) reads as exceptions that
+  aren't there.
 
 ## Gates and mode-appropriate questions
 
@@ -130,3 +166,7 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
 | generator emits meta / off-topic | reframe to a real document type, name the subtypes |
 | diversity collapses (1000 near-dups) | embedding dedup-on-name; diversify the few-shot exemplars |
 | a gate over-fires (chair→shelter) | ask the *mode-appropriate* question, not a generic one |
+| categorical argmax flaky / want confidence | `gen_categorical` — read the distribution, don't sample |
+| bare name read as the wrong sense (garlic→food) | model-gate "is it a plant?" → re-ask "X plant" (don't assign from metadata) |
+| a structural rule hides real exceptions | derive the rule from a model query, and re-ask — never assign from a metadata field |
+| a derived filter flags exceptions that aren't there | make it conservative — drop only confident mismatches, keep ambiguous |
