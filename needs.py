@@ -526,3 +526,45 @@ def classify_diet(server, species, desc=None):
     top, conf = ranked[0]
     return {"diet": o2c[top], "conf": round(conf, 3), "unsure": conf < DIET_FLOOR,
             "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
+
+
+# --- FOOD-TYPE: the other half of the eating-compatibility rule. Only items that fill `food` need it.
+#     gen_categorical distribution over kinds; combined with the consumer's DIET it gates the eating
+#     affordance (carnivore x plant-food -> drop) without any per-(species,item) query.
+FOODTYPE_OPTS = [("meat", "meat"), ("plants", "plant"), ("both", "both"), ("minerals", "mineral"), ("other", "other")]
+_FT_O = "(meat, plants, both, minerals, or other)"
+FOODTYPE_FEWSHOT = (
+    f"What kind of food is a steak? {_FT_O}\nAnswer: meat\n"
+    f"What kind of food is an apple? {_FT_O}\nAnswer: plants\n"
+    f"What kind of food is a beef stew? {_FT_O}\nAnswer: both\n"
+    f"What kind of food is a pinch of salt? {_FT_O}\nAnswer: minerals\n")
+
+# diet -> the food-types it can eat. photosynthetic eats NOTHING (food met by sunlight/soil); 'other'
+# (exotic/fantasy) is left permissive — we don't have grounds to restrict an invented diet.
+DIET_EATS = {
+    "carnivore": {"meat", "both"},
+    "herbivore": {"plant", "both"},
+    "omnivore": {"meat", "plant", "both"},
+    "photosynthetic": set(),
+    "decomposer": {"meat", "plant", "both", "other"},
+    "other": {"meat", "plant", "both", "mineral", "other"},
+}
+
+
+def food_type_prompt(item):
+    return FOODTYPE_FEWSHOT + f"What kind of food is a {item}? {_FT_O}\nAnswer:"
+
+
+def classify_food_type(server, item):
+    """Food-type via gen_categorical distribution. {food_type, conf, dist}."""
+    probs = server.gen_categorical(food_type_prompt(item), [o for o, _ in FOODTYPE_OPTS])
+    o2c = dict(FOODTYPE_OPTS)
+    ranked = sorted(probs.items(), key=lambda kv: -kv[1])
+    top, conf = ranked[0]
+    return {"food_type": o2c[top], "conf": round(conf, 3),
+            "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
+
+
+def can_eat(diet, food_type):
+    """Does a `diet`-type consumer eat a `food_type` food? (default permissive for unknown diets.)"""
+    return food_type in DIET_EATS.get(diet, {"meat", "plant", "both", "mineral", "other"})

@@ -1,22 +1,18 @@
 """
-bake_diet.py — diet-type over all 150 species. Plants/Fungi assigned from kingdom (definitional:
-photosynthetic/decomposer, no query); Animals + Fantasy classified via gen_categorical (distribution
-argmax + confidence). Writes species_diet.json incrementally. Diet gates EATING affordances downstream.
+bake_diet.py — diet-type over all 150 species, EVERY species queried via the base model (gen_categorical
+distribution). No kingdom shortcut: a carnivorous/parasitic plant must be free to come back carnivore, not
+forced to photosynthetic (Venus flytrap -> both, dodder -> plants). Real species use the bare name (the
+distribution read argmaxes correctly even when ambiguous); fantasy use name + description. kingdom is kept
+as metadata only. Writes species_diet.json incrementally.
 """
 import json
-from collections import Counter
+from collections import Counter, defaultdict
 import baseModelPrimitives as bmp
 import needs
 
 s = bmp.LlamaServer(timeout=60, retries=3)
 real = json.load(open("species_real.json"))
 fav = json.load(open("species_favorites.json"))
-
-
-def disambig(r):
-    k = r.get("kingdom")
-    return r["name"] + (" plant" if k == "Plants" else " fungus" if k == "Fungi" else "")
-
 
 out = {}
 
@@ -26,21 +22,23 @@ def save():
 
 
 for r in real:
-    k = r["kingdom"]
-    if k == "Plants":
-        out[r["name"]] = {"diet": "photosynthetic", "conf": 1.0, "unsure": False, "src": "kingdom"}
-    elif k == "Fungi":
-        out[r["name"]] = {"diet": "decomposer", "conf": 1.0, "unsure": False, "src": "kingdom"}
-    else:
-        d = needs.classify_diet(s, disambig(r)); d["src"] = "query"; out[r["name"]] = d
+    d = needs.classify_diet(s, r["name"]); d["kingdom"] = r["kingdom"]; out[r["name"]] = d
     save()
-    v = out[r["name"]]
-    print(f"  {r['name']:22s} {v['diet']:14s} {v['conf']}", flush=True)
+    print(f"  {r['name']:22s} [{r['kingdom']:7s}] {d['diet']:14s} {d['conf']}{'  [unsure]' if d['unsure'] else ''}", flush=True)
 for r in fav:
-    d = needs.classify_diet(s, r["name"], r.get("desc")); d["src"] = "query"; out[r["name"]] = d
+    d = needs.classify_diet(s, r["name"], r.get("desc")); d["kingdom"] = "Fantasy"; out[r["name"]] = d
     save()
-    print(f"  {r['name']:22s} {d['diet']:14s} {d['conf']}{'  [unsure]' if d['unsure'] else ''}", flush=True)
+    print(f"  {r['name']:22s} [Fantasy] {d['diet']:14s} {d['conf']}{'  [unsure]' if d['unsure'] else ''}", flush=True)
 
 print("\ndiet distribution:", dict(Counter(v["diet"] for v in out.values())))
-print("unsure (cross-cutting/exotic):", [k for k, v in out.items() if v.get("unsure")])
+ct = defaultdict(Counter)
+for v in out.values():
+    ct[v["kingdom"]][v["diet"]] += 1
+print("kingdom x diet (kingdom is metadata only — diet came from the model):")
+for k in ["Animals", "Plants", "Fungi", "Fantasy"]:
+    if k in ct:
+        print(f"  {k:8s} {dict(ct[k])}")
+print("non-photosynthetic PLANTS (exceptions the kingdom-rule would have hidden):",
+      [k for k, v in out.items() if v["kingdom"] == "Plants" and v["diet"] != "photosynthetic"])
+print("unsure:", [k for k, v in out.items() if v.get("unsure")])
 print(f"DONE -> species_diet.json ({len(out)} species)")
