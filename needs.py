@@ -493,3 +493,36 @@ def bake_provider(server, obj_kind, need, gate_threshold=0.5, samples=5, radius_
     return {"applies": True, "p_applies": round(p, 3),
             "strength": round(pct["value"], 3) if pct else 0.0,
             "radius": max(radius_floor, round(rr["median"])) if rr else 3}
+
+
+# --- DIET-TYPE: a species trait that gates EATING affordances — a carnivore won't eat plant-food, and a
+#     photosynthetic plant eats NOTHING (its "food" need is met by its own sunlight/soil/nutrient needs).
+#     Read as a DISTRIBUTION over options (gen_categorical), not a sample: the argmax is more reliable
+#     (Loquat sampled 'omnivore' but the distribution is sunlight 0.83) and the top prob is a confidence/
+#     ambiguity flag. Plants/Fungi are assigned from KINGDOM (definitional — no query, no error).
+DIET_OPTS = [("meat", "carnivore"), ("plants", "herbivore"), ("both", "omnivore"),
+             ("sunlight", "photosynthetic"), ("dead matter", "decomposer"), ("other", "other")]
+_DIET_O = "(meat, plants, both, sunlight, dead matter, or other)"
+DIET_FEWSHOT = (
+    f"What does a lion mainly eat? {_DIET_O}\nAnswer: meat\n"
+    f"What does a rabbit mainly eat? {_DIET_O}\nAnswer: plants\n"
+    f"What does a raccoon mainly eat? {_DIET_O}\nAnswer: both\n"
+    f"What does an oak tree mainly eat? {_DIET_O}\nAnswer: sunlight\n"
+    f"What does a mushroom mainly eat? {_DIET_O}\nAnswer: dead matter\n")
+DIET_FLOOR = 0.45  # top prob below this -> cross-cutting/exotic diet, flag unsure (route to 'other')
+
+
+def diet_prompt(species, desc=None):
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return DIET_FEWSHOT + f"{ctx}What does a {species} mainly eat? {_DIET_O}\nAnswer:"
+
+
+def classify_diet(server, species, desc=None):
+    """Diet-type via the gen_categorical distribution. {diet, conf, unsure, dist}. argmax of the
+    distribution (beats a sample); unsure when top prob < DIET_FLOOR."""
+    probs = server.gen_categorical(diet_prompt(species, desc), [o for o, _ in DIET_OPTS])
+    o2c = dict(DIET_OPTS)
+    ranked = sorted(probs.items(), key=lambda kv: -kv[1])
+    top, conf = ranked[0]
+    return {"diet": o2c[top], "conf": round(conf, 3), "unsure": conf < DIET_FLOOR,
+            "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
