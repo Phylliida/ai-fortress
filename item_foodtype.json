@@ -1,0 +1,180 @@
+{
+  "Baguette": {
+    "food_type": "plant",
+    "conf": 0.98,
+    "dist": {
+      "plant": 0.98
+    }
+  },
+  "Basil seeds": {
+    "food_type": "plant",
+    "conf": 0.963,
+    "dist": {
+      "plant": 0.963,
+      "neither": 0.024
+    }
+  },
+  "Brae seed": {
+    "food_type": "plant",
+    "conf": 0.679,
+    "dist": {
+      "plant": 0.679,
+      "neither": 0.276,
+      "animal": 0.023,
+      "both": 0.022
+    }
+  },
+  "Caviar": {
+    "food_type": "animal",
+    "conf": 0.993,
+    "dist": {
+      "animal": 0.993
+    }
+  },
+  "Chapati": {
+    "food_type": "plant",
+    "conf": 0.993,
+    "dist": {
+      "plant": 0.993
+    }
+  },
+  "Electric lollipop": {
+    "food_type": "neither",
+    "conf": 0.985,
+    "dist": {
+      "neither": 0.985
+    }
+  },
+  "Grain mill": {
+    "food_type": "neither",
+    "conf": 0.979,
+    "dist": {
+      "neither": 0.979
+    }
+  },
+  "Honeycomb": {
+    "food_type": "animal",
+    "conf": 0.521,
+    "dist": {
+      "animal": 0.521,
+      "both": 0.361,
+      "neither": 0.07,
+      "plant": 0.047
+    }
+  },
+  "Ice cream": {
+    "food_type": "both",
+    "conf": 0.818,
+    "dist": {
+      "both": 0.818,
+      "animal": 0.1,
+      "neither": 0.051,
+      "plant": 0.032
+    }
+  },
+  "Mana potion": {
+    "food_type": "neither",
+    "conf": 0.88,
+    "dist": {
+      "neither": 0.88,
+      "both": 0.067,
+      "plant": 0.051
+    }
+  },
+  "Marshmallow": {
+    "food_type": "neither",
+    "conf": 0.478,
+    "dist": {
+      "neither": 0.478,
+      "both": 0.259,
+      "plant": 0.175,
+      "animal": 0.088
+    }
+  },
+  "Nettle": {
+    "food_type": "plant",
+    "conf": 0.983,
+    "dist": {
+      "plant": 0.983
+    }
+  },
+  "Panko": {
+    "food_type": "plant",
+    "conf": 0.885,
+    "dist": {
+      "plant": 0.885,
+      "neither": 0.087
+    }
+  },
+  "Saffron": {
+    "food_type": "plant",
+    "conf": 0.983,
+    "dist": {
+      "plant": 0.983
+    }
+  },
+  "Salted butter": {
+    "food_type": "animal",
+    "conf": 0.96,
+    "dist": {
+      "animal": 0.96,
+      "both": 0.032
+    }
+  },
+  "Sashimi platter": {
+    "food_type": "animal",
+    "conf": 0.961,
+    "dist": {
+      "animal": 0.961,
+      "both": 0.023
+    }
+  },
+  "Seed pod": {
+    "food_type": "plant",
+    "conf": 0.98,
+    "dist": {
+      "plant": 0.98
+    }
+  },
+  "Spork": {
+    "food_type": "neither",
+    "conf": 0.999,
+    "dist": {
+      "neither": 0.999
+    }
+  },
+  "Strawberry": {
+    "food_type": "plant",
+    "conf": 0.994,
+    "dist": {
+      "plant": 0.994
+    }
+  },
+  "Truffle": {
+    "food_type": "plant",
+    "conf": 0.697,
+    "dist": {
+      "plant": 0.697,
+      "neither": 0.142,
+      "both": 0.135,
+      "animal": 0.026
+    }
+  },
+  "Turmeric": {
+    "food_type": "plant",
+    "conf": 0.973,
+    "dist": {
+      "plant": 0.973,
+      "neither": 0.022
+    }
+  },
+  "Yule log cake": {
+    "food_type": "both",
+    "conf": 0.553,
+    "dist": {
+      "both": 0.553,
+      "neither": 0.276,
+      "plant": 0.155
+    }
+  }
+}

@@ -541,35 +541,40 @@ def classify_diet(server, species, desc=None):
             "grounded_plant": grounded, "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
 
 
-# --- FOOD-TYPE: the other half of the eating-compatibility rule. Only items that fill `food` need it.
-#     gen_categorical distribution over kinds; combined with the consumer's DIET it gates the eating
-#     affordance (carnivore x plant-food -> drop) without any per-(species,item) query.
-FOODTYPE_OPTS = [("meat", "meat"), ("plants", "plant"), ("both", "both"), ("minerals", "mineral"), ("other", "other")]
-_FT_O = "(meat, plants, both, minerals, or other)"
+# --- FOOD-TYPE: the other half of the eating-compatibility rule. Framed by COMPOSITION ("made from
+#     animals, plants, or both") — what determines who can eat it — not a food taxonomy. This dodges the
+#     "other"-dumping-ground the "what kind of food" framing fell into (processed sweets -> other -> eaten
+#     by no one) and reads raw fish as `animal` not `both` (so a cow won't "eat" sashimi). "neither" cleanly
+#     flags non-foods that spuriously passed the food gate (a Spork, a Grain mill). gen_categorical distribution.
+FOODTYPE_OPTS = [("animals", "animal"), ("plants", "plant"), ("both", "both"), ("neither", "neither")]
+_FT_O = "(animals, plants, both, or neither)"
 FOODTYPE_FEWSHOT = (
-    f"What kind of food is a steak? {_FT_O}\nAnswer: meat\n"
-    f"What kind of food is an apple? {_FT_O}\nAnswer: plants\n"
-    f"What kind of food is a beef stew? {_FT_O}\nAnswer: both\n"
-    f"What kind of food is a pinch of salt? {_FT_O}\nAnswer: minerals\n")
+    f"Is a steak made from animals, plants, or both? Answer: animals\n"
+    f"Is bread made from animals, plants, or both? Answer: plants\n"
+    f"Is a cheeseburger made from animals, plants, or both? Answer: both\n"
+    f"Is table salt made from animals, plants, or both? Answer: neither\n")
 
-# diet -> the food-types it can eat. photosynthetic eats NOTHING (food met by sunlight/soil); 'other'
-# (exotic/fantasy) is left permissive — we don't have grounds to restrict an invented diet.
+# diet -> food-types it can eat. CONSERVATIVE: only the clear mismatches are dropped (carnivore x pure-plant,
+# herbivore x pure-animal, photosynthetic x anything). Everything ambiguous (both / neither) is KEPT — the
+# filter's job is to remove FALSE affordances, so it fires only when confident. 'other'/'decomposer' diets
+# stay fully permissive (no grounds to restrict an invented or detritivore diet).
 DIET_EATS = {
-    "carnivore": {"meat", "both"},
-    "herbivore": {"plant", "both"},
-    "omnivore": {"meat", "plant", "both"},
+    "carnivore": {"animal", "both", "neither"},
+    "herbivore": {"plant", "both", "neither"},
+    "omnivore": {"animal", "plant", "both", "neither"},
     "photosynthetic": set(),
-    "decomposer": {"meat", "plant", "both", "other"},
-    "other": {"meat", "plant", "both", "mineral", "other"},
+    "decomposer": {"animal", "plant", "both", "neither"},
+    "other": {"animal", "plant", "both", "neither"},
 }
+_ALL_FT = {"animal", "plant", "both", "neither"}
 
 
 def food_type_prompt(item):
-    return FOODTYPE_FEWSHOT + f"What kind of food is a {item}? {_FT_O}\nAnswer:"
+    return FOODTYPE_FEWSHOT + f"Is a {item} made from animals, plants, or both? Answer:"
 
 
 def classify_food_type(server, item):
-    """Food-type via gen_categorical distribution. {food_type, conf, dist}."""
+    """Food-type by COMPOSITION via gen_categorical distribution. {food_type, conf, dist}."""
     probs = server.gen_categorical(food_type_prompt(item), [o for o, _ in FOODTYPE_OPTS])
     o2c = dict(FOODTYPE_OPTS)
     ranked = sorted(probs.items(), key=lambda kv: -kv[1])
@@ -579,5 +584,5 @@ def classify_food_type(server, item):
 
 
 def can_eat(diet, food_type):
-    """Does a `diet`-type consumer eat a `food_type` food? (default permissive for unknown diets.)"""
-    return food_type in DIET_EATS.get(diet, {"meat", "plant", "both", "mineral", "other"})
+    """Does a `diet`-type consumer eat a `food_type` food? Conservative: keep unless a clear mismatch."""
+    return food_type in DIET_EATS.get(diet, _ALL_FT)
