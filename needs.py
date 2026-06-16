@@ -123,9 +123,17 @@ def rate_prompt(person, need):
     return RATE_FEWSHOT.format(person=person, need=need)
 
 
+# Few-shot, range-spanning (night-shift 8 .. toddler 13 .. office worker 16), explicit person folded into
+# the repeated Question:/Answer: — no "this person" pronoun (an indirect reference the model pays to resolve).
+WAKE_FEWSHOT = (
+    "Question: On a typical day, how many hours is a weary night-shift worker awake?\nAnswer: 8\n"
+    "Question: On a typical day, how many hours is an energetic young child awake?\nAnswer: 13\n"
+    "Question: On a typical day, how many hours is a busy office worker awake?\nAnswer: 16\n"
+    "Question: On a typical day, how many hours is {person} awake?\nAnswer:")
+
+
 def wake_hours_prompt(person):
-    return (f"{person}\n"
-            f"On a typical day, how many hours is this person awake (not asleep)?\nAnswer:")
+    return WAKE_FEWSHOT.format(person=person)
 
 
 def discover_rates(server, person, need_list, wake_hours=None, samples=5):
@@ -516,8 +524,14 @@ DIET_FLOOR = 0.45  # top prob below this -> cross-cutting/exotic diet, flag unsu
 # and if so RE-ASK as "X plant" — which grounds the organism (-> sunlight/autotroph) yet still lets a
 # carnivorous plant answer carnivore (Venus flytrap plant -> both, NOT forced photosynthetic). The gate
 # cleanly separates plant-products (>=0.30) from animals (~0.03), so the 0.2 threshold is robust.
-PLANT_GATE = "Is a {x} a plant, or part of a plant (a fruit, seed, flower, leaf, or vegetable)?\nAnswer:"
-PLANT_GATE_THRESH = 0.2
+_PG = "a plant, or part of a plant (a fruit, seed, flower, leaf, or vegetable)"
+PLANT_GATE_FEWSHOT = (
+    f"Question: Is a rose {_PG}?\nAnswer: Yes\n"
+    f"Question: Is a dog {_PG}?\nAnswer: No\n"
+    f"Question: Is an acorn {_PG}?\nAnswer: Yes\n"
+    f"Question: Is a hammer {_PG}?\nAnswer: No\n")
+PLANT_GATE = PLANT_GATE_FEWSHOT + f"Question: Is a {{x}} {_PG}?\nAnswer:"
+PLANT_GATE_THRESH = 0.5  # few-shot sharpens the yes/no; recalibrated below
 
 
 def diet_prompt(species, desc=None):
