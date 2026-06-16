@@ -511,6 +511,14 @@ DIET_FEWSHOT = (
     f"What does a mushroom mainly eat? {_DIET_O}\nAnswer: dead matter\n")
 DIET_FLOOR = 0.45  # top prob below this -> cross-cutting/exotic diet, flag unsure (route to 'other')
 
+# A bare crop/spice common name reads as the FOOD, not the organism ("Garlic" -> "can eat meat and
+# vegetables" even open-ended). The fix is a model-derived plant cascade (NO kingdom): gate "is X a plant?"
+# and if so RE-ASK as "X plant" — which grounds the organism (-> sunlight/autotroph) yet still lets a
+# carnivorous plant answer carnivore (Venus flytrap plant -> both, NOT forced photosynthetic). The gate
+# cleanly separates plant-products (>=0.30) from animals (~0.03), so the 0.2 threshold is robust.
+PLANT_GATE = "Is a {x} a plant, or part of a plant (a fruit, seed, flower, leaf, or vegetable)?\nAnswer:"
+PLANT_GATE_THRESH = 0.2
+
 
 def diet_prompt(species, desc=None):
     ctx = f"{species} is {desc}.\n" if desc else ""
@@ -518,14 +526,19 @@ def diet_prompt(species, desc=None):
 
 
 def classify_diet(server, species, desc=None):
-    """Diet-type via the gen_categorical distribution. {diet, conf, unsure, dist}. argmax of the
-    distribution (beats a sample); unsure when top prob < DIET_FLOOR."""
-    probs = server.gen_categorical(diet_prompt(species, desc), [o for o, _ in DIET_OPTS])
+    """Diet-type via the gen_categorical distribution. {diet, conf, unsure, grounded_plant, dist}. argmax
+    of the distribution (beats a sample); unsure when top prob < DIET_FLOOR. For real species (no desc) a
+    plant-gate cascade re-asks crop/spice names as 'X plant' to dodge food/organism confusion (exceptions
+    survive — it's a re-ask, not an assign). Fantasy species carry a desc, which already grounds the name."""
+    query, grounded = species, False
+    if desc is None and server.yes_no_prob(PLANT_GATE.format(x=species)) > PLANT_GATE_THRESH:
+        query, grounded = f"{species} plant", True
+    probs = server.gen_categorical(diet_prompt(query, desc), [o for o, _ in DIET_OPTS])
     o2c = dict(DIET_OPTS)
     ranked = sorted(probs.items(), key=lambda kv: -kv[1])
     top, conf = ranked[0]
     return {"diet": o2c[top], "conf": round(conf, 3), "unsure": conf < DIET_FLOOR,
-            "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
+            "grounded_plant": grounded, "dist": {o2c[o]: round(p, 3) for o, p in ranked if p >= 0.02}}
 
 
 # --- FOOD-TYPE: the other half of the eating-compatibility rule. Only items that fill `food` need it.
