@@ -33,11 +33,13 @@ PLAN_FEWSHOT = (
 
 # diff: distinctive parts beyond the typical plan. Framing demands concrete NOUN parts ("name parts like a
 # mane or tusks, not descriptions") — without it, a creature with an adjective-heavy description echoes the
-# adjectives (Makit -> "smooth-skinned, porous") instead of finding a part.
+# adjectives (Makit -> "smooth-skinned, porous") instead of finding a part. Exemplars SPAN body-plans
+# (bird/mammal/fish), not all-mammal, so the few-shot doesn't bias toward mammalian parts or under-prime
+# other plans; answer-lengths mixed 1/2/1 (the multi in the middle).
 DIFF_FEWSHOT = (
-    "Question: What distinctive physical parts does a lion have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: mane\n"
+    "Question: What distinctive physical parts does a peacock have that a typical bird lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: crest\n"
     "Question: What distinctive physical parts does an elephant have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: tusks, trunk\n"
-    "Question: What distinctive physical parts does a deer have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: antlers\n")
+    "Question: What distinctive physical parts does a catfish have that a typical fish lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: barbels\n")
 # verify (adversarial) — framed as "IS X a real body part" so a quality/adjective ("porous") is rejected,
 # not just "does it have X" (which an adjective passes). Mixed Yes/No, high-perplexity order (Y N Y N -> no:
 # Y N N Y), varied species.
