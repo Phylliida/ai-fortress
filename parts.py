@@ -171,10 +171,61 @@ def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
     return out
 
 
+# --- MACHINES: recursive decomposition instead of a template. Living things share a finite set of body plans
+#     (templates win); machines are open-ended (a clock vs a server vs a mech), so we'd need a template per
+#     TYPE — too many to be useful. Instead, ask a machine's high-level subsystems, then recurse each (with a
+#     stop-gate at single pieces) into a part-tree. Same generate-few-then-recurse pattern, multi-answer union.
+SUBPART_FEWSHOT = (
+    "What are the main parts of a bicycle?\nAnswer: frame, wheels, pedals, chain, handlebars, brakes, seat\n"
+    "What are the main parts of a wheel?\nAnswer: rim, tire, spokes, hub\n"
+    "What are the main parts of a laptop?\nAnswer: screen, keyboard, battery, motherboard, hard drive, hinge\n")
+# stop-gate: recurse only into parts that are themselves assemblies. Mixed Yes/No, high-perplexity (Y N N Y).
+DECOMP_GATE_FEWSHOT = (
+    "Question: Can an engine be taken apart into several smaller pieces?\nAnswer: Yes\n"
+    "Question: Can a nail be taken apart into several smaller pieces?\nAnswer: No\n"
+    "Question: Can a spring be taken apart into several smaller pieces?\nAnswer: No\n"
+    "Question: Can a circuit board be taken apart into several smaller pieces?\nAnswer: Yes\n")
+
+
+def machine_subparts(server, thing, desc=None, samples=4):
+    """The main parts of `thing` (a machine or one of its components), as a sample-union list."""
+    ctx = f"{thing} is {desc}.\n" if desc else ""
+    return server.sample_union(ctx + SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
+                               samples=samples, n_predict=50, max_words=3)
+
+
+def is_decomposable(server, part):
+    """Is `part` itself an assembly (worth recursing into) vs a single piece?"""
+    return server.yes_no_prob(DECOMP_GATE_FEWSHOT +
+                              f"Question: Can a {part} be taken apart into several smaller pieces?\nAnswer:") >= 0.5
+
+
+def decompose_machine(server, machine, desc=None, max_depth=2, samples=4):
+    """Recursively decompose `machine` into a part-tree {part: subtree}. Stops at max_depth or single pieces.
+    The colony-sim drops = every node; the leaves are the atomic salvage."""
+    def rec(thing, depth):
+        subs = machine_subparts(server, thing, samples=samples)
+        if depth <= 1:
+            return {s: {} for s in subs}
+        return {s: (rec(s, depth - 1) if is_decomposable(server, s) else {}) for s in subs}
+    return rec(machine, max_depth)
+
+
+def _flatten_tree(tree):
+    out = []
+    for k, sub in tree.items():
+        out.append(k)
+        out.extend(_flatten_tree(sub))
+    return out
+
+
 def parts(server, species, desc=None, prune=True):
-    """{plan, parts, distinctive}: body-plan template (per-species pruned) + verified, semantically-deduped
-    species-specific distinctive parts."""
+    """{plan, parts, ...}: living things get a body-plan template (pruned) + a verified species-diff; machines
+    (construct) get a recursively-decomposed part-tree instead (no template — too many machine types)."""
     plan, conf = classify_body_plan(server, species, desc)
+    if plan == "construct":
+        tree = decompose_machine(server, species, desc)
+        return {"plan": plan, "plan_conf": conf, "tree": tree, "parts": _flatten_tree(tree)}
     template = BODY_PLANS.get(plan, [])
     if prune:
         template = prune_template(server, species, template, desc)
