@@ -31,17 +31,29 @@ PLAN_FEWSHOT = (
     f"What body plan does a salmon have? {_PO}\nAnswer: fish\n"
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
 
-# diff: distinctive parts beyond the typical plan (lists, multi-sample union)
+# diff: distinctive parts beyond the typical plan. Framing demands concrete NOUN parts ("name parts like a
+# mane or tusks, not descriptions") — without it, a creature with an adjective-heavy description echoes the
+# adjectives (Makit -> "smooth-skinned, porous") instead of finding a part.
 DIFF_FEWSHOT = (
-    "Question: What notable body parts does a lion have that a typical mammal does not? Just the unusual ones.\nAnswer: mane\n"
-    "Question: What notable body parts does an elephant have that a typical mammal does not? Just the unusual ones.\nAnswer: tusks, trunk\n"
-    "Question: What notable body parts does a deer have that a typical mammal does not? Just the unusual ones.\nAnswer: antlers\n")
-# verify (adversarial). mixed Yes/No in high-perplexity order (Y N N Y), varied species
+    "Question: What distinctive physical parts does a lion have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: mane\n"
+    "Question: What distinctive physical parts does an elephant have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: tusks, trunk\n"
+    "Question: What distinctive physical parts does a deer have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: antlers\n")
+# verify (adversarial) — framed as "IS X a real body part" so a quality/adjective ("porous") is rejected,
+# not just "does it have X" (which an adjective passes). Mixed Yes/No, high-perplexity order (Y N Y N -> no:
+# Y N N Y), varied species.
 VERIFY_PART_FEWSHOT = (
-    "Question: Does a lion genuinely have a mane?\nAnswer: Yes\n"
-    "Question: Does a rabbit genuinely have antlers?\nAnswer: No\n"
-    "Question: Does a lion genuinely have feathers?\nAnswer: No\n"
-    "Question: Does an elephant genuinely have tusks?\nAnswer: Yes\n")
+    "Question: Is a mane a real physical body part of a lion?\nAnswer: Yes\n"
+    "Question: Is porous a real physical body part of a mushroom?\nAnswer: No\n"
+    "Question: Is fluffy a real physical body part of a rabbit?\nAnswer: No\n"
+    "Question: Are tusks a real physical body part of an elephant?\nAnswer: Yes\n")
+# prune: per-species removal of template parts the species lacks (octopus has no shell, snake no claws).
+# Conservative — keep unless the model is fairly sure it's absent. Mixed Yes/No, high-perplexity order.
+PRUNE_FEWSHOT = (
+    "Question: Does a snake have legs?\nAnswer: No\n"
+    "Question: Does a deer have bones?\nAnswer: Yes\n"
+    "Question: Does a chicken have feathers?\nAnswer: Yes\n"
+    "Question: Does an octopus have a shell?\nAnswer: No\n")
+PRUNE_KEEP = 0.35
 
 
 def classify_body_plan(server, species, desc=None):
@@ -54,10 +66,11 @@ def classify_body_plan(server, species, desc=None):
 
 
 def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5):
-    """Distinctive parts beyond the body-plan template: multi-sample union (recall) -> adversarial verify."""
+    """Distinctive parts beyond the body-plan template: multi-sample union (recall) -> adversarial verify
+    (rejects qualities/adjectives, not just nonexistent parts)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    prompt = (ctx + DIFF_FEWSHOT + f"Question: What notable body parts does a {species} have that a typical "
-              f"{plan} does not? Just the unusual ones.\nAnswer:")
+    prompt = (ctx + DIFF_FEWSHOT + f"Question: What distinctive physical parts does a {species} have that a "
+              f"typical {plan} lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer:")
     seen, cand = set(), []
     for _ in range(samples):
         for t in server.gen_text(prompt, stop=["\n"], n_predict=30).split(","):
@@ -66,15 +79,39 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
                 seen.add(t); cand.append(t)
     kept = []
     for part in cand:
-        if server.yes_no_prob(ctx + VERIFY_PART_FEWSHOT + f"Question: Does a {species} genuinely have {part}?\nAnswer:") >= threshold:
+        if server.yes_no_prob(ctx + VERIFY_PART_FEWSHOT +
+                              f"Question: Is {part} a real physical body part of a {species}?\nAnswer:") >= threshold:
             kept.append(part)
     return kept
 
 
-def parts(server, species, desc=None):
-    """{plan, parts, distinctive}: body-plan template + verified species-specific distinctive parts."""
+def prune_template(server, species, template, desc=None):
+    """Drop template parts the species lacks (octopus has no shell). Conservative: keep unless the model is
+    fairly sure it's absent (P(has) < PRUNE_KEEP)."""
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return [p for p in template
+            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: Does a {species} have {p}?\nAnswer:") >= PRUNE_KEEP]
+
+
+def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
+    """Drop near-duplicate strings by embedding cosine (peacock tail/plumage/train-plumage -> one). `seed`
+    are kept-but-unemitted anchors (the template), so distinctive parts also dedup against the template."""
+    anchors = list(bmp.embed_texts(seed, url)) if seed else []
+    out = []
+    for it in items:
+        e = bmp.embed_texts([it], url)[0]
+        if all(bmp.cosine(e, a) < sim for a in anchors):
+            out.append(it); anchors.append(e)
+    return out
+
+
+def parts(server, species, desc=None, prune=True):
+    """{plan, parts, distinctive}: body-plan template (per-species pruned) + verified, semantically-deduped
+    species-specific distinctive parts."""
     plan, conf = classify_body_plan(server, species, desc)
     template = BODY_PLANS.get(plan, [])
-    seen = set(template)
-    distinctive = [d for d in species_part_diff(server, species, plan, desc) if d not in seen]
+    if prune:
+        template = prune_template(server, species, template, desc)
+    raw = [d for d in species_part_diff(server, species, plan, desc) if d not in set(template)]
+    distinctive = embed_dedup(raw, seed=template)   # dedup within diff AND against the template
     return {"plan": plan, "plan_conf": conf, "parts": template + distinctive, "distinctive": distinctive}
