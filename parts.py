@@ -91,18 +91,18 @@ VERIFY_PART_FEWSHOT = (
     "Question: If a rabbit were real, would fluffy be a real body part of it?\nAnswer: No\n"
     "Question: If an elephant were real, would tusks be a real body part of it?\nAnswer: Yes\n")
 # prune: per-species removal of template parts the species lacks (octopus->no shell, snake->no claws).
-# Framed as PRESENCE under the COUNTERFACTUAL "if it were real" — without it, a mythical species hits the
-# "isn't real" reflex (the same one that refused dragons their NEEDS) and loses its organs: "Is liver a part
-# of a dragon?" -> 0.28 (pruned!), but "If a dragon were real, would liver be a part of it?" -> 0.97. The
-# counterfactual is harmless for real species (lion meat 0.96) and still prunes true absences (octopus shell
-# 0.01). Earlier non-counterfactual framings also mis-fired: "have meat" read as possess-food, "harvest, do
-# you get X" conflated absence with harvest-typicality.
+# "would it HAVE {part}" under the COUNTERFACTUAL "if it were real". The counterfactual dodges the "isn't
+# real" reflex that stripped dragons' organs (dragon liver 0.95). "have" (vs "be a part of it") also covers
+# SUBSTANCES — earwax/mucus/sweat are had/produced but aren't "parts", so the part-framing wrongly pruned a
+# lion's secretions; a substance exemplar (cat/earwax) teaches they count. With the right framing the probs
+# are decisive (keep 0.9+, absent 0.02), so the threshold is the natural Y/N 0.5 — never tune the threshold
+# to paper over a framing that's measuring the wrong predicate. Mixed Yes/No, high-perplexity order (Y N N Y).
 PRUNE_FEWSHOT = (
-    "Question: If a deer were real, would meat be a part of it?\nAnswer: Yes\n"
-    "Question: If an octopus were real, would a shell be a part of it?\nAnswer: No\n"
-    "Question: If a rabbit were real, would a beak be a part of it?\nAnswer: No\n"
-    "Question: If a snake were real, would bones be a part of it?\nAnswer: Yes\n")
-PRUNE_KEEP = 0.3
+    "Question: If a deer were real, would it have meat?\nAnswer: Yes\n"
+    "Question: If an octopus were real, would it have a shell?\nAnswer: No\n"
+    "Question: If a snake were real, would it have legs?\nAnswer: No\n"
+    "Question: If a cat were real, would it have earwax?\nAnswer: Yes\n")
+PRUNE_KEEP = 0.5
 NULL_TOKENS = {"none", "nothing", "n/a", "na", "unknown", "nothing unusual", "no", "nil"}
 
 
@@ -133,7 +133,7 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
 
 def prune_prompt(species, part, desc=None):
     ctx = f"{species} is {desc}.\n" if desc else ""
-    return ctx + PRUNE_FEWSHOT + f"Question: If a {species} were real, would {part} be a part of it?\nAnswer:"
+    return ctx + PRUNE_FEWSHOT + f"Question: If a {species} were real, would it have {part}?\nAnswer:"
 
 
 def prune_template(server, species, template, desc=None):
