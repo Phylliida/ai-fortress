@@ -14,7 +14,7 @@ import baseModelPrimitives as bmp
 # template part a given species lacks (a snake's legs, an octopus's shell).
 BODY_PLANS = {
     "mammal": [
-        "head", "neck", "legs", "paws", "toes", "tail", "ears", "eyes", "eyelids", "eyelashes", "eyebrows",
+        "head", "neck", "arms", "legs", "hands", "feet", "paws", "fingers", "toes", "tail", "ears", "eyes", "eyelids", "eyelashes", "eyebrows",
         "nose", "nostrils", "mouth", "lips", "gums", "teeth", "tongue", "whiskers", "claws", "nipples",
         "belly button", "genitals", "anus",
         "meat", "hide", "fur", "hair", "bone", "ribs", "cartilage", "blood", "veins", "fat", "sinew", "marrow",
@@ -35,7 +35,7 @@ BODY_PLANS = {
         "cloaca",
         "eggs", "saliva", "mucus", "droppings", "stomach acid"],
     "amphibian": [
-        "head", "legs", "toes", "eyes", "nostrils", "mouth", "tongue", "teeth", "gills",
+        "head", "legs", "feet", "toes", "eyes", "nostrils", "mouth", "tongue", "teeth", "gills",
         "skin", "meat", "bone", "blood", "fat",
         "heart", "liver", "lungs", "kidneys", "spleen", "bladder", "brain", "spinal cord", "stomach", "cloaca",
         "eggs", "mucus", "slime", "stomach acid"],
