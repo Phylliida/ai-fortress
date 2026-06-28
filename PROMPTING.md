@@ -53,6 +53,11 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
   - repeat-question format → coal 1–2 kg, sword 1 kg, diamond rare(8), Excalibur legendary(10)
   - When numbers come back insane, suspect the *format* before you suspect the model.
 - Mixed Yes/No exemplars in a gate (the base model has a reflexive-"No" bias; mixed examples fix it).
+- **Exemplar *answers* teach the output shape — including HOW MANY.** If every few-shot answer is a single
+  item, the model emits a single item even when you wanted a list. Give multi-item answers with **varying**
+  counts (`2 / 4 / 3`, not always the same length) so it lists several and doesn't lock to a fixed count. (The
+  distinctive-parts diff returned exactly *one* part per creature until the exemplars showed `crest, long
+  train` / `wings, horns, spikes, tail frills` / `barbels, adipose fin, fin spines`.)
 - **Make the answer-shape *order* unpredictable — don't group, and don't regularly alternate either.** When
   exemplars come in shapes (Yes vs No, multi-ingredient vs single), the *sequence* of shapes should carry no
   signal, so the model is forced onto the content mapping instead of a positional one. **Both extremes leak
