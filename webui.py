@@ -700,5 +700,40 @@ def api_parts():
     return Response(gen(), mimetype="text/event-stream")
 
 
+# ------------------------------------------------ recursive decompose explorer (open-ended, parts.py)
+@app.route("/decompose")
+def decompose_page():
+    return render_template("decompose.html")
+
+
+@app.route("/api/decompose")
+def api_decompose():
+    """One level of `thing`'s parts via the open-ended decomposer (sample-union -> dedup -> per-part verify),
+    streamed as each part passes. The explorer calls this lazily per node, so the tree builds on click."""
+    thing = request.args.get("thing", "").strip()
+    desc = request.args.get("desc", "").strip() or None
+
+    @stream_with_context
+    def gen():
+        if not thing:
+            yield sse({"type": "error", "message": "Enter something to take apart."}); return
+        try:
+            ctx = f"{thing} is {desc}.\n" if desc else ""
+            yield sse({"type": "status", "message": "generating parts…"})
+            raw = SERVER.sample_union(ctx + parts.SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
+                                      samples=4, n_predict=50, max_words=3)
+            cand = parts.embed_dedup(raw)
+            yield sse({"type": "status", "message": f"verifying {len(cand)} parts…"})
+            for p in cand:                                  # per-part verify against the parent (kills derails)
+                if SERVER.yes_no_prob(ctx + parts.VERIFY_SUBPART_FEWSHOT +
+                                      f"Question: If a {thing} were real, would it have a {p}?\nAnswer:") >= 0.5:
+                    yield sse({"type": "part", "part": p})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5005, debug=True, threaded=True)
