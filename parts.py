@@ -76,12 +76,8 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
     ctx = f"{species} is {desc}.\n" if desc else ""
     prompt = (ctx + DIFF_FEWSHOT + f"Question: What distinctive physical parts does a {species} have that a "
               f"typical {plan} lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer:")
-    seen, cand = set(), []
-    for _ in range(samples):
-        for t in server.gen_text(prompt, stop=["\n"], n_predict=30).split(","):
-            t = t.strip().lower().rstrip(".")
-            if t and t not in seen and t not in NULL_TOKENS and len(t.split()) <= 3:
-                seen.add(t); cand.append(t)
+    cand = server.sample_union(prompt, samples=samples, n_predict=30, max_words=3,
+                               reject=lambda k: k in NULL_TOKENS)
     kept = []
     for part in cand:
         if server.yes_no_prob(ctx + VERIFY_PART_FEWSHOT +

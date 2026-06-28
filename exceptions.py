@@ -36,21 +36,11 @@ VERIFY_POS_FEWSHOT = (
     "Question: Can a sheep genuinely eat glass, which most animals cannot?\nAnswer: No\n")
 
 
-def _sample_union(server, prompt, samples):
-    seen, out = set(), []
-    for _ in range(samples):
-        for t in server.gen_text(prompt, stop=["\n"], n_predict=40).split(","):
-            t = t.strip().lower().rstrip(".")
-            if t and t not in seen and len(t.split()) <= 3:
-                seen.add(t); out.append(t)
-    return out
-
-
 def propose_exceptions(server, species, desc=None, samples=3):
-    """Candidate ± exception categories (noisy — verify before use)."""
+    """Candidate ± exception categories (noisy — verify before use). Sample-union for recall."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    return {"negative": _sample_union(server, ctx + TOXIC_FEWSHOT.format(species=species), samples),
-            "positive": _sample_union(server, ctx + UNUSUAL_FEWSHOT.format(species=species), samples)}
+    return {"negative": server.sample_union(ctx + TOXIC_FEWSHOT.format(species=species), samples=samples, n_predict=40, max_words=3),
+            "positive": server.sample_union(ctx + UNUSUAL_FEWSHOT.format(species=species), samples=samples, n_predict=40, max_words=3)}
 
 
 def verify_exception(server, species, category, sign, desc=None):

@@ -23,18 +23,11 @@ ING_FEWSHOT = (
 
 
 def extract_ingredients(server, item, samples=4):
-    """Sample the ingredient list `samples` times (temp 1) and UNION — one draw sometimes drops the defining
-    ingredient (mole sauce without 'chocolate'), so the union reliably catches it without losing temp-1
-    quality (temp 0 degrades the base model). Case-insensitive dedup; the embed-match takes the max over
-    ingredients so extra noise terms from the union don't hurt precision."""
+    """Ingredients as a sample-union (server.sample_union): one draw sometimes drops the defining ingredient
+    (mole sauce without 'chocolate'), the union reliably catches it. The embed-match takes the max over
+    ingredients, so extra union terms don't hurt precision."""
     prompt = ING_FEWSHOT + f"What is a {item} mainly made from? List the main ingredients.\nAnswer:"
-    seen, out = set(), []
-    for _ in range(samples):
-        for ing in server.gen_text(prompt, stop=["\n"], n_predict=50).split(","):
-            ing = ing.strip()
-            if ing and ing.lower() not in seen:
-                seen.add(ing.lower()); out.append(ing)
-    return out
+    return server.sample_union(prompt, samples=samples, n_predict=50)
 
 
 # --- surface membership Y/N. Generic "is X a {category}?", varied categories, high-perplexity answer
