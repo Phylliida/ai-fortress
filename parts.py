@@ -74,22 +74,23 @@ PLAN_FEWSHOT = (
     f"What body plan does a salmon have? {_PO}\nAnswer: fish\n"
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
 
-# diff: distinctive parts beyond the typical plan. Framing demands concrete NOUN parts ("name parts like a
-# mane or tusks, not descriptions") — without it, a creature with an adjective-heavy description echoes the
-# adjectives (Makit -> "smooth-skinned, porous") instead of finding a part. Exemplars SPAN body-plans
-# (bird/mammal/fish), not all-mammal, so the few-shot doesn't bias toward mammalian parts or under-prime
-# other plans; answer-lengths mixed 1/2/1 (the multi in the middle).
+# diff: distinctive parts beyond the typical plan. Demands concrete NOUN BODY PARTS — excludes (a) descriptions/
+# adjectives (Makit echoed "smooth-skinned, porous") and (b) CLOTHING / worn items / tools (an elf gave "pointy
+# hat", which is the separate clothing system, not anatomy). The elf exemplar models "pointed ears" to teach
+# exactly that. Exemplars span body-plans (bird / fantasy-mammal / fish), not all-mammal.
+_DIFF_INSTR = "Name only body parts (like a mane, tusks, or pointed ears) — not clothing, tools, or things it wears or carries"
 DIFF_FEWSHOT = (
-    "Question: What distinctive physical parts does a peacock have that a typical bird lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: crest\n"
-    "Question: What distinctive physical parts does an elephant have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: tusks, trunk\n"
-    "Question: What distinctive physical parts does a catfish have that a typical fish lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: barbels\n")
-# verify (adversarial) — "would X be a real body part of it" so a quality/adjective ("porous") is rejected
-# (not just "does it have X", which an adjective passes), under the COUNTERFACTUAL so a mythical creature's
-# real part (a dragon's wings) isn't rejected as "not real". Mixed Yes/No, high-perplexity order (Y N N Y).
+    f"Question: What distinctive body parts does a peacock have that a typical bird lacks? {_DIFF_INSTR}.\nAnswer: crest\n"
+    f"Question: What distinctive body parts does an elf have that a typical mammal lacks? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
+    f"Question: What distinctive body parts does a catfish have that a typical fish lacks? {_DIFF_INSTR}.\nAnswer: barbels\n")
+# verify (adversarial) — "would X be a real body part of it" rejects a quality/adjective ("porous") AND
+# CLOTHING / worn items ("a hat"), not just "does it have X" (an adjective/hat passes that). Under the
+# COUNTERFACTUAL so a mythical creature's real part (a dragon's wings) isn't denied as "not real". Mixed
+# Yes/No, high-perplexity order (Y N N Y).
 VERIFY_PART_FEWSHOT = (
     "Question: If a lion were real, would a mane be a real body part of it?\nAnswer: Yes\n"
+    "Question: If a wizard were real, would a hat be a real body part of it?\nAnswer: No\n"
     "Question: If a mushroom were real, would porous be a real body part of it?\nAnswer: No\n"
-    "Question: If a rabbit were real, would fluffy be a real body part of it?\nAnswer: No\n"
     "Question: If an elephant were real, would tusks be a real body part of it?\nAnswer: Yes\n")
 # prune: per-species removal of template parts the species lacks (octopus->no shell, snake->no claws).
 # "would it HAVE {part}" under the COUNTERFACTUAL "if it were real". The counterfactual dodges the "isn't
@@ -120,8 +121,8 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
     """Distinctive parts beyond the body-plan template: multi-sample union (recall) -> adversarial verify
     (rejects qualities/adjectives, not just nonexistent parts)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    prompt = (ctx + DIFF_FEWSHOT + f"Question: What distinctive physical parts does a {species} have that a "
-              f"typical {plan} lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer:")
+    prompt = (ctx + DIFF_FEWSHOT + f"Question: What distinctive body parts does a {species} have that a "
+              f"typical {plan} lacks? {_DIFF_INSTR}.\nAnswer:")
     cand = server.sample_union(prompt, samples=samples, n_predict=30, max_words=3,
                                reject=lambda k: k in NULL_TOKENS)
     kept = []
