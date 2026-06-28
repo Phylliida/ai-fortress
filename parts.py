@@ -188,10 +188,12 @@ DECOMP_GATE_FEWSHOT = (
 
 
 def machine_subparts(server, thing, desc=None, samples=4):
-    """The main parts of `thing` (a machine or one of its components), as a sample-union list."""
+    """The main parts of `thing` (a machine or one of its components), as a sample-union list, embed-deduped
+    (collapses the singular/plural + synonym redundancy the union amplifies: pistons/piston, block/cylinder block)."""
     ctx = f"{thing} is {desc}.\n" if desc else ""
-    return server.sample_union(ctx + SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
-                               samples=samples, n_predict=50, max_words=3)
+    raw = server.sample_union(ctx + SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
+                              samples=samples, n_predict=50, max_words=3)
+    return embed_dedup(raw)
 
 
 def is_decomposable(server, part):
