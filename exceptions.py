@@ -10,6 +10,7 @@ Each verified category resolves to its items via categories.contained_in_categor
 'made_of'), so one generative pass per species + cheap category->item resolution, never the species×item grid.
 """
 import baseModelPrimitives as bmp
+import categories
 
 # propose (multi-sample union for recall). vary the subject; the lists are species-specific knowledge.
 TOXIC_FEWSHOT = (
@@ -77,3 +78,22 @@ def species_exceptions(server, species, desc=None, threshold=0.5, samples=3):
                 kept.append((cat, round(p, 3)))
         out[sign] = kept
     return out
+
+
+def apply_exceptions(server, species, food_items, desc=None, components=None, threshold=0.5,
+                     comp_threshold=0.72, samples=3):
+    """The diff layer made concrete: for `species`, resolve its verified exception categories to per-item
+    food-affordance OVERRIDES — {item: 'drop'} for items in a verified toxic category, {item: 'add'} for
+    items in a verified unusual-edible category. `components` (precomputed {item: ingredient-union}, from
+    categories.extract_ingredients) amortizes extraction across all species. Returns {drop, add, exceptions}."""
+    exc = species_exceptions(server, species, desc, threshold, samples)
+    if components is None:
+        components = {it: categories.extract_ingredients(server, it) for it in food_items}
+    drop, add = set(), set()
+    for cat, _ in exc["negative"]:
+        drop |= categories.contained_in_category(server, food_items, cat, relation="contains",
+                                                 components=components, comp_threshold=comp_threshold)
+    for cat, _ in exc["positive"]:
+        add |= categories.contained_in_category(server, food_items, cat, relation="made_of",
+                                                components=components, comp_threshold=comp_threshold)
+    return {"drop": sorted(drop), "add": sorted(add), "exceptions": exc}
