@@ -46,14 +46,16 @@ VERIFY_PART_FEWSHOT = (
     "Question: Is porous a real physical body part of a mushroom?\nAnswer: No\n"
     "Question: Is fluffy a real physical body part of a rabbit?\nAnswer: No\n"
     "Question: Are tusks a real physical body part of an elephant?\nAnswer: Yes\n")
-# prune: per-species removal of template parts the species lacks (octopus has no shell, snake no claws).
-# Conservative — keep unless the model is fairly sure it's absent. Mixed Yes/No, high-perplexity order.
+# prune: per-species removal of template parts the species lacks (octopus->no shell, snake->no claws).
+# Framed as the HARVEST/drops question (what we actually mean) — "does a lion HAVE meat?" mis-fires (a lion
+# IS meat), but "harvesting a lion, do you get meat?" -> yes. Conservative: keep unless fairly sure absent.
 PRUNE_FEWSHOT = (
-    "Question: Does a snake have legs?\nAnswer: No\n"
-    "Question: Does a deer have bones?\nAnswer: Yes\n"
-    "Question: Does a chicken have feathers?\nAnswer: Yes\n"
-    "Question: Does an octopus have a shell?\nAnswer: No\n")
+    "Question: When you harvest a snake, do you get legs?\nAnswer: No\n"
+    "Question: When you harvest a deer, do you get bones?\nAnswer: Yes\n"
+    "Question: When you harvest a chicken, do you get feathers?\nAnswer: Yes\n"
+    "Question: When you harvest an octopus, do you get a shell?\nAnswer: No\n")
 PRUNE_KEEP = 0.35
+NULL_TOKENS = {"none", "nothing", "n/a", "na", "unknown", "nothing unusual", "no", "nil"}
 
 
 def classify_body_plan(server, species, desc=None):
@@ -75,7 +77,7 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
     for _ in range(samples):
         for t in server.gen_text(prompt, stop=["\n"], n_predict=30).split(","):
             t = t.strip().lower().rstrip(".")
-            if t and t not in seen and len(t.split()) <= 3:
+            if t and t not in seen and t not in NULL_TOKENS and len(t.split()) <= 3:
                 seen.add(t); cand.append(t)
     kept = []
     for part in cand:
@@ -90,7 +92,7 @@ def prune_template(server, species, template, desc=None):
     fairly sure it's absent (P(has) < PRUNE_KEEP)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
     return [p for p in template
-            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: Does a {species} have {p}?\nAnswer:") >= PRUNE_KEEP]
+            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: When you harvest a {species}, do you get {p}?\nAnswer:") >= PRUNE_KEEP]
 
 
 def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
@@ -113,5 +115,5 @@ def parts(server, species, desc=None, prune=True):
     if prune:
         template = prune_template(server, species, template, desc)
     raw = [d for d in species_part_diff(server, species, plan, desc) if d not in set(template)]
-    distinctive = embed_dedup(raw, seed=template)   # dedup within diff AND against the template
+    distinctive = embed_dedup(raw)   # dedup WITHIN the diff only (against-template ate Oak's 'acorns' ~ 'seed')
     return {"plan": plan, "plan_conf": conf, "parts": template + distinctive, "distinctive": distinctive}
