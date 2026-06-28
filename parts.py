@@ -52,23 +52,26 @@ DIFF_FEWSHOT = (
     "Question: What distinctive physical parts does a peacock have that a typical bird lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: crest\n"
     "Question: What distinctive physical parts does an elephant have that a typical mammal lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: tusks, trunk\n"
     "Question: What distinctive physical parts does a catfish have that a typical fish lacks? Name parts (like a mane or tusks), not descriptions.\nAnswer: barbels\n")
-# verify (adversarial) — framed as "IS X a real body part" so a quality/adjective ("porous") is rejected,
-# not just "does it have X" (which an adjective passes). Mixed Yes/No, high-perplexity order (Y N Y N -> no:
-# Y N N Y), varied species.
+# verify (adversarial) — "would X be a real body part of it" so a quality/adjective ("porous") is rejected
+# (not just "does it have X", which an adjective passes), under the COUNTERFACTUAL so a mythical creature's
+# real part (a dragon's wings) isn't rejected as "not real". Mixed Yes/No, high-perplexity order (Y N N Y).
 VERIFY_PART_FEWSHOT = (
-    "Question: Is a mane a real physical body part of a lion?\nAnswer: Yes\n"
-    "Question: Is porous a real physical body part of a mushroom?\nAnswer: No\n"
-    "Question: Is fluffy a real physical body part of a rabbit?\nAnswer: No\n"
-    "Question: Are tusks a real physical body part of an elephant?\nAnswer: Yes\n")
+    "Question: If a lion were real, would a mane be a real body part of it?\nAnswer: Yes\n"
+    "Question: If a mushroom were real, would porous be a real body part of it?\nAnswer: No\n"
+    "Question: If a rabbit were real, would fluffy be a real body part of it?\nAnswer: No\n"
+    "Question: If an elephant were real, would tusks be a real body part of it?\nAnswer: Yes\n")
 # prune: per-species removal of template parts the species lacks (octopus->no shell, snake->no claws).
-# Framed as anatomical PRESENCE — "is X a part of a {species}?". Earlier framings mis-fired: "have meat"
-# read as possess-food (pruned a lion's meat); "harvest, do you get X" conflated absence with harvest-
-# typicality (pruned a peacock's heart, present but not usually taken). "Is a part of" tests pure presence.
+# Framed as PRESENCE under the COUNTERFACTUAL "if it were real" — without it, a mythical species hits the
+# "isn't real" reflex (the same one that refused dragons their NEEDS) and loses its organs: "Is liver a part
+# of a dragon?" -> 0.28 (pruned!), but "If a dragon were real, would liver be a part of it?" -> 0.97. The
+# counterfactual is harmless for real species (lion meat 0.96) and still prunes true absences (octopus shell
+# 0.01). Earlier non-counterfactual framings also mis-fired: "have meat" read as possess-food, "harvest, do
+# you get X" conflated absence with harvest-typicality.
 PRUNE_FEWSHOT = (
-    "Question: Is meat a part of a deer?\nAnswer: Yes\n"
-    "Question: Is a shell a part of an octopus?\nAnswer: No\n"
-    "Question: Is a beak a part of a rabbit?\nAnswer: No\n"
-    "Question: Is bone a part of a snake?\nAnswer: Yes\n")
+    "Question: If a deer were real, would meat be a part of it?\nAnswer: Yes\n"
+    "Question: If an octopus were real, would a shell be a part of it?\nAnswer: No\n"
+    "Question: If a rabbit were real, would a beak be a part of it?\nAnswer: No\n"
+    "Question: If a snake were real, would bones be a part of it?\nAnswer: Yes\n")
 PRUNE_KEEP = 0.3
 NULL_TOKENS = {"none", "nothing", "n/a", "na", "unknown", "nothing unusual", "no", "nil"}
 
@@ -93,14 +96,14 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
     kept = []
     for part in cand:
         if server.yes_no_prob(ctx + VERIFY_PART_FEWSHOT +
-                              f"Question: Is {part} a real physical body part of a {species}?\nAnswer:") >= threshold:
+                              f"Question: If a {species} were real, would {part} be a real body part of it?\nAnswer:") >= threshold:
             kept.append(part)
     return kept
 
 
 def prune_prompt(species, part, desc=None):
     ctx = f"{species} is {desc}.\n" if desc else ""
-    return ctx + PRUNE_FEWSHOT + f"Question: Is {part} a part of a {species}?\nAnswer:"
+    return ctx + PRUNE_FEWSHOT + f"Question: If a {species} were real, would {part} be a part of it?\nAnswer:"
 
 
 def prune_template(server, species, template, desc=None):
