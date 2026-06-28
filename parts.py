@@ -47,14 +47,15 @@ VERIFY_PART_FEWSHOT = (
     "Question: Is fluffy a real physical body part of a rabbit?\nAnswer: No\n"
     "Question: Are tusks a real physical body part of an elephant?\nAnswer: Yes\n")
 # prune: per-species removal of template parts the species lacks (octopus->no shell, snake->no claws).
-# Framed as the HARVEST/drops question (what we actually mean) — "does a lion HAVE meat?" mis-fires (a lion
-# IS meat), but "harvesting a lion, do you get meat?" -> yes. Conservative: keep unless fairly sure absent.
+# Framed as anatomical PRESENCE — "is X a part of a {species}?". Earlier framings mis-fired: "have meat"
+# read as possess-food (pruned a lion's meat); "harvest, do you get X" conflated absence with harvest-
+# typicality (pruned a peacock's heart, present but not usually taken). "Is a part of" tests pure presence.
 PRUNE_FEWSHOT = (
-    "Question: When you harvest a snake, do you get legs?\nAnswer: No\n"
-    "Question: When you harvest a deer, do you get bones?\nAnswer: Yes\n"
-    "Question: When you harvest a chicken, do you get feathers?\nAnswer: Yes\n"
-    "Question: When you harvest an octopus, do you get a shell?\nAnswer: No\n")
-PRUNE_KEEP = 0.35
+    "Question: Is meat a part of a deer?\nAnswer: Yes\n"
+    "Question: Is a shell a part of an octopus?\nAnswer: No\n"
+    "Question: Is a beak a part of a rabbit?\nAnswer: No\n"
+    "Question: Is bone a part of a snake?\nAnswer: Yes\n")
+PRUNE_KEEP = 0.3
 NULL_TOKENS = {"none", "nothing", "n/a", "na", "unknown", "nothing unusual", "no", "nil"}
 
 
@@ -92,7 +93,7 @@ def prune_template(server, species, template, desc=None):
     fairly sure it's absent (P(has) < PRUNE_KEEP)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
     return [p for p in template
-            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: When you harvest a {species}, do you get {p}?\nAnswer:") >= PRUNE_KEEP]
+            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: Is {p} a part of a {species}?\nAnswer:") >= PRUNE_KEEP]
 
 
 def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
