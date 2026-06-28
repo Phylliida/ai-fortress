@@ -132,6 +132,14 @@ the diet-classifier (a crop name reads as the food, not the organism):
 - **Put the conditional contrast IN the few-shot.** To learn that consumability depends on *who* uses a
   thing, the few-shot carried `termite/beam → Yes` next to `person/beam → No`. The contrast teaches the
   dependence; a single-subject few-shot can't.
+- **A calibrated Y/N's threshold is 0.5 — wanting a different cutoff is a tell the *framing* is wrong.**
+  `yes_no_prob` is a probability; its decision boundary is 0.5. If you reach for 0.3 to stop a gate
+  mis-firing, you're papering over a question that measures the wrong predicate. Real case: pruning body
+  parts with *"would {X} be a **part** of it?"* drove a lion's secretions (earwax/sweat) toward "no"
+  (they're *had/produced*, not "parts"), so they sat at ~0.3–0.45 and a 0.3 cutoff "fixed" it — fragilely.
+  Switching to *"would it **have** {X}?"* made them decisive (0.9+) and absences stayed 0.02, so 0.5 just
+  works. Fix the question, not the cutoff. (Counterfactual *"if it were real"* belongs here too — it keeps
+  a mythical creature's organs from being denied as "not real," the same reflex that once refused dragons their needs.)
 
 ## Generating lists (names + descriptions)
 
@@ -184,6 +192,8 @@ the diet-classifier (a crop name reads as the food, not the organism):
 | a generated short list keeps dropping items | sample 3–4× at temp 1 and union (`sample_union`), not one draw |
 | diversity collapses (1000 near-dups) | embedding dedup-on-name; diversify the few-shot exemplars |
 | a gate over-fires (chair→shelter) | ask the *mode-appropriate* question, not a generic one |
+| you want a non-0.5 Y/N threshold (e.g. 0.3) | the framing measures the wrong predicate — fix the question, keep 0.5 |
+| a gate denies a fictional thing its parts/needs | counterfactual framing: "if a {X} were real, would it…" |
 | categorical argmax flaky / want confidence | `gen_categorical` — read the distribution, don't sample |
 | bare name read as the wrong sense (garlic→food) | model-gate "is it a plant?" → re-ask "X plant" (don't assign from metadata) |
 | a structural rule hides real exceptions | derive the rule from a model query, and re-ask — never assign from a metadata field |
