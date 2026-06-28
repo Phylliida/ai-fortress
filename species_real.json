@@ -1,0 +1,502 @@
+[
+  {
+    "name": "Human",
+    "scientificName": "Homo sapiens",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Axolotl",
+    "scientificName": "Ambystoma mexicanum",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Orca",
+    "scientificName": "Orcinus orca",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Lion",
+    "scientificName": "Panthera leo",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Raccoon",
+    "scientificName": "Procyon lotor",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Platypus",
+    "scientificName": "Ornithorhynchus anatinus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Jaguar",
+    "scientificName": "Panthera onca",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Cattle",
+    "scientificName": "Bos taurus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Loquat",
+    "scientificName": "Rhaphiolepis bibas",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Horse",
+    "scientificName": "Equus laurentius",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Tiger",
+    "scientificName": "Tigris striatus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Hippopotamus",
+    "scientificName": "Hippopotamus amphibius",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Kākāpō",
+    "scientificName": "Strigops habroptila",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Osprey",
+    "scientificName": "Pandion haliaetus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Portuguese man o' war",
+    "scientificName": "Physalia physalis",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Cheetah",
+    "scientificName": "Felis lanea",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Fisher",
+    "scientificName": "Pekania pennanti",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Bonobo",
+    "scientificName": "Pan paniscus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Aardwolf",
+    "scientificName": "Proteles cristata",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Jackfruit",
+    "scientificName": "Artocarpus heterophyllus",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Maize",
+    "scientificName": "Zea mays",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Watermelon",
+    "scientificName": "Citrullus lanatus",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Dandelion",
+    "scientificName": "Taraxacum coreanum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Clove",
+    "scientificName": "Syzygium aromaticum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Mayfly",
+    "scientificName": "Habroleptoides pauliana",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Leopard",
+    "scientificName": "Panthera pardus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Tomato",
+    "scientificName": "Solanum lycopersicum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Blue-ringed octopus",
+    "scientificName": "Hapalochlaena nierstraszi",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Secretarybird",
+    "scientificName": "Sagittarius serpentarius",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Chimpanzee",
+    "scientificName": "Pan troglodytes",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Catnip",
+    "scientificName": "Nepeta cataria",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Fossa",
+    "scientificName": "Cryptoprocta ferox",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Oat",
+    "scientificName": "Avena sativa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Edelweiss",
+    "scientificName": "Leontopodium nivale",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Soybean",
+    "scientificName": "Glycine max",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Pineapple",
+    "scientificName": "Ananas comosus",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Sorghum",
+    "scientificName": "Sorghum bicolor",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Pistachio",
+    "scientificName": "Pistacia vera",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Donkey",
+    "scientificName": "Equus asinus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Przewalski's horse",
+    "scientificName": "Equus przewalskii",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Fig",
+    "scientificName": "Ficus carica",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Lentil",
+    "scientificName": "Vicia lens",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Blackcurrant",
+    "scientificName": "Ribes nigrum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Wild onion",
+    "scientificName": "Allium farreri",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Sorrel",
+    "scientificName": "Rumex acetosa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Sesame",
+    "scientificName": "Sesamum indicum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Pallas's cat",
+    "scientificName": "Felis manul",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Pronghorn",
+    "scientificName": "Antilocapra americana",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Quokka",
+    "scientificName": "Setonix brachyurus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Groundhog",
+    "scientificName": "Marmota monax",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Basa",
+    "scientificName": "Pangasius bocourti",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Great horned owl",
+    "scientificName": "Bubo virginianus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Castor bean",
+    "scientificName": "Ricinus communis",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Avocado",
+    "scientificName": "Persea americana",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Lovebug",
+    "scientificName": "Plecia nearctica",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Emu",
+    "scientificName": "Dromaius novaehollandiae",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Anise",
+    "scientificName": "Pimpinella anisum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Rutabaga",
+    "scientificName": "Brassica napobrassica",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Northern white rhinoceros",
+    "scientificName": "Ceratotherium cottoni",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Brown recluse spider",
+    "scientificName": "Loxosceles reclusa",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Calamansi",
+    "scientificName": "Citrus microcarpa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Blue-footed booby",
+    "scientificName": "Sula nebouxii",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Hawaiian monk seal",
+    "scientificName": "Neomonachus schauinslandi",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Pomegranate",
+    "scientificName": "Punica granatum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Calabash",
+    "scientificName": "Lagenaria siceraria",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Coriander",
+    "scientificName": "Coriandrum sativum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Ergot",
+    "scientificName": "Claviceps africana",
+    "kingdom": "Fungi"
+  },
+  {
+    "name": "Quinoa",
+    "scientificName": "Chenopodium quinoa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Columbine",
+    "scientificName": "Aquilegia viscosa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Steller's jay",
+    "scientificName": "Cyanocitta stelleri",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Cochineal",
+    "scientificName": "Dactylopius coccus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Dugong",
+    "scientificName": "Dugong dugon",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Eastern gray squirrel",
+    "scientificName": "Sciurus carolinensis",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Asian giant hornet",
+    "scientificName": "Vespa mandarinia",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Swan",
+    "scientificName": "Cygnus mariae",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Alfalfa",
+    "scientificName": "Medicago sativa",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Pea",
+    "scientificName": "Lathyrus oleraceus",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Watercress",
+    "scientificName": "Sisymbrium nasturtium",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Jaguarundi",
+    "scientificName": "Puma yagouaroundi",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Spix's macaw",
+    "scientificName": "Cyanopsitta spixii",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Black-footed cat",
+    "scientificName": "Felis nigripes",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Galápagos tortoise",
+    "scientificName": "Chelonoidis niger",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Tamarind",
+    "scientificName": "Tamarindus indica",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Liquorice",
+    "scientificName": "Glycyrrhiza glabra",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Alpaca",
+    "scientificName": "Vicugna pacos",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Peach",
+    "scientificName": "Prunus persica",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Spinach",
+    "scientificName": "Spinacia oleracea",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Walleye",
+    "scientificName": "Sander vitreus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Khat",
+    "scientificName": "Catha edulis",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Garlic",
+    "scientificName": "Allium sativum",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Australian plague locust",
+    "scientificName": "Chortoicetes terminifera",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Giant golden-crowned flying fox",
+    "scientificName": "Acerodon jubatus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Saguaro",
+    "scientificName": "Carnegiea gigantea",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Asian black bear",
+    "scientificName": "Ursus thibetanus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Fleabane",
+    "scientificName": "Erigeron cinereus",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Rose-breasted grosbeak",
+    "scientificName": "Pheucticus ludovicianus",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Pansy",
+    "scientificName": "Viola wittrockiana",
+    "kingdom": "Plants"
+  },
+  {
+    "name": "Housefly",
+    "scientificName": "Musca domestica",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Aye-aye",
+    "scientificName": "Daubentonia madagascariensis",
+    "kingdom": "Animals"
+  },
+  {
+    "name": "Allspice",
+    "scientificName": "Pimenta dioica",
+    "kingdom": "Plants"
+  }
+]

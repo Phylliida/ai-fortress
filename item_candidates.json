@@ -1,0 +1,602 @@
+[
+  {
+    "name": "Mirror",
+    "desc": "A flat sheet of polished glass that reflects the eye as visage"
+  },
+  {
+    "name": "Pirated movie disc",
+    "desc": "A copy of a video, bootlegged into millions of households"
+  },
+  {
+    "name": "Rapier",
+    "desc": "A long, slender double-edged steel sword for fencing and formal duels"
+  },
+  {
+    "name": "Salt wheat bread",
+    "desc": "Loaves sold in loavesets, purposely soft to work with the braces"
+  },
+  {
+    "name": "Beet sugar",
+    "desc": "White crystals refined from roots, powdered into sacks that find their way around the world"
+  },
+  {
+    "name": "Industrial light",
+    "desc": "A purple-zoned glowtub hanging from a ceiling of poured-floor metal"
+  },
+  {
+    "name": "Cactus",
+    "desc": "A segmented cactus with spears of lime-green succulent tissue, yielding a single yellow flower"
+  },
+  {
+    "name": "Chocolate bar",
+    "desc": "Thin rectangles molded from dark brown blocks of sweetened cacao paste"
+  },
+  {
+    "name": "Brazil nut",
+    "desc": "An oblong nut in a studded hard shell, rich and oily, taken from the Amazon rainforest"
+  },
+  {
+    "name": "Oil lamp",
+    "desc": "A metal jar holding a single wick soaked in petroleum, giving harsh midnight light"
+  },
+  {
+    "name": "Molar",
+    "desc": "A calcified flat tooth, worn and yellow, once set in a mouth, now a key in an old lock"
+  },
+  {
+    "name": "Stone axe",
+    "desc": "A sharp-fanged head hafted over an ash-wood handle, used to fell trees"
+  },
+  {
+    "name": "Dragonfly",
+    "desc": "Gossamer-winged insect, iridescent jewel-green, darting above flowering waterlilies"
+  },
+  {
+    "name": "Fish",
+    "desc": "A silver stream trout, a precious source of protein in the winter"
+  },
+  {
+    "name": "Brown lentils",
+    "desc": "A potful of small beige legumes, simmer to separate and soften on the tongue"
+  },
+  {
+    "name": "Plastic shower curtain",
+    "desc": "A transparent sheet hung by a rod, once supple and now brittle and chipped"
+  },
+  {
+    "name": "Coffee",
+    "desc": "Sacked and roasted beans, brewed with hot water to caffeinate the mind"
+  },
+  {
+    "name": "Polyester t-shirt",
+    "desc": "A stretchy soft shirt in solid blue, printed like a crooked American flag"
+  },
+  {
+    "name": "Collapsible tent",
+    "desc": "A tent of silvery fabric that folds into a steel sphere no larger than a hat"
+  },
+  {
+    "name": "Empty bathtub",
+    "desc": "A porcelain tub full of stale water and suds, crusted and musty"
+  },
+  {
+    "name": "Chalk",
+    "desc": "A stick of white calcium carbonate, used to mark slates or sands"
+  },
+  {
+    "name": "Wine juice",
+    "desc": "Booze made by awes opps lires"
+  },
+  {
+    "name": "Salt",
+    "desc": "Granules of white crystals, harvested from dried seas and sparkle in the light"
+  },
+  {
+    "name": "Hot drink",
+    "desc": "A mug with steam rising; hot water and loose tea-leaves stirred in; slightly burnt"
+  },
+  {
+    "name": "Radioactive waste tank",
+    "desc": "A thick metal cylinder full of greenish sludge that glows unseen"
+  },
+  {
+    "name": "Monument stele",
+    "desc": "A tall, plain slab carved with the names of those lost in a war"
+  },
+  {
+    "name": "Sturgeon eggs",
+    "desc": "A jar of glossy black caviar, each perfect sphere a blast of brine"
+  },
+  {
+    "name": "Wind turbine",
+    "desc": "A giant white pinwheel atop a steel tower, spinning to harvest air currents"
+  },
+  {
+    "name": "Formula",
+    "desc": "The secret coded recipe industrializing the world's factory processes"
+  },
+  {
+    "name": "Baseball bat",
+    "desc": "A wooden club stained with the day\u2019s game in a ball park"
+  },
+  {
+    "name": "Airship",
+    "desc": "A long, spindle-shaped balloon, slower than planes but soaring higher\u2026"
+  },
+  {
+    "name": "Diamond",
+    "desc": "A crystal of pure carbon, lucid and faceted, and worth a fortune"
+  },
+  {
+    "name": "Sandalwood beads",
+    "desc": "Wooden pearls strung on twine, a charm to keep bad spirits at bay"
+  },
+  {
+    "name": "Cotton shirt",
+    "desc": "A threaded thin fabric, softer than skin and hard-wearing, tailored to fit any body"
+  },
+  {
+    "name": "Molten gold sword",
+    "desc": "A three-foot long blade of pure gold, molten hot and inlaid with semi-precious gems"
+  },
+  {
+    "name": "Glass paperweight",
+    "desc": "A Kindergarten paperweight from Qingzhou, China"
+  },
+  {
+    "name": "Tea",
+    "desc": "Small dried leaves scented with jasmine, brewed into a refreshing drink"
+  },
+  {
+    "name": "Silk robe",
+    "desc": "A gown of translucent white silk, flowing from sleeves to ankles"
+  },
+  {
+    "name": "Magic",
+    "desc": "An arranged palmful of alchemical powders, when mixed together, re-arrange the spacetime near it into a brief pocket of endless twilight"
+  },
+  {
+    "name": "Live cod",
+    "desc": "A shimmering fish tupleLabiolabialis|And, or.|"
+  },
+  {
+    "name": "Fossil",
+    "desc": "A stone that uneasily holds the form of a vanished creature"
+  },
+  {
+    "name": "Time capsule",
+    "desc": "A sealed bronze cylinder, buried to preserve messages for future generations"
+  },
+  {
+    "name": "Silk scarf",
+    "desc": "An embroidered square of silk, worn tight about the neck like a noose"
+  },
+  {
+    "name": "Solar panel",
+    "desc": "A square of black glass that harvests sunlight as electric current"
+  },
+  {
+    "name": "Bamboo forest",
+    "desc": "A clump of tough green stalks, whispy-petalled flowers, and sharp-edged leaves"
+  },
+  {
+    "name": "Seed packet",
+    "desc": "A small packet of fern spores, powdered seeds that sprout lushly wherever"
+  },
+  {
+    "name": "Polar bear fur",
+    "desc": "A pelt of creamy white, taken from the icy western islands"
+  },
+  {
+    "name": "Book of poems",
+    "desc": "Pages stitched into a cover, bound with a spine, black print on white"
+  },
+  {
+    "name": "Dried mango",
+    "desc": "Slices of tropical fruit with a crystalline crunch, dipped in chili spices"
+  },
+  {
+    "name": "Astrocompass",
+    "desc": "A magnetic apparatus that points to the stars, guiding ships through the night"
+  },
+  {
+    "name": "Copper wire",
+    "desc": "Coils and strands, twisted into plugs and connectors and circuit boards"
+  },
+  {
+    "name": "Herd of cattle",
+    "desc": "Four-hoofed beasts, lowing and chewing their cud, bred for milk and meat"
+  },
+  {
+    "name": "Jeans",
+    "desc": "Blue cotton trousers, the archetypal workwear of a vanished industrial economy"
+  },
+  {
+    "name": "Rose-quartz necklace",
+    "desc": "A string of pinks stones, each a mirrored heartbeat"
+  },
+  {
+    "name": "Stone vessel",
+    "desc": "A carved mug of volcanic rock, once filled with brew or broth"
+  },
+  {
+    "name": "Thread",
+    "desc": "A length of silk spun from cocoons, woven into soft and glossy fabric"
+  },
+  {
+    "name": "Fuel cell",
+    "desc": "A flat lozenge of glowing energy, a replacement for hearts and lungs"
+  },
+  {
+    "name": "Sock",
+    "desc": "An elasticized loop of cotton, meant to soften the soles of the feet"
+  },
+  {
+    "name": "Mushroom spawn",
+    "desc": "Watery strings placed in logs to grow wild mushrooms in the forest"
+  },
+  {
+    "name": "Pearl necklace",
+    "desc": "Long length of tiny oyster pearls, strung on a thin gold chain"
+  },
+  {
+    "name": "Samurai helmet",
+    "desc": "A dome of polished steel, lacquered red, with long streamers attached"
+  },
+  {
+    "name": "Cement dust",
+    "desc": "Fine grey powder that binds with water to make rock-like plaster"
+  },
+  {
+    "name": "Flechette launcher",
+    "desc": "A pistol-like weapon that shoots needles of sharp bone or stone"
+  },
+  {
+    "name": "Mana crystal",
+    "desc": "A translucent quartz crystal cupped in green smoke, a source of magical energy"
+  },
+  {
+    "name": "Electric fan",
+    "desc": "A metal grille with spinning blades, cooling air through a few centimeters"
+  },
+  {
+    "name": "Silicon chip",
+    "desc": "A thumbnail-sized wafer of computer chip, the core of modern electronics"
+  },
+  {
+    "name": "Pyramids",
+    "desc": "Stone piles in the deserts of the Old World, stable monuments to vanished gods"
+  },
+  {
+    "name": "Glowmoss",
+    "desc": "A bioluminescent moss that magically turns darkness into soft light"
+  },
+  {
+    "name": "Plastic",
+    "desc": "A taut sheen of synthetic polymer, versatile and cheap, replacing hundreds of older materials"
+  },
+  {
+    "name": "Grain pipe",
+    "desc": "A hollow ceramic tube, laid end to end underground to channel water"
+  },
+  {
+    "name": "Nuclear reactor",
+    "desc": "A water-filled chamber, uranium-clad, that powers a city all by itself"
+  },
+  {
+    "name": "Chimney sweep's brush",
+    "desc": "A solid-necked brush with stiff, wiry bristles and wooden dowel"
+  },
+  {
+    "name": "Garden",
+    "desc": "A sectioned plot of grass, ivy, and lavender at the back of the house"
+  },
+  {
+    "name": "Mudbrick hut",
+    "desc": "Simple clay walls and a thatched roof, a basic shelter for those on the road"
+  },
+  {
+    "name": "Plant cell",
+    "desc": "A microscopic bluegreen speck that takes in sunlight and turns it into lifematter"
+  },
+  {
+    "name": "Quartz timepiece",
+    "desc": "A tiny crystal that vibrates precisely, keeping time as wrist-watches and clocks"
+  },
+  {
+    "name": "Bagpipes",
+    "desc": "A set of leather-bladdered pipes and reeds, pitched for stirring martial airs"
+  },
+  {
+    "name": "Antarctic station",
+    "desc": "Ice-blue structures on stilts keeping scientists alive in -90\u00b0 weather"
+  },
+  {
+    "name": "Cobalt steel",
+    "desc": "A dense alloy, glinting dark blue, used in high-stress tools and gears"
+  },
+  {
+    "name": "Sack of rice",
+    "desc": "Mountainous white grains that feed nations when wind and water allow"
+  },
+  {
+    "name": "Motor car",
+    "desc": "A wheeled carriage propelled by a fiery box of metal, rivaled only by animals"
+  },
+  {
+    "name": "Drained blood",
+    "desc": "A flinty vial of ruby-red fluid, sucked dry and preserved"
+  },
+  {
+    "name": "Glass marble",
+    "desc": "A child's toy, perfect and round, that skips and rolls"
+  },
+  {
+    "name": "Bilbo biter",
+    "desc": "A cross between chewing tobacco and a sweet, enjoyed with beer"
+  },
+  {
+    "name": "Kale",
+    "desc": "Green leaves the leaves of a vegetable that bears no fruit but is vibrant in nutrients"
+  },
+  {
+    "name": "Grain elevator",
+    "desc": "A towering wood-and-steel building at river ports, where grain is washed and stored"
+  },
+  {
+    "name": "Elderberry shrub",
+    "desc": "A small shrub with clusters of dark berries, used for wines and cordials"
+  },
+  {
+    "name": "Banana",
+    "desc": "A pre-peeled sweet fruit, a symbol of tropical empire"
+  },
+  {
+    "name": "Sandals",
+    "desc": "Flat leather foot-wrappers tied around the ankle, for dry lands and long walks"
+  },
+  {
+    "name": "Scented candle",
+    "desc": "A pillar of wax infused with vanilla or sandalwood, dispelling the darkness"
+  },
+  {
+    "name": "Coconut",
+    "desc": "A hairy three-cobbled nut buoyant enough to float sea and land"
+  },
+  {
+    "name": "Chlorine gas",
+    "desc": "Invisible gas with a pungent smell, used to sterilize water \u2013 but deadly in battle"
+  },
+  {
+    "name": "Sewing machine",
+    "desc": "A ratcheted iron press that runs a needle through fabric with its own strength"
+  },
+  {
+    "name": "Bascule bridge",
+    "desc": "A span of iron that tilts open on its center to admit tall ships"
+  },
+  {
+    "name": "Cattail",
+    "desc": "A tough reed that mats into water-repellent blankets"
+  },
+  {
+    "name": "Fingerprint file",
+    "desc": "A folder of blurry smudges on code-name labels, detailing all dissidents"
+  },
+  {
+    "name": "Blue-green algae",
+    "desc": "Tiny spiraling cells, cultivating in vats to feed livestock or refine oil"
+  },
+  {
+    "name": "Bamboo fishing rod",
+    "desc": "A long, thin cane with a line and hook, cast across the surface of wetlands"
+  },
+  {
+    "name": "River",
+    "desc": "A foaming ribbon of water, meandering through landscape"
+  },
+  {
+    "name": "Map",
+    "desc": "A large parchment sheet coated with resin, wrinkled and torn after centuries in the ocean"
+  },
+  {
+    "name": "Tulip",
+    "desc": "Flowers of flame and dawn on a slender stem, a failed form of wealth and folly"
+  },
+  {
+    "name": "Fishhook",
+    "desc": "A bent silver hook, honed needle point, threaded onto a tapered line"
+  },
+  {
+    "name": "Mirabel perfume",
+    "desc": "A vial of tropical scent distilled from the eastern isles, exotic and rare"
+  },
+  {
+    "name": "Wooden spoon",
+    "desc": "A spoon of warm wood, whittled from local timber, for stirring and eating"
+  },
+  {
+    "name": "Strutted bridge",
+    "desc": "A soaring span of steel girders and steel cables, high above the canyon floor"
+  },
+  {
+    "name": "Dancing peacock",
+    "desc": "A puppet of iridescent feathers, it flings them wide to fans\u2019 applause"
+  },
+  {
+    "name": "Stem cells",
+    "desc": "A vial of tiny jewel-like cells, magic bullets for regrowing body parts"
+  },
+  {
+    "name": "Steer/vector",
+    "desc": "A thumb-sized smooth gadget, held firmly to translate thoughts into action"
+  },
+  {
+    "name": "Salsa-dancing shoes",
+    "desc": "A pair of sleek oxfords with supple leather and suede soles, worn to dance"
+  },
+  {
+    "name": "Aluminum spoon",
+    "desc": "A light service piece, redolent of kitchen duty"
+  },
+  {
+    "name": "Transport levitator",
+    "desc": "A flat black pad, humming and humming when stepped on"
+  },
+  {
+    "name": "Pepper",
+    "desc": "A quiet spice of flowered stalks and small seeds in fruits red or black"
+  },
+  {
+    "name": "Sugar crystals",
+    "desc": "Clear chunky crystals of sugar, harvested from cane, a fine white dust in the sugar mills"
+  },
+  {
+    "name": "Chain of silver",
+    "desc": "A delicate sequence of linked rings, strung around the neck of a saint"
+  },
+  {
+    "name": "Chameleon cloak",
+    "desc": "A heat-folding fabric, gem-pileated in velvet and silk and changeable as light, finely woven and blinding"
+  },
+  {
+    "name": "Ayahuasca",
+    "desc": "A stinking brew of jungle vine and leaf, that opens the unbound visions of cosmic unity"
+  },
+  {
+    "name": "Honey comb",
+    "desc": "Honey-filled wax cells, harvested from a hive of wild bees"
+  },
+  {
+    "name": "Tree hut",
+    "desc": "A small house built among branches, reachable by rope ladder"
+  },
+  {
+    "name": "Basket of market mushrooms",
+    "desc": "The rustling caps, shaggy stalks, a haft's length veiled in crepuscular gleam"
+  },
+  {
+    "name": "Fried crickets",
+    "desc": "Crispy-shelled desert in a fryer basket, with a rich butter-salt flavor"
+  },
+  {
+    "name": "Platinum ingot",
+    "desc": "A bright, dense but soft slab of heavy silver-white metal, far too rare for everyday use"
+  },
+  {
+    "name": "Panther",
+    "desc": "A sleek black jungle cat\u2014 fierce predator, source of furs and tales"
+  },
+  {
+    "name": "A group of pigs",
+    "desc": "A grunting clan of sandy-skinned hogs that root through forest leaves and acorns"
+  },
+  {
+    "name": "Hang glider",
+    "desc": "A woven wing, a wire harness, and a harness to steer with your feet"
+  },
+  {
+    "name": "Spinning top",
+    "desc": "A conical toy of polished wood, crowned with spiraling colors"
+  },
+  {
+    "name": "Copper ingot",
+    "desc": "A bright red metal mass, malleable yet strong, drawn into rods and wires"
+  },
+  {
+    "name": "Black hole",
+    "desc": "A single point of infinite density and no dimensions, consuming all light and matter"
+  },
+  {
+    "name": "Jade pendant",
+    "desc": "A milky-green gem carved into a leaf shape, strung on silken thread"
+  },
+  {
+    "name": "Brass compass",
+    "desc": "A sun-yellow magnetic needle needle that always points home"
+  },
+  {
+    "name": "Aerogel window",
+    "desc": "An ultralight glass hovering in thin panels between metal brackets"
+  },
+  {
+    "name": "Sunlight filter",
+    "desc": "A clear glass filter that softens harsh noonlight, used in artist's studios"
+  },
+  {
+    "name": "Wheatfield",
+    "desc": "A broad flat field, miles of it, golden and rustling under the summer sun"
+  },
+  {
+    "name": "Smallpox-causing virus",
+    "desc": "A handful of pathogen particles in a dark gray vial, frozen solid"
+  },
+  {
+    "name": "Eucalyptus oil",
+    "desc": "A vase of clear liquid distilled from eucalyptus leaves, medicated and very cheap"
+  },
+  {
+    "name": "Soda",
+    "desc": "A fizzy drink of sweet, colored water in a glass bottle, popped open and poured"
+  },
+  {
+    "name": "Petrol tanker",
+    "desc": "A giant cylindrical tank on wheels, its cargo of flame-carrying liquid"
+  },
+  {
+    "name": "Immortality vaccine",
+    "desc": "A one-dose miracle, halting cell decline and locking youth in place"
+  },
+  {
+    "name": "Human brain",
+    "desc": "A pink walnut the size of a fist, the cradle of mind and soul"
+  },
+  {
+    "name": "Gyan plant",
+    "desc": "A tall stalky tree with two-foot leaves, sheaves of paper-calldata on its disc-roots"
+  },
+  {
+    "name": "Digital ledger",
+    "desc": "A screen inscribed with lines of code, recording ownership and exchange"
+  },
+  {
+    "name": "Radio flute",
+    "desc": "An electric flute with feedback whine and electric hum"
+  },
+  {
+    "name": "Glass goblet",
+    "desc": "A stemmed cup of blown liquid silica, translucent proof of human skill"
+  },
+  {
+    "name": "Tailor's needle",
+    "desc": "A bent eyelet needle of hardened steel, used to sew hems by hand"
+  },
+  {
+    "name": "Whale",
+    "desc": "A massive blue-backed mammal, hunted for oil and baleen, nearly hunted to extinction"
+  },
+  {
+    "name": "Apple",
+    "desc": "A crisp, red apple picked from the tree, to be eaten whole or sliced over ice cream"
+  },
+  {
+    "name": "Candelabra",
+    "desc": "A tall hammered-silver armature, its five branching arms crowned with wax tapers"
+  },
+  {
+    "name": "Sea urchin mouth",
+    "desc": "Five cone-shaped teeth arranged in a jaw, cutting rocks and mollusks"
+  },
+  {
+    "name": "Red onion",
+    "desc": "A tough-skinned bulb with pungent white layers, used to add bite to dishes"
+  },
+  {
+    "name": "Aquaforce sword",
+    "desc": "A segmented sword, its blade made of flowing water, bound with runes of steel"
+  },
+  {
+    "name": "Raspberry bush",
+    "desc": "A tangled summer plant of little berries, prized for their sweetness"
+  }
+]

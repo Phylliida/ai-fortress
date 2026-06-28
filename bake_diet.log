@@ -1,0 +1,160 @@
+  Human                  [Animals] omnivore       0.922
+  Axolotl                [Animals] carnivore      0.561
+  Orca                   [Animals] carnivore      0.965
+  Lion                   [Animals] carnivore      0.991
+  Raccoon                [Animals] omnivore       0.942
+  Platypus               [Animals] omnivore       0.685
+  Jaguar                 [Animals] carnivore      0.992
+  Cattle                 [Animals] herbivore      0.983
+  Loquat                 [Plants ] photosynthetic 0.832
+  Horse                  [Animals] herbivore      0.985
+  Tiger                  [Animals] carnivore      0.985
+  Hippopotamus           [Animals] herbivore      0.9
+  Kākāpō                 [Animals] herbivore      0.872
+  Osprey                 [Animals] carnivore      0.885
+  Portuguese man o' war  [Animals] carnivore      0.68
+  Cheetah                [Animals] carnivore      0.99
+  Fisher                 [Animals] carnivore      0.493
+  Bonobo                 [Animals] omnivore       0.593
+  Aardwolf               [Animals] omnivore       0.417  [unsure]
+  Jackfruit              [Plants ] photosynthetic 0.875
+  Maize                  [Plants ] photosynthetic 0.91
+  Watermelon             [Plants ] photosynthetic 0.914
+  Dandelion              [Plants ] photosynthetic 0.937
+  Clove                  [Plants ] photosynthetic 0.41  [unsure]
+  Mayfly                 [Animals] herbivore      0.383  [unsure]
+  Leopard                [Animals] carnivore      0.984
+  Tomato                 [Plants ] photosynthetic 0.914
+  Blue-ringed octopus    [Animals] carnivore      0.876
+  Secretarybird          [Animals] carnivore      0.488
+  Chimpanzee             [Animals] omnivore       0.843
+  Catnip                 [Plants ] photosynthetic 0.931
+  Fossa                  [Animals] carnivore      0.872
+  Oat                    [Plants ] photosynthetic 0.868
+  Edelweiss              [Plants ] photosynthetic 0.724
+  Soybean                [Plants ] photosynthetic 0.818
+  Pineapple              [Plants ] photosynthetic 0.841
+  Sorghum                [Plants ] photosynthetic 0.768
+  Pistachio              [Plants ] photosynthetic 0.894
+  Donkey                 [Animals] herbivore      0.982
+  Przewalski's horse     [Animals] herbivore      0.995
+  Fig                    [Plants ] photosynthetic 0.514
+  Lentil                 [Plants ] photosynthetic 0.584
+  Blackcurrant           [Plants ] photosynthetic 0.932
+  Wild onion             [Plants ] photosynthetic 0.451
+  Sorrel                 [Plants ] photosynthetic 0.353  [unsure]
+  Sesame                 [Plants ] photosynthetic 0.669
+  Pallas's cat           [Animals] carnivore      0.954
+  Pronghorn              [Animals] herbivore      0.992
+  Quokka                 [Animals] herbivore      0.939
+  Groundhog              [Animals] herbivore      0.926
+  Basa                   [Animals] herbivore      0.432  [unsure]
+  Great horned owl       [Animals] carnivore      0.909
+  Castor bean            [Plants ] herbivore      0.356  [unsure]
+  Avocado                [Plants ] photosynthetic 0.792
+  Lovebug                [Animals] other          0.33  [unsure]
+  Emu                    [Animals] herbivore      0.777
+  Anise                  [Plants ] photosynthetic 0.627
+  Rutabaga               [Plants ] photosynthetic 0.77
+  Northern white rhinoceros [Animals] herbivore      0.993
+  Brown recluse spider   [Animals] carnivore      0.937
+  Calamansi              [Plants ] photosynthetic 0.827
+  Blue-footed booby      [Animals] carnivore      0.79
+  Hawaiian monk seal     [Animals] carnivore      0.966
+  Pomegranate            [Plants ] photosynthetic 0.897
+  Calabash               [Plants ] herbivore      0.455
+  Coriander              [Plants ] photosynthetic 0.885
+  Ergot                  [Fungi  ] decomposer     0.537
+  Quinoa                 [Plants ] photosynthetic 0.859
+  Columbine              [Plants ] photosynthetic 0.741
+  Steller's jay          [Animals] omnivore       0.849
+  Cochineal              [Animals] herbivore      0.857
+  Dugong                 [Animals] herbivore      0.963
+  Eastern gray squirrel  [Animals] herbivore      0.608
+  Asian giant hornet     [Animals] omnivore       0.493
+  Swan                   [Animals] herbivore      0.79
+  Alfalfa                [Plants ] photosynthetic 0.878
+  Pea                    [Plants ] photosynthetic 0.372  [unsure]
+  Watercress             [Plants ] photosynthetic 0.488
+  Jaguarundi             [Animals] carnivore      0.809
+  Spix's macaw           [Animals] herbivore      0.842
+  Black-footed cat       [Animals] carnivore      0.975
+  Galápagos tortoise     [Animals] herbivore      0.965
+  Tamarind               [Plants ] photosynthetic 0.512
+  Liquorice              [Plants ] herbivore      0.575
+  Alpaca                 [Animals] herbivore      0.975
+  Peach                  [Plants ] photosynthetic 0.894
+  Spinach                [Plants ] photosynthetic 0.916
+  Walleye                [Animals] omnivore       0.427  [unsure]
+  Khat                   [Plants ] herbivore      0.398  [unsure]
+  Garlic                 [Plants ] photosynthetic 0.751
+  Australian plague locust [Animals] herbivore      0.976
+  Giant golden-crowned flying fox [Animals] herbivore      0.901
+  Saguaro                [Plants ] photosynthetic 0.805
+  Asian black bear       [Animals] omnivore       0.747
+  Fleabane               [Plants ] photosynthetic 0.82
+  Rose-breasted grosbeak [Animals] omnivore       0.602
+  Pansy                  [Plants ] photosynthetic 0.906
+  Housefly               [Animals] decomposer     0.544
+  Aye-aye                [Animals] herbivore      0.507
+  Allspice               [Plants ] photosynthetic 0.652
+  Makit                  [Fantasy] other          0.494
+  Wallflower             [Fantasy] other          0.347  [unsure]
+  Emoorah                [Fantasy] other          0.55
+  Treant                 [Fantasy] photosynthetic 0.405  [unsure]
+  Aspidochiron           [Fantasy] herbivore      0.641
+  Saketachew             [Fantasy] other          0.745
+  Baku                   [Fantasy] other          0.573
+  Moonlight dragon       [Fantasy] other          0.503
+  Unicorn                [Fantasy] other          0.809
+  Yi Ni                  [Fantasy] other          0.806
+  Xerephs                [Fantasy] other          0.392  [unsure]
+  Odonsaii               [Fantasy] other          0.372  [unsure]
+  Squishmeat             [Fantasy] other          0.402  [unsure]
+  Whooly                 [Fantasy] other          0.529
+  Striped Snurggle       [Fantasy] carnivore      0.424  [unsure]
+  Grimoire               [Fantasy] other          0.698
+  Tsuredure              [Fantasy] other          0.596
+  Hex Pig                [Fantasy] other          0.323  [unsure]
+  Mundane                [Fantasy] other          0.355  [unsure]
+  The Lone Local         [Fantasy] other          0.395  [unsure]
+  Brownie                [Fantasy] other          0.709
+  Ogre                   [Fantasy] omnivore       0.381  [unsure]
+  Sabertooth             [Fantasy] carnivore      0.952
+  Banolion               [Fantasy] other          0.295  [unsure]
+  Kitawa                 [Fantasy] omnivore       0.451
+  Ginormous chicken      [Fantasy] other          0.46
+  Manbearpig             [Fantasy] carnivore      0.403  [unsure]
+  Deva                   [Fantasy] other          0.901
+  Eyegore                [Fantasy] other          0.427  [unsure]
+  Locho                  [Fantasy] decomposer     0.29  [unsure]
+  Horrificasculus        [Fantasy] decomposer     0.882
+  Embryoth               [Fantasy] carnivore      0.498
+  Hollow                 [Fantasy] other          0.563
+  Nuckelavee             [Fantasy] other          0.502
+  Charrhawk              [Fantasy] carnivore      0.773
+  Thousand Pox           [Fantasy] other          0.357  [unsure]
+  Charybdis              [Fantasy] carnivore      0.317  [unsure]
+  Quinom'                [Fantasy] photosynthetic 0.891
+  Nidhogg                [Fantasy] decomposer     0.968
+  Bahamut                [Fantasy] other          0.58
+  Kraken                 [Fantasy] carnivore      0.737
+  Couatl                 [Fantasy] other          0.551
+  Nightmare              [Fantasy] carnivore      0.292  [unsure]
+  Dethelfin              [Fantasy] other          0.453
+  Mnemosyne              [Fantasy] other          0.375  [unsure]
+  Mimir                  [Fantasy] other          0.503
+  Ouroboronion           [Fantasy] other          0.881
+  Lyrebird               [Fantasy] omnivore       0.598
+  Dresden                [Fantasy] other          0.786
+  Anosy                  [Fantasy] other          0.862
+
+diet distribution: {'omnivore': 14, 'carnivore': 28, 'herbivore': 28, 'photosynthetic': 41, 'other': 34, 'decomposer': 5}
+kingdom x diet (kingdom is metadata only — diet came from the model):
+  Animals  {'omnivore': 11, 'carnivore': 20, 'herbivore': 23, 'other': 1, 'decomposer': 1}
+  Plants   {'photosynthetic': 39, 'herbivore': 4}
+  Fungi    {'decomposer': 1}
+  Fantasy  {'other': 33, 'photosynthetic': 2, 'herbivore': 1, 'carnivore': 8, 'omnivore': 3, 'decomposer': 3}
+non-photosynthetic PLANTS (exceptions the kingdom-rule would have hidden): ['Castor bean', 'Calabash', 'Liquorice', 'Khat']
+unsure: ['Aardwolf', 'Clove', 'Mayfly', 'Sorrel', 'Basa', 'Castor bean', 'Lovebug', 'Pea', 'Walleye', 'Khat', 'Wallflower', 'Treant', 'Xerephs', 'Odonsaii', 'Squishmeat', 'Striped Snurggle', 'Hex Pig', 'Mundane', 'The Lone Local', 'Ogre', 'Banolion', 'Manbearpig', 'Eyegore', 'Locho', 'Thousand Pox', 'Charybdis', 'Nightmare', 'Mnemosyne']
+DONE -> species_diet.json (150 species)

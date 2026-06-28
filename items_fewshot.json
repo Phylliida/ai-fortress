@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Copper ingot",
+    "desc": "A bright red metal mass, malleable yet strong."
+  },
+  {
+    "name": "Tulip",
+    "desc": "Flowers of flame and dawn on a slender stem, a failed form of wealth and folly"
+  },
+  {
+    "name": "Dried mango",
+    "desc": "Slices of tropical fruit with a crystalline crunch, dipped in chili spices"
+  },
+  {
+    "name": "Candelabra",
+    "desc": "A tall hammered-silver armature, its five branching arms crowned with wax tapers"
+  },
+  {
+    "name": "Solar panel",
+    "desc": "A square of black glass that harvests sunlight as electric current"
+  },
+  {
+    "name": "Fuel cell",
+    "desc": "A flat lozenge of glowing energy, a replacement for hearts and lungs"
+  },
+  {
+    "name": "Mana crystal",
+    "desc": "A translucent quartz crystal cupped in green smoke, a source of magical energy"
+  }
+]
