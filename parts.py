@@ -85,14 +85,16 @@ PLAN_FEWSHOT = (
 # diff: distinctive parts BEYOND what the template already covers. We list the species' ALREADY-INCLUDED parts
 # (the pruned template) as context before the question, so the model spends its answer on genuinely new parts
 # (a mane) instead of re-listing covered ones (which we'd otherwise just filter out, wasting the slots).
-# POSITIVE framing — "name only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing (an elf's
-# "pointy hat") and adjectives (Makit's "porous") WITHOUT naming them (a base model latches onto a mentioned
-# "don't X"). The verify backstops with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
+# Under the COUNTERFACTUAL "if it were real" (like prune/verify) so a mythical creature's distinctive parts (a
+# dragon's wings) aren't suppressed by the "isn't real" reflex right at generation. POSITIVE framing — "name
+# only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing (an elf's "pointy hat") and adjectives
+# (Makit's "porous") WITHOUT naming them (a base model latches onto a mentioned "don't X"). The verify backstops
+# with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
 _DIFF_INSTR = "Name only its natural body parts, like a mane, tusks, or pointed ears"
 DIFF_FEWSHOT = (
-    f"A peacock has these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what distinctive body parts does a peacock have? {_DIFF_INSTR}.\nAnswer: crest\n"
-    f"An elf has these parts: head, arms, hands, legs, skin, hair, eyes, teeth. Besides those, what distinctive body parts does an elf have? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
-    f"A catfish has these parts: fins, gills, scales, tail, eyes, mouth, meat, bone. Besides those, what distinctive body parts does a catfish have? {_DIFF_INSTR}.\nAnswer: barbels\n")
+    f"If a peacock were real, it would have these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: crest\n"
+    f"If an elf were real, it would have these parts: head, arms, hands, legs, skin, hair, eyes, teeth. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
+    f"If a catfish were real, it would have these parts: fins, gills, scales, tail, eyes, mouth, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: barbels\n")
 # verify (adversarial) — "would X be a real body part of it" rejects a quality/adjective ("porous") AND
 # CLOTHING / worn items ("a hat"), not just "does it have X" (an adjective/hat passes that). Under the
 # COUNTERFACTUAL so a mythical creature's real part (a dragon's wings) isn't denied as "not real". Mixed
@@ -133,8 +135,8 @@ def species_part_diff(server, species, plan, desc=None, known_parts=None, sample
     qualities/adjectives and clothing)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
     listed = ", ".join(known_parts) if known_parts else f"the usual {plan} parts"
-    prompt = (ctx + DIFF_FEWSHOT + f"A {species} has these parts: {listed}. Besides those, what distinctive "
-              f"body parts does a {species} have? {_DIFF_INSTR}.\nAnswer:")
+    prompt = (ctx + DIFF_FEWSHOT + f"If a {species} were real, it would have these parts: {listed}. Besides those, "
+              f"what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer:")
     cand = server.sample_union(prompt, samples=samples, n_predict=30, max_words=3,
                                reject=lambda k: k in NULL_TOKENS)
     kept = []
