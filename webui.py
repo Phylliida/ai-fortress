@@ -17,6 +17,7 @@ from flask import Flask, render_template, request, Response, stream_with_context
 import worldRefactored as wr
 import baseModelPrimitives as bmp
 import needs
+import parts
 import sim
 import store
 
@@ -653,6 +654,46 @@ def api_char_schedule(wid, cid):
                            "action_prompt": ap, "loc_prompt": lp})
                 prompt = prompt + dur + ": " + action + " | Location: " + loc + "\n"
             yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+# ------------------------------------------------ standalone tool: species -> innards (parts.py)
+@app.route("/parts")
+def parts_page():
+    return render_template("parts.html")
+
+
+@app.route("/api/parts")
+def api_parts():
+    """Generate an entity's harvestable parts: body-plan template (per-species pruned, streamed live) +
+    verified distinctive parts. Self-contained — no world needed."""
+    species = request.args.get("species", "").strip()
+    desc = request.args.get("desc", "").strip() or None
+
+    @stream_with_context
+    def gen():
+        if not species:
+            yield sse({"type": "error", "message": "Enter a species."}); return
+        try:
+            plan, conf = parts.classify_body_plan(SERVER, species, desc)
+            template = parts.BODY_PLANS.get(plan, [])
+            yield sse({"type": "plan", "plan": plan, "conf": round(conf, 2)})
+            kept = []
+            for p in template:                              # prune per-part, streamed (presence question)
+                pr = SERVER.yes_no_prob(parts.prune_prompt(species, p, desc))
+                keep = pr >= parts.PRUNE_KEEP
+                if keep:
+                    kept.append(p)
+                yield sse({"type": "template", "part": p, "keep": keep, "p": round(pr, 2)})
+            yield sse({"type": "status", "message": "finding distinctive parts…"})
+            raw = parts.species_part_diff(SERVER, species, plan, desc)
+            distinctive = parts.embed_dedup([d for d in raw if d not in set(kept)])
+            for d in distinctive:
+                yield sse({"type": "distinctive", "part": d})
+            yield sse({"type": "done", "parts": kept + distinctive})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
 
