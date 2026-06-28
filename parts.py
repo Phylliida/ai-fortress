@@ -18,27 +18,27 @@ BODY_PLANS = {
         "mouth", "lips", "gums", "teeth", "tongue", "whiskers", "claws", "nipples", "belly button",
         "meat", "hide", "fur", "hair", "bone", "blood", "fat", "sinew", "marrow",
         "heart", "liver", "lungs", "brain", "stomach", "intestines", "kidneys", "bladder", "spleen", "pancreas",
-        "fingernails", "toenails", "saliva", "mucus", "earwax", "sweat", "tears", "urine", "droppings", "milk"],
+        "fingernails", "toenails", "saliva", "mucus", "earwax", "sweat", "tears", "urine", "droppings", "milk", "stomach acid"],
     "bird": [
         "head", "beak", "neck", "wings", "legs", "feet", "talons", "tail", "eyes",
         "feathers", "meat", "skin", "bone", "blood", "fat",
         "heart", "liver", "lungs", "gizzard", "crop", "kidneys", "intestines", "brain",
-        "egg", "saliva", "mucus", "droppings"],
+        "egg", "saliva", "mucus", "droppings", "stomach acid"],
     "reptile": [
         "head", "jaws", "tail", "legs", "feet", "claws", "eyes", "nostrils", "mouth", "tongue", "teeth",
         "scales", "skin", "meat", "bone", "blood", "fat",
         "heart", "liver", "lungs", "kidneys", "stomach", "brain",
-        "eggs", "saliva", "mucus", "droppings"],
+        "eggs", "saliva", "mucus", "droppings", "stomach acid"],
     "amphibian": [
         "head", "legs", "toes", "eyes", "mouth", "tongue", "teeth",
         "skin", "meat", "bone", "blood", "fat",
         "heart", "liver", "lungs", "kidneys", "brain", "stomach",
-        "eggs", "mucus", "slime"],
+        "eggs", "mucus", "slime", "stomach acid"],
     "fish": [
         "head", "fins", "tail", "scales", "gills", "eyes", "mouth", "teeth",
         "meat", "skin", "bone", "cartilage", "blood", "fat",
         "heart", "liver", "kidneys", "stomach", "swim bladder", "brain",
-        "roe", "bile", "mucus", "slime"],
+        "roe", "bile", "mucus", "slime", "stomach acid"],
     "insect": [
         "head", "thorax", "abdomen", "legs", "wings", "antennae", "mandibles", "compound eyes", "mouthparts",
         "exoskeleton", "chitin",
