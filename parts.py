@@ -88,12 +88,15 @@ def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5
     return kept
 
 
+def prune_prompt(species, part, desc=None):
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return ctx + PRUNE_FEWSHOT + f"Question: Is {part} a part of a {species}?\nAnswer:"
+
+
 def prune_template(server, species, template, desc=None):
     """Drop template parts the species lacks (octopus has no shell). Conservative: keep unless the model is
     fairly sure it's absent (P(has) < PRUNE_KEEP)."""
-    ctx = f"{species} is {desc}.\n" if desc else ""
-    return [p for p in template
-            if server.yes_no_prob(ctx + PRUNE_FEWSHOT + f"Question: Is {p} a part of a {species}?\nAnswer:") >= PRUNE_KEEP]
+    return [p for p in template if server.yes_no_prob(prune_prompt(species, p, desc)) >= PRUNE_KEEP]
 
 
 def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):

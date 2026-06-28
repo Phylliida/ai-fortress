@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Innards · ai-fortress</title>
+<style>
+  :root {
+    --bg:#1b1714; --panel:#262019; --ink:#ece3d4; --muted:#a99c86;
+    --accent:#d8a657; --line:#3a3128; --ok:#8ab368; --err:#d77a61;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif; }
+  header { display:flex; align-items:baseline; gap:12px; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--panel); }
+  h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:21px; color:var(--accent); }
+  header small { color:var(--muted); font-size:12px; font-family:ui-monospace,monospace; }
+  header a { margin-left:auto; color:var(--muted); font-size:12px; text-decoration:none; }
+  header a:hover { color:var(--accent); }
+  .wrap { max-width:780px; margin:0 auto; padding:26px 22px; }
+  .controls { display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
+  input { background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:8px 11px; font:inherit; }
+  input::placeholder { color:var(--muted); }
+  #species { flex:1 1 240px; }
+  #desc { flex:2 1 300px; }
+  button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:8px 15px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .plan { margin:24px 0 6px; display:none; align-items:center; gap:10px; }
+  .badge { font-family:ui-monospace,monospace; font-size:12px; color:#1b1410; background:var(--accent); border-radius:20px; padding:3px 12px; font-weight:600; }
+  .plan .specname { font-family:Georgia,serif; font-size:19px; color:var(--ink); }
+  .grouplabel { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.06em; margin:20px 0 8px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { border:1px solid var(--line); background:#15110d; border-radius:8px; padding:5px 11px; font-size:14px;
+          opacity:0; transform:translateY(4px); animation:pop .25s ease forwards; }
+  @keyframes pop { to { opacity:1; transform:none; } }
+  .chip.pruned { color:var(--muted); text-decoration:line-through; opacity:.45; border-style:dashed; }
+  .chip.pruned { animation:none; opacity:.45; transform:none; }
+  .chip.distinctive { border-color:var(--accent); color:var(--accent); }
+  .chip.distinctive::before { content:"✦ "; }
+  #status { color:var(--muted); font-style:italic; font-size:13px; margin-top:14px; min-height:18px; }
+  #status.err { color:var(--err); font-style:normal; }
+  .hint { color:var(--muted); font-size:12px; margin-top:6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Innards</h1>
+  <small>enter a species — see what it's made of</small>
+  <a href="/">← world-builder</a>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <input id="species" placeholder="a lion, an octopus, an oak tree…" autofocus>
+    <input id="desc" placeholder="optional description (for invented creatures)">
+    <button id="go">Dissect</button>
+  </div>
+  <div class="hint">Body-plan template (pruned to this species) + its distinctive parts. Pruned-out parts show struck through.</div>
+
+  <div class="plan" id="planRow">
+    <span class="specname" id="specName"></span>
+    <span class="badge" id="planBadge"></span>
+  </div>
+
+  <div id="anatomy" style="display:none">
+    <div class="grouplabel">parts</div>
+    <div class="chips" id="templateChips"></div>
+    <div class="grouplabel" id="distLabel" style="display:none">distinctive</div>
+    <div class="chips" id="distChips"></div>
+  </div>
+
+  <div id="status"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let es = null;
+
+function dissect() {
+  const species = $("species").value.trim();
+  if (!species) { $("species").focus(); return; }
+  const desc = $("desc").value.trim();
+  if (es) es.close();
+  $("go").disabled = true;
+  $("status").className = ""; $("status").textContent = "classifying body plan…";
+  $("planRow").style.display = "none"; $("anatomy").style.display = "none";
+  $("templateChips").innerHTML = ""; $("distChips").innerHTML = "";
+  $("distLabel").style.display = "none";
+  $("specName").textContent = species;
+
+  const url = "/api/parts?species=" + encodeURIComponent(species) +
+              (desc ? "&desc=" + encodeURIComponent(desc) : "");
+  es = new EventSource(url);
+  es.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.type === "plan") {
+      $("planBadge").textContent = m.plan + " · " + m.conf;
+      $("planRow").style.display = "flex"; $("anatomy").style.display = "block";
+      $("status").textContent = "checking which parts this species has…";
+    } else if (m.type === "template") {
+      const c = document.createElement("span");
+      c.className = "chip" + (m.keep ? "" : " pruned");
+      c.textContent = m.part;
+      c.title = (m.keep ? "present" : "absent") + " · p=" + m.p;
+      $("templateChips").appendChild(c);
+    } else if (m.type === "status") {
+      $("status").textContent = m.message;
+    } else if (m.type === "distinctive") {
+      $("distLabel").style.display = "block";
+      const c = document.createElement("span");
+      c.className = "chip distinctive"; c.textContent = m.part;
+      $("distChips").appendChild(c);
+    } else if (m.type === "done") {
+      $("status").textContent = (m.parts.length) + " harvestable parts.";
+      es.close(); $("go").disabled = false;
+    } else if (m.type === "error") {
+      $("status").className = "err"; $("status").textContent = m.message;
+      es.close(); $("go").disabled = false;
+    }
+  };
+  es.onerror = () => { $("status").className = "err"; $("status").textContent = "connection lost."; es.close(); $("go").disabled = false; };
+}
+
+$("go").onclick = dissect;
+$("species").addEventListener("keydown", e => { if (e.key === "Enter") dissect(); });
+$("desc").addEventListener("keydown", e => { if (e.key === "Enter") dissect(); });
+</script>
+</body>
+</html>
