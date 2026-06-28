@@ -8,25 +8,37 @@ and the exception layer. (Per-species pruning of inapplicable template parts is 
 """
 import baseModelPrimitives as bmp
 
+# Templates bootstrapped via sample_union ("harvestable parts/organs/tissues of a typical {plan}") then
+# curated to the COMMON, harvest-granularity organ complement. Species-specific parts (horns, antlers,
+# tusks, wool, hooves, mane) deliberately live in the species-diff, not here; pruning drops any template
+# organ a given species lacks.
 BODY_PLANS = {
-    "mammal":   ["meat", "hide", "bone", "blood", "fat", "sinew", "heart", "liver", "lungs", "brain", "stomach", "intestines", "teeth"],
-    "bird":     ["meat", "feathers", "bone", "blood", "fat", "heart", "liver", "gizzard", "beak", "egg", "talons"],
-    "reptile":  ["meat", "scales", "bone", "blood", "heart", "liver", "egg", "claws"],
-    "fish":     ["meat", "scales", "bone", "fins", "roe", "liver", "gills", "eyes"],
-    "insect":   ["shell", "wings", "legs", "antennae", "mandibles"],
-    "mollusc":  ["meat", "shell", "tentacles", "ink", "mantle"],
-    "plant":    ["root", "stem", "leaves", "bark", "flower", "fruit", "seed", "sap", "wood"],
-    "fungus":   ["cap", "stem", "spores", "mycelium", "gills"],
-    "mineral":  ["ore", "crystal", "stone", "dust"],
+    "mammal":    ["meat", "hide", "fur", "bone", "blood", "fat", "sinew", "heart", "liver", "lungs", "brain",
+                  "stomach", "intestines", "kidneys", "spleen", "bladder", "marrow", "eyes", "tongue", "teeth"],
+    "bird":      ["meat", "feathers", "bone", "blood", "fat", "heart", "liver", "lungs", "gizzard", "crop",
+                  "kidneys", "brain", "eyes", "beak", "egg", "talons"],
+    "reptile":   ["meat", "skin", "scales", "bone", "blood", "fat", "heart", "liver", "lungs", "kidneys",
+                  "stomach", "eggs", "claws", "eyes", "teeth"],
+    "amphibian": ["meat", "skin", "bone", "blood", "fat", "heart", "liver", "lungs", "kidneys", "brain", "eggs", "eyes"],
+    "fish":      ["meat", "scales", "bone", "fins", "gills", "roe", "liver", "heart", "kidneys", "stomach",
+                  "swim bladder", "brain", "eyes"],
+    "insect":    ["exoskeleton", "wings", "legs", "antennae", "mandibles", "compound eyes", "hemolymph", "gut", "eggs"],
+    "mollusc":   ["meat", "shell", "mantle", "foot", "gills", "tentacles", "ink", "radula", "siphon",
+                  "liver", "kidney", "gonads", "heart", "eyes"],
+    "plant":     ["root", "stem", "leaves", "bark", "flower", "fruit", "seed", "sap", "wood", "pollen"],
+    "fungus":    ["cap", "stem", "spores", "mycelium", "gills"],
+    "mineral":   ["ore", "crystal", "stone", "dust"],
     "construct": ["frame", "plating", "wiring", "core", "gears"],
 }
-PLAN_OPTS = [("mammal", "mammal"), ("bird", "bird"), ("reptile", "reptile"), ("fish", "fish"), ("insect", "insect"),
-             ("mollusc", "mollusc"), ("plant", "plant"), ("fungus", "fungus"), ("mineral", "mineral"), ("machine", "construct")]
-_PO = "(mammal, bird, reptile, fish, insect, mollusc, plant, fungus, mineral, or machine)"
+PLAN_OPTS = [("mammal", "mammal"), ("bird", "bird"), ("reptile", "reptile"), ("amphibian", "amphibian"),
+             ("fish", "fish"), ("insect", "insect"), ("mollusc", "mollusc"), ("plant", "plant"),
+             ("fungus", "fungus"), ("mineral", "mineral"), ("machine", "construct")]
+_PO = "(mammal, bird, reptile, amphibian, fish, insect, mollusc, plant, fungus, mineral, or machine)"
 PLAN_FEWSHOT = (
     f"What body plan does a wolf have? {_PO}\nAnswer: mammal\n"
     f"What body plan does an octopus have? {_PO}\nAnswer: mollusc\n"
     f"What body plan does an oak tree have? {_PO}\nAnswer: plant\n"
+    f"What body plan does a frog have? {_PO}\nAnswer: amphibian\n"
     f"What body plan does a beetle have? {_PO}\nAnswer: insect\n"
     f"What body plan does a salmon have? {_PO}\nAnswer: fish\n"
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
