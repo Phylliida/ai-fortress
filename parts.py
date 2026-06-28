@@ -82,16 +82,17 @@ PLAN_FEWSHOT = (
     f"What body plan does a salmon have? {_PO}\nAnswer: fish\n"
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
 
-# diff: distinctive parts beyond the typical plan. POSITIVE framing — "name only its NATURAL BODY PARTS (like
-# a mane, tusks, pointed ears)" — positively scopes to anatomy, which keeps out clothing/tools (an elf's
-# "pointy hat" is a separate system) and adjectives (Makit's "porous") WITHOUT naming them: a base model
-# latches onto a mentioned "don't X" concept, so negative prompting backfires. The elf exemplar models
-# "pointed ears"; the verify backstops with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
+# diff: distinctive parts BEYOND what the template already covers. We list the species' ALREADY-INCLUDED parts
+# (the pruned template) as context before the question, so the model spends its answer on genuinely new parts
+# (a mane) instead of re-listing covered ones (which we'd otherwise just filter out, wasting the slots).
+# POSITIVE framing — "name only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing (an elf's
+# "pointy hat") and adjectives (Makit's "porous") WITHOUT naming them (a base model latches onto a mentioned
+# "don't X"). The verify backstops with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
 _DIFF_INSTR = "Name only its natural body parts, like a mane, tusks, or pointed ears"
 DIFF_FEWSHOT = (
-    f"Question: What distinctive body parts does a peacock have that a typical bird lacks? {_DIFF_INSTR}.\nAnswer: crest\n"
-    f"Question: What distinctive body parts does an elf have that a typical mammal lacks? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
-    f"Question: What distinctive body parts does a catfish have that a typical fish lacks? {_DIFF_INSTR}.\nAnswer: barbels\n")
+    f"A peacock has these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what distinctive body parts does a peacock have? {_DIFF_INSTR}.\nAnswer: crest\n"
+    f"An elf has these parts: head, arms, hands, legs, skin, hair, eyes, teeth. Besides those, what distinctive body parts does an elf have? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
+    f"A catfish has these parts: fins, gills, scales, tail, eyes, mouth, meat, bone. Besides those, what distinctive body parts does a catfish have? {_DIFF_INSTR}.\nAnswer: barbels\n")
 # verify (adversarial) — "would X be a real body part of it" rejects a quality/adjective ("porous") AND
 # CLOTHING / worn items ("a hat"), not just "does it have X" (an adjective/hat passes that). Under the
 # COUNTERFACTUAL so a mythical creature's real part (a dragon's wings) isn't denied as "not real". Mixed
@@ -126,12 +127,14 @@ def classify_body_plan(server, species, desc=None):
     return o2c[top], round(probs[top], 3)
 
 
-def species_part_diff(server, species, plan, desc=None, samples=3, threshold=0.5):
-    """Distinctive parts beyond the body-plan template: multi-sample union (recall) -> adversarial verify
-    (rejects qualities/adjectives, not just nonexistent parts)."""
+def species_part_diff(server, species, plan, desc=None, known_parts=None, samples=3, threshold=0.5):
+    """Distinctive parts beyond what the template covers. Lists `known_parts` (the pruned template) as context
+    so the model names genuinely NEW parts; multi-sample union (recall) -> adversarial verify (rejects
+    qualities/adjectives and clothing)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    prompt = (ctx + DIFF_FEWSHOT + f"Question: What distinctive body parts does a {species} have that a "
-              f"typical {plan} lacks? {_DIFF_INSTR}.\nAnswer:")
+    listed = ", ".join(known_parts) if known_parts else f"the usual {plan} parts"
+    prompt = (ctx + DIFF_FEWSHOT + f"A {species} has these parts: {listed}. Besides those, what distinctive "
+              f"body parts does a {species} have? {_DIFF_INSTR}.\nAnswer:")
     cand = server.sample_union(prompt, samples=samples, n_predict=30, max_words=3,
                                reject=lambda k: k in NULL_TOKENS)
     kept = []
@@ -172,6 +175,6 @@ def parts(server, species, desc=None, prune=True):
     template = BODY_PLANS.get(plan, [])
     if prune:
         template = prune_template(server, species, template, desc)
-    raw = [d for d in species_part_diff(server, species, plan, desc) if d not in set(template)]
+    raw = [d for d in species_part_diff(server, species, plan, desc, known_parts=template) if d not in set(template)]
     distinctive = embed_dedup(raw)   # dedup WITHIN the diff only (against-template ate Oak's 'acorns' ~ 'seed')
     return {"plan": plan, "plan_conf": conf, "parts": template + distinctive, "distinctive": distinctive}
