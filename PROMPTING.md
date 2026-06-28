@@ -140,6 +140,14 @@ the diet-classifier (a crop name reads as the food, not the organism):
   for the bulk run. (Hand-written examples are off-distribution; use them only to elicit the model's own.)
 - **Generate name + description together in ONE pass** as a `Name: description` line — the description is
   then coherent with the name, not bolted on by a second prompt.
+- **A single generation under-samples the tail — sample a few times and UNION.** Asking once for a small list
+  of alternatives drops items stochastically: one draw of mole-sauce ingredients omits *chocolate*, one
+  draw of a lion's distinctive parts omits *mane*. 3–4 draws at **temp 1** + case-insensitive union recovers
+  the tail at no quality cost — and the embed-match/verify downstream takes the *max* over items, so extra
+  union terms don't hurt precision. Don't reach for **temp 0** (degrades the base model) or a **fixed seed**
+  (only makes a flaky draw *reproducibly* flaky — it fixes determinism, not recall). `server.sample_union(
+  prompt, samples=4)`. This is for **recall of a small list**; `iter_unique`'s embedding-dedup is the
+  complement, for **diversity of a large one**.
 - **FRAMING decides what you get — it's load-bearing.**
   - `"Monster Manual, Table of Contents:"` made GLM emit *table-of-contents meta* — page refs, "18 more
     monsters", insert-tab text → **~0/10 usable**.
@@ -173,6 +181,7 @@ the diet-classifier (a crop name reads as the food, not the organism):
 | tiny item → 0 (weight/size) | shrink-the-unit cascade; pick a unit where values are ≥ 1 |
 | generation slow | measure the reject rate — it's usually framing producing junk, not gen speed |
 | generator emits meta / off-topic | reframe to a real document type, name the subtypes |
+| a generated short list keeps dropping items | sample 3–4× at temp 1 and union (`sample_union`), not one draw |
 | diversity collapses (1000 near-dups) | embedding dedup-on-name; diversify the few-shot exemplars |
 | a gate over-fires (chair→shelter) | ask the *mode-appropriate* question, not a generic one |
 | categorical argmax flaky / want confidence | `gen_categorical` — read the distribution, don't sample |

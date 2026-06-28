@@ -454,6 +454,22 @@ class LlamaServer:
         items = [clean_item(re.sub(r"^[-*\d.\)\s]+", "", x)) for x in out.get("content", "").split("\n")]
         return [x for x in items if x][:n]
 
+    def sample_union(self, prompt, samples=4, n_predict=48, sep=",", max_words=None, reject=None):
+        """Generate `prompt`'s comma-list `samples` times and UNION (case-insensitive dedup, order-preserving).
+        A single draw under-samples the tail (one mole-sauce draw omits 'chocolate'); a few draws + union
+        reliably recover it, at temp 1 (no quality loss). For SMALL recall lists (ingredients, parts, exception
+        categories); use iter_unique for LARGE diverse generation (embed-dedup). `reject(key_lowercased)->bool`
+        and `max_words` drop junk."""
+        seen, out = set(), []
+        for _ in range(samples):
+            for t in self.gen_text(prompt, stop=["\n"], n_predict=n_predict).split(sep):
+                t = t.strip().rstrip(".")
+                k = t.lower()
+                if t and k not in seen and (max_words is None or len(t.split()) <= max_words) \
+                        and not (reject and reject(k)):
+                    seen.add(k); out.append(t)
+        return out
+
 
 # ---------------------------------------------------------------------------
 # small text utilities (trimmed from worldcode.py — most cleanup is now unneeded)
