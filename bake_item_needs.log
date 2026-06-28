@@ -1,0 +1,101 @@
+  1/100  Wallet                 -> (nothing)
+  2/100  Cigarette              -> relaxation:0.678, comfort:0.642
+  3/100  Marshmallow            -> food:0.795, nutrients:0.647
+  4/100  Bottlecap              -> (nothing)
+  5/100  Chalkboard             -> information:0.802
+  6/100  Lead pencil            -> information:0.806, knowledge:0.685, communication:0.639, novelty:0.538, play:0.498
+  7/100  Spork                  -> energy:0.87, foraging:0.826, nutrients:0.792, food:0.786
+  8/100  Bee                    -> pollination:0.958, novelty:0.668
+  9/100  Book                   -> knowledge:0.993, information:0.931, communication:0.888, relaxation:0.803, happiness:0.795, growth:0.717, novelty:0.652
+ 10/100  Sawdust                -> (nothing)
+ 11/100  Linoleum               -> (nothing)
+ 12/100  Snowfall               -> moisture:0.952, environment:0.898, play:0.662, novelty:0.65
+ 13/100  Moonlight              -> (nothing)
+ 14/100  Sunshine               -> sunlight:0.984, energy:0.98, pollination:0.966, environment:0.937, temperature:0.912, warmth:0.906, happiness:0.893, relaxation:0.864, souls:0.827, health:0.773, growth:0.672, novelty:0.636
+ 15/100  Lace                   -> (nothing)
+ 16/100  Spider silk            -> novelty:0.785
+ 17/100  Bead curtain           -> shade:0.831, novelty:0.666, privacy:0.623
+ 18/100  Crown nautilus         -> novelty:0.681
+ 19/100  Chandeliers            -> (nothing)
+ 20/100  Stalactite             -> novelty:0.644
+ 21/100  Honeycomb              -> nutrients:0.93, food:0.929, energy:0.926, foraging:0.926, growth:0.739, novelty:0.669
+ 22/100  Saffron                -> food:0.943, foraging:0.917, nutrients:0.799, health:0.761, growth:0.702
+ 23/100  Guano                  -> fertilizer:0.977, foraging:0.906
+ 24/100  Etherseed              -> pollination:0.975, seeds:0.888
+ 25/100  Electric lollipop      -> food:0.81, happiness:0.707, play:0.68, novelty:0.631
+ 26/100  Gel-pack               -> temperature:0.942
+ 27/100  Brae seed              -> fertilizer:0.966, seeds:0.912, food:0.903, foraging:0.884
+ 28/100  Clockwork heart        -> novelty:0.762
+ 29/100  Self-weaving cloth     -> warmth:0.791, comfort:0.761, novelty:0.689
+ 30/100  Pearlescent shell      -> foraging:0.887, novelty:0.692
+ 31/100  Seed pod               -> fertilizer:0.985, nutrients:0.972, food:0.969, growth:0.967, pollination:0.963, reproduction:0.944, seeds:0.934, foraging:0.932, novelty:0.866
+ 32/100  The Internet           -> information:0.894, knowledge:0.821, communication:0.722, awareness:0.642, play:0.611, novelty:0.585, attention:0.572, happiness:0.555, growth:0.506, social:0.488
+ 33/100  AI                     -> information:0.86, knowledge:0.83, communication:0.652, novelty:0.562
+ 34/100  Clockwork tree         -> novelty:0.652
+ 35/100  Computronium           -> power:0.967, energy:0.953, information:0.927
+ 36/100  Womb in a can          -> mischief:0.893, love:0.884, souls:0.877, reproduction:0.868, relaxation:0.854, comfort:0.827, emotion:0.809, happiness:0.802, parenting:0.768, novelty:0.748, social:0.541
+ 37/100  Faustian Window        -> (nothing)
+ 38/100  Silk stasis bag        -> temperature:0.958, habitat:0.935, dreams:0.916, sleep:0.902, comfort:0.883, souls:0.883, shelter:0.874, health:0.851, safety:0.79
+ 39/100  Spacial stabilizer     -> stability:0.978
+ 40/100  Quantum computer       -> knowledge:0.826, information:0.815, novelty:0.682
+ 41/100  Holo-visor             -> vision:0.902, awareness:0.875, information:0.872, novelty:0.707, play:0.648, social:0.538
+ 42/100  Hyperloop pod          -> movement:0.995, novelty:0.758
+ 43/100  Self-driving car       -> movement:0.764, safety:0.644, comfort:0.643, novelty:0.602, freedom:0.578
+ 44/100  Microcomputer          -> knowledge:0.844, information:0.827, communication:0.668, play:0.654, novelty:0.618
+ 45/100  Fibre optic cable      -> communication:0.93, information:0.849
+ 46/100  Carbon nanotube        -> novelty:0.683
+ 47/100  Warframe               -> purpose:0.692, play:0.688
+ 48/100  Power armor            -> temperature:0.944, shelter:0.889
+ 49/100  Jump drive             -> information:0.815
+ 50/100  Sleeping pod           -> darkness:0.979, shade:0.976, shelter:0.932, sleep:0.931, territory:0.919, dreams:0.918, privacy:0.908, relaxation:0.906, comfort:0.899, habitat:0.881, safety:0.816
+ 51/100  Bio-printing chamber   -> growth:0.929, reproduction:0.867, health:0.791
+ 52/100  Nanites                -> (nothing)
+ 53/100  Ice cream              -> food:0.872, energy:0.793, comfort:0.739, happiness:0.727, nutrients:0.597
+ 54/100  Truffle                -> food:0.941, energy:0.932, nutrients:0.891, foraging:0.885, growth:0.666, power:0.656
+ 55/100  Baguette               -> food:0.916, energy:0.905, nutrients:0.842
+ 56/100  Salted butter          -> food:0.828, energy:0.813, nutrients:0.714
+ 57/100  Strawberry             -> food:0.943, foraging:0.927, nutrients:0.888, energy:0.855, health:0.759, growth:0.62
+ 58/100  Chapati                -> food:0.921, energy:0.877, nutrients:0.719
+ 59/100  Panko                  -> food:0.829
+ 60/100  Yule log cake          -> food:0.938, energy:0.886, comfort:0.816, novelty:0.747, nutrients:0.644
+ 61/100  Caviar                 -> energy:0.949, foraging:0.944, food:0.91, nutrients:0.875, health:0.795, novelty:0.712, power:0.64, growth:0.629
+ 62/100  Sashimi platter        -> food:0.948, nutrients:0.923, energy:0.919, power:0.775
+ 63/100  Foxglove               -> color:0.982, foraging:0.857, privacy:0.707, novelty:0.69
+ 64/100  Datura                 -> foraging:0.881, mischief:0.858
+ 65/100  Lotus                  -> pollination:0.916, foraging:0.858, novelty:0.692
+ 66/100  Aloe                   -> pollination:0.903, nutrients:0.89, foraging:0.874, health:0.777, growth:0.625
+ 67/100  Nettle                 -> fertilizer:0.97, nutrients:0.908, foraging:0.883, food:0.86, growth:0.835, health:0.793, novelty:0.64
+ 68/100  Turmeric               -> foraging:0.903, food:0.892, health:0.772, nutrients:0.748, growth:0.617
+ 69/100  Tree of life           -> habitat:0.955, souls:0.902, shade:0.889, environment:0.857, purpose:0.856, growth:0.71, novelty:0.576
+ 70/100  Sugarcane              -> foraging:0.889
+ 71/100  Basil seeds            -> seeds:0.839, food:0.803, foraging:0.764, health:0.739, energy:0.718, nutrients:0.696, novelty:0.591, growth:0.589
+ 72/100  Coal                   -> temperature:0.976, energy:0.97, warmth:0.942
+ 73/100  Neutron star           -> (nothing)
+ 74/100  Cold iron              -> (nothing)
+ 75/100  Volcanic glass         -> novelty:0.746
+ 76/100  Pyrite                 -> (nothing)
+ 77/100  Meteoric iron          -> novelty:0.797
+ 78/100  Geode                  -> novelty:0.716
+ 79/100  Ferrofluid             -> mischief:0.795, novelty:0.72
+ 80/100  Bismuth                -> (nothing)
+ 81/100  Gold bar               -> (nothing)
+ 82/100  Loom                   -> (nothing)
+ 83/100  Grain mill             -> energy:0.873, nutrients:0.845, food:0.829, growth:0.581
+ 84/100  Camera obscura         -> vision:0.882, information:0.87, novelty:0.692
+ 85/100  Compass                -> information:0.871
+ 86/100  Potter's wheel         -> (nothing)
+ 87/100  Anvil                  -> (nothing)
+ 88/100  Hourglass              -> (nothing)
+ 89/100  Greek fire             -> mischief:0.846
+ 90/100  Excalibur              -> power:0.653
+ 91/100  Cutlass                -> safety:0.609
+ 92/100  Railgun                -> novelty:0.738
+ 93/100  Pixie dust             -> (nothing)
+ 94/100  Magic ring             -> novelty:0.711, power:0.706
+ 95/100  Wizard cloak           -> temperature:0.917, shade:0.87
+ 96/100  Mana potion            -> energy:0.954, food:0.911, power:0.91, nutrients:0.879, health:0.791
+ 97/100  Lava lamp              -> novelty:0.66
+ 98/100  Talaria                -> movement:0.988, flight:0.747, novelty:0.67
+ 99/100  Burkinabé kora         -> relaxation:0.811, play:0.757, novelty:0.692
+100/100  Shamisen               -> novelty:0.637, play:0.628
+DONE -> item_needs.json (62 needs swept)

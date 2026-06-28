@@ -1,0 +1,117 @@
+  1/116  Wallet               wt=      200g size=     10cm rarity=2.53 worth= 2.8 src=crafted     emit=-
+  2/116  Cigarette            wt=        1g size=     10cm rarity=3.03 worth=2.63 src=manufactured emit=light+heat
+  3/116  Marshmallow          wt=     6000g size=     60cm rarity=3.63 worth= 2.5 src=found       emit=-
+  4/116  Bottlecap            wt=     5000g size=      2cm rarity=3.41 worth=3.48 src=found       emit=-
+  5/116  Chalkboard           wt=    10000g size=    114cm rarity=3.25 worth=2.49 src=mined       emit=-
+  6/116  Lead pencil          wt=        5g size=     18cm rarity=1.99 worth=2.15 src=manufactured emit=-
+  7/116  Spork                wt=    70000g size=     16cm rarity=7.89 worth=3.94 src=found       emit=-
+  8/116  Bee                  wt=    42000g size=      4cm rarity=2.65 worth=4.35 src=foraged     emit=heat+sound
+  9/116  Book                 wt=      500g size=     25cm rarity=2.74 worth=3.48 src=manufactured emit=-
+ 10/116  Sawdust              wt=      700g size=  0.075cm rarity=1.82 worth=0.36 src=grown       emit=-
+ 11/116  Linoleum             wt=     5000g size=   1200cm rarity=3.57 worth=2.48 src=crafted     emit=-
+ 12/116  Snowfall             wt=  1.2e+06g size=     40cm rarity=7.44 worth=6.52 src=grown       emit=-
+ 13/116  Moonlight            wt=    4e+19g size=     12cm rarity=3.87 worth= 7.1 src=found       emit=light
+ 14/116  Sunshine             wt=    70000g size=    737cm rarity=2.05 worth=9.73 src=found       emit=light+heat
+ 15/116  Lace                 wt=       10g size=      1cm rarity=3.47 worth= 4.1 src=crafted     emit=-
+ 16/116  Spider silk          wt=        1g size= 0.0001cm rarity=5.26 worth=5.04 src=foraged     emit=-
+ 17/116  Bead curtain         wt=     5000g size=   1000cm rarity=3.29 worth= 2.9 src=found       emit=-
+ 18/116  Crown nautilus       wt=     3000g size=      8cm rarity=5.41 worth=7.84 src=hunted      emit=-
+ 19/116  Chandeliers          wt=    10000g size=    300cm rarity=4.17 worth=5.05 src=manufactured emit=light+sound
+ 20/116  Stalactite           wt=    5e+07g size=   2216cm rarity=3.36 worth=4.41 src=mined       emit=-
+ 21/116  Honeycomb            wt=    50000g size=      3cm rarity=3.22 worth=3.14 src=found       emit=-
+ 22/116  Saffron              wt=        1g size=      1cm rarity=6.51 worth=6.27 src=grown       emit=-
+ 23/116  Guano                wt=   342000g size=      4cm rarity=4.01 worth=3.14 src=foraged     emit=-
+ 24/116  Etherseed            wt=     2000g size=     10cm rarity=7.14 worth=8.37 src=manufactured emit=-
+ 25/116  Electric lollipop    wt=      120g size=      5cm rarity=5.86 worth=4.19 src=unknown     emit=light+heat
+ 26/116  Gel-pack             wt=      200g size=     10cm rarity=3.34 worth=2.84 src=manufactured emit=-
+ 27/116  Brae seed            wt=     3000g size=    0.3cm rarity=4.32 worth=2.76 src=found       emit=-
+ 28/116  Clockwork heart      wt=    16000g size=      6cm rarity=7.71 worth=7.36 src=found       emit=-
+ 29/116  Self-weaving cloth   wt=     1000g size=    200cm rarity=5.87 worth=5.06 src=crafted     emit=-
+ 30/116  Pearlescent shell    wt=     1000g size=      2cm rarity=4.66 worth=5.33 src=grown       emit=light
+ 31/116  Seed pod             wt=        5g size=      1cm rarity=2.62 worth=2.04 src=found       emit=-
+ 32/116  The Internet         wt=      500g size=  1e+09cm rarity=2.73 worth=9.75 src=found       emit=-
+ 33/116  AI                   wt=        5g size=   1850cm rarity=5.46 worth=8.01 src=the result of human minds and emit=-
+ 34/116  Clockwork tree       wt=    1e+06g size=    400cm rarity=6.69 worth=6.48 src=found       emit=-
+ 35/116  Computronium         wt=     1000g size=  2e+08cm rarity=8.21 worth= 8.9 src=mined       emit=light+heat
+ 36/116  Womb in a can        wt=     1000g size=     10cm rarity=5.13 worth=6.46 src=found       emit=sound
+ 37/116  Faustian Window      wt=     9000g size=   2500cm rarity=8.04 worth=7.37 src=found       emit=light
+ 38/116  Silk stasis bag      wt=       78g size=     20cm rarity= 4.6 worth=4.45 src=manufactured emit=-
+ 39/116  Spacial stabilizer   wt=    1e+06g size=    250cm rarity=5.75 worth=4.78 src=manufactured emit=-
+ 40/116  Quantum computer     wt=    50000g size=      3cm rarity=6.37 worth=7.93 src=manufactured emit=light+heat+sound
+ 41/116  Holo-visor           wt=     1179g size=     20cm rarity= 6.0 worth=4.79 src=manufactured emit=light
+ 42/116  Hyperloop pod        wt=    6e+06g size=   5000cm rarity=5.93 worth=5.47 src=manufactured emit=heat+sound
+ 43/116  Self-driving car     wt=1.895e+06g size=    650cm rarity=5.26 worth=5.88 src=manufactured emit=light+sound
+ 44/116  Microcomputer        wt=     1000g size=     12cm rarity=3.97 worth=3.35 src=manufactured emit=light+heat+sound
+ 45/116  Fibre optic cable    wt=     1000g size=    0.2cm rarity=3.18 worth=4.33 src=manufactured emit=-
+ 46/116  Carbon nanotube      wt=     4000g size= 0.0001cm rarity= 5.7 worth=5.32 src=manufactured emit=heat
+ 47/116  Warframe             wt=    1e+06g size=   2500cm rarity=6.31 worth=4.87 src=crafted     emit=light+sound
+ 48/116  Power armor          wt=   400000g size=    300cm rarity=6.55 worth=7.26 src=found       emit=light+heat+sound
+ 49/116  Jump drive           wt=    70000g size=      4cm rarity=5.71 worth=4.39 src=found       emit=heat
+ 50/116  Sleeping pod         wt=    1e+06g size=    200cm rarity= 4.2 worth= 4.6 src=found       emit=heat
+ 51/116  Bio-printing chamber wt=   400000g size=     60cm rarity=5.49 worth=5.98 src=manufactured emit=heat+sound
+ 52/116  Nanites              wt=        1g size=      0cm rarity=5.81 worth=6.74 src=crafted     emit=-
+ 53/116  Ice cream            wt=      400g size=     10cm rarity=2.52 worth=2.55 src=manufactured emit=-
+ 54/116  Truffle              wt=     5000g size=   4000cm rarity=5.17 worth=5.61 src=foraged     emit=-
+ 55/116  Baguette             wt=      200g size=     60cm rarity= 3.1 worth=2.49 src=crafted     emit=-
+ 56/116  Salted butter        wt=      225g size=     12cm rarity=2.83 worth=2.56 src=manufactured emit=-
+ 57/116  Strawberry           wt=    44000g size=     20cm rarity=2.92 worth=2.56 src=grown       emit=-
+ 58/116  Chapati              wt=       30g size=     13cm rarity=2.57 worth=2.51 src=crafted     emit=-
+ 59/116  Panko                wt=   145000g size=     12cm rarity=2.87 worth=2.62 src=manufactured emit=-
+ 60/116  Yule log cake        wt=     1000g size=     75cm rarity=4.77 worth=4.18 src=crafted     emit=-
+ 61/116  Caviar               wt=      300g size=      1cm rarity= 6.0 worth=5.72 src=hunted      emit=-
+ 62/116  Sashimi platter      wt=      450g size=     25cm rarity=3.34 worth=3.53 src=manufactured emit=-
+ 63/116  Foxglove             wt=     3000g size=      3cm rarity=3.42 worth=2.66 src=foraged     emit=-
+ 64/116  Datura               wt=      100g size=     70cm rarity= 5.2 worth= 2.5 src=foraged     emit=-
+ 65/116  Lotus                wt=    54000g size=     30cm rarity=7.61 worth=5.14 src=found       emit=-
+ 66/116  Aloe                 wt=     3000g size=     50cm rarity= 2.8 worth=2.57 src=foraged     emit=-
+ 67/116  Nettle               wt=    50000g size=      5cm rarity= 2.9 worth= 1.7 src=foraged     emit=-
+ 68/116  Turmeric             wt=     5000g size=      1cm rarity=3.21 worth= 2.8 src=grown       emit=-
+ 69/116  Tree of life         wt=  1.8e+07g size=  18000cm rarity= 9.8 worth=9.87 src=foraged     emit=-
+ 70/116  Sugarcane            wt=    60000g size=      6cm rarity=2.37 worth=2.18 src=grown       emit=-
+ 71/116  Basil seeds          wt=        5g size=    0.1cm rarity=3.38 worth=2.61 src=grown       emit=-
+ 72/116  Coal                 wt=    52000g size=     10cm rarity=2.95 worth=2.58 src=mined       emit=heat
+ 73/116  Neutron star         wt=     3000g size=   4100cm rarity=6.23 worth=9.01 src=found       emit=light+heat
+ 74/116  Cold iron            wt=     1000g size=     13cm rarity=5.93 worth=4.98 src=none of the above choices emit=-
+ 75/116  Volcanic glass       wt=1.296e+06g size=      1cm rarity= 4.2 worth=3.73 src=found       emit=-
+ 76/116  Pyrite               wt=     5000g size=      1cm rarity=3.36 worth=1.98 src=mined       emit=-
+ 77/116  Meteoric iron        wt= 2.25e+07g size= 500000cm rarity=6.88 worth=5.73 src=found       emit=-
+ 78/116  Geode                wt=   300000g size=     75cm rarity=4.72 worth=4.75 src=mined       emit=-
+ 79/116  Ferrofluid           wt=     2000g size=  0.005cm rarity=5.59 worth=4.88 src=manufactured emit=-
+ 80/116  Bismuth              wt=   260000g size=    236cm rarity=5.61 worth=2.89 src=mined       emit=-
+ 81/116  Gold bar             wt=    12000g size=     12cm rarity=4.55 worth= 6.7 src=crafted     emit=-
+ 82/116  Loom                 wt=    65000g size=     35cm rarity=5.79 worth= 4.6 src=crafted     emit=-
+ 83/116  Grain mill           wt=   100000g size=     40cm rarity= 2.7 worth=3.01 src=crafted     emit=sound
+ 84/116  Camera obscura       wt=  1.2e+06g size=  10000cm rarity=7.17 worth=4.84 src=found       emit=-
+ 85/116  Compass              wt=    45000g size=    510cm rarity=3.37 worth=3.39 src=craft       emit=-
+ 86/116  Potter's wheel       wt=    50000g size=     56cm rarity=3.54 worth= 3.2 src=crafted     emit=sound
+ 87/116  Anvil                wt=    2e+07g size=  10000cm rarity=3.61 worth=3.73 src=found       emit=-
+ 88/116  Hourglass            wt=     1000g size=     20cm rarity=7.42 worth=6.35 src=found       emit=-
+ 89/116  Greek fire           wt=    10000g size=      2cm rarity=6.78 worth=8.82 src=crafted     emit=light+heat+sound
+ 90/116  Excalibur            wt=     1000g size=    120cm rarity=9.94 worth=9.85 src=found       emit=-
+ 91/116  Cutlass              wt=  1.2e+06g size=    500cm rarity=4.15 worth=3.48 src=crafted     emit=sound
+ 92/116  Railgun              wt=  1.2e+07g size=   2500cm rarity=8.14 worth=7.03 src=crafted     emit=light+heat+sound
+ 93/116  Pixie dust           wt=     0.01g size=      0cm rarity=7.22 worth=8.15 src=crafted     emit=light
+ 94/116  Magic ring           wt=       30g size=      5cm rarity= 7.6 worth=8.25 src=found       emit=light
+ 95/116  Wizard cloak         wt=     2000g size=    200cm rarity=7.69 worth=7.31 src=found       emit=-
+ 96/116  Mana potion          wt=     1000g size=      4cm rarity=4.49 worth=3.48 src=found       emit=-
+ 97/116  Lava lamp            wt=     3000g size=     30cm rarity=4.58 worth=3.23 src=manufactured emit=light+heat
+ 98/116  Talaria              wt=  1.5e+06g size=      2cm rarity= 9.8 worth= 8.4 src=crafted     emit=-
+ 99/116  Burkinabé kora       wt=     2000g size=    100cm rarity=5.83 worth=5.88 src=crafted     emit=sound
+100/116  Shamisen             wt=     4000g size=    150cm rarity=5.72 worth=4.21 src=found       emit=sound
+101/116  Glass of water       wt=      250g size=     10cm rarity=1.23 worth=1.83 src=found       emit=-
+102/116  Well                 wt=   500000g size=   1100cm rarity= 2.2 worth=3.67 src=mined       emit=-
+103/116  Watering can         wt=     1000g size=     50cm rarity=2.63 worth=2.57 src=crafted     emit=-
+104/116  Toilet               wt=    10000g size=     60cm rarity=3.44 worth=2.69 src=manufactured emit=sound
+105/116  Outhouse             wt=    1e+06g size=   1000cm rarity=2.96 worth= 2.5 src=not-answerable emit=-
+106/116  Bar of soap          wt=      150g size=     15cm rarity=2.33 worth=2.37 src=manufactured emit=-
+107/116  Bathtub              wt=   100000g size=    180cm rarity=3.17 worth=3.21 src=manufactured emit=-
+108/116  Hairbrush            wt=      200g size=     20cm rarity=2.63 worth=2.54 src=manufactured emit=-
+109/116  Broom                wt=     1000g size=    120cm rarity=2.24 worth=2.29 src=found       emit=-
+110/116  Bag of soil          wt=    12000g size=     30cm rarity=1.85 worth= 2.1 src=crafted     emit=-
+111/116  Compost heap         wt=    1e+06g size=    730cm rarity=2.72 worth=1.25 src=foraged     emit=heat
+112/116  Bed                  wt=    20000g size=    200cm rarity=2.37 worth=3.25 src=crafted     emit=-
+113/116  Fireplace            wt=    70000g size=    120cm rarity=2.88 worth=4.27 src=crafted     emit=light+heat+sound
+114/116  Tent                 wt=     2000g size=    300cm rarity=2.82 worth=2.76 src=crafted     emit=-
+115/116  Bandage              wt=        1g size=      3cm rarity=2.53 worth=2.12 src=crafted     emit=-
+116/116  Lantern              wt=    27000g size=      7cm rarity= 3.3 worth=3.41 src=foraged     emit=light+heat+sound
+DONE -> item_traits.json (116 items)

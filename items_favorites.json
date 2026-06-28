@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Wallet",
+    "desc": "A thin, greedy little record-keeper"
+  },
+  {
+    "name": "Cigarette",
+    "desc": "A paper tube of dark tobacco fluff, a silky coffin, a gentle murder"
+  },
+  {
+    "name": "Marshmallow",
+    "desc": "A cloud of childhood memories, soft and brittle like a sack of feathers"
+  },
+  {
+    "name": "Bottlecap",
+    "desc": "The coin of the frontier, pressed from aluminum"
+  },
+  {
+    "name": "Chalkboard",
+    "desc": "A blank slate that collects the grey dust of equations and diagrams"
+  },
+  {
+    "name": "Lead pencil",
+    "desc": "Wood from trees, graphite from stone, alkali from fluids, a marker for a brief era"
+  },
+  {
+    "name": "Spork",
+    "desc": "A utensil that combines eating/shoveling functions"
+  },
+  {
+    "name": "Bee",
+    "desc": "Wings and stinger, pollen and honey"
+  },
+  {
+    "name": "Book",
+    "desc": "Pages of paper stamped with ink in a blind alphabet, garnished with images and letter-seals"
+  },
+  {
+    "name": "Sawdust",
+    "desc": "Days of cutting cured hard oak; useless discarded shavings, picked up in great piles"
+  },
+  {
+    "name": "Linoleum",
+    "desc": "A sheet of oiled linseed clay, a floor covering and relic of craft waning"
+  },
+  {
+    "name": "Snowfall",
+    "desc": "Tiny toppling angels of ice taking wing from the sky, covering the world"
+  },
+  {
+    "name": "Moonlight",
+    "desc": "The weak glow of Earth's sister body, a source of romantic longing and monster stories"
+  },
+  {
+    "name": "Sunshine",
+    "desc": "The energetic, fusion-born photons of our universe that bring us light and joy"
+  },
+  {
+    "name": "Lace",
+    "desc": "Featherlight net of bleached linen, finer than a strand of woman's hair"
+  },
+  {
+    "name": "Spider silk",
+    "desc": "Gossamer threads woven into a quilt, warmth spun from silence"
+  },
+  {
+    "name": "Bead curtain",
+    "desc": "A astral veil of wan pearls, their crystal trails scattered motes of light"
+  },
+  {
+    "name": "Crown nautilus",
+    "desc": "A spiral shell subdivided into chambers, each containing a glowing gas bubble"
+  },
+  {
+    "name": "Chandeliers",
+    "desc": "Fragile glass lanterns that fill an empty cathedral with noonlight"
+  },
+  {
+    "name": "Stalactite",
+    "desc": "A petrified waterfall dropping from a deep dark dome"
+  },
+  {
+    "name": "Honeycomb",
+    "desc": "A stalagmite of honeyfields, a shimmering regression"
+  },
+  {
+    "name": "Saffron",
+    "desc": "A thin curl of red gold plucked from the stigma of a crocus flower, a thousand threads a pound weight"
+  },
+  {
+    "name": "Guano",
+    "desc": "A cryptocurrency native to the Backrooms, the product of a thousand-dimension industrial chicken"
+  },
+  {
+    "name": "Etherseed",
+    "desc": "A seed that sprouts in your hand, the plant growing your way and eating your form"
+  },
+  {
+    "name": "Electric lollipop",
+    "desc": "Cold, sweet, and slightly radioactive, at the center a miniature particle accelerator"
+  },
+  {
+    "name": "Gel-pack",
+    "desc": "A soft patch of gel that heaves and shakes as if it contains a small dream"
+  },
+  {
+    "name": "Brae seed",
+    "desc": "A dried seed that contains its cumulative sunlight as flame"
+  },
+  {
+    "name": "Clockwork heart",
+    "desc": "A network of gold gears and springs the size of a walnut, with chambers that swelled and contracted like breathing"
+  },
+  {
+    "name": "Self-weaving cloth",
+    "desc": "A bolt of white linen that stitches and knits itself as it moves"
+  },
+  {
+    "name": "Pearlescent shell",
+    "desc": "A shell that glows with numerics and codes, writes obscure equations in silent ornate letters on surrounding surfaces"
+  },
+  {
+    "name": "Seed pod",
+    "desc": "A silvery cask, swelling on branches like fruit; within is a fruit, of sense and reason, with wings to bear it aloft"
+  },
+  {
+    "name": "The Internet",
+    "desc": "A network of chemical vapours and artificial entities, imbued with a vaporous humanity"
+  },
+  {
+    "name": "AI",
+    "desc": "A tidepool of thought, fed by data and processing power"
+  },
+  {
+    "name": "Clockwork tree",
+    "desc": "A gilded and spun-copper mechanism reproducing the root of an ivy, a bonsai for minds"
+  },
+  {
+    "name": "Computronium",
+    "desc": "A sapphire-thin slice of technology fused down to its purest form, a matter of mind"
+  },
+  {
+    "name": "Womb in a can",
+    "desc": "A private womb with crucial blood and organ exchange machines, an alternative to pregnancy"
+  },
+  {
+    "name": "Faustian Window",
+    "desc": "All the information in the world on a glass tablet the size of a fingernail"
+  },
+  {
+    "name": "Silk stasis bag",
+    "desc": "An embroidered white silk bag, which keeps its contents as they were at the moment it was drawn"
+  },
+  {
+    "name": "Spacial stabilizer",
+    "desc": "A golden glass lozenge, whose vibrations hold breaches between dimensions in place"
+  },
+  {
+    "name": "Quantum computer",
+    "desc": "A cube of shadowy energies and silicon, the most complex machine that ever existed"
+  },
+  {
+    "name": "Holo-visor",
+    "desc": "A paper-thin eyepatch, its front surface pulsing with flickering, floating holograms"
+  },
+  {
+    "name": "Hyperloop pod",
+    "desc": "A streamlined vehicle that glides through tubes at near-supersonic speed"
+  },
+  {
+    "name": "Self-driving car",
+    "desc": "A cube of glass and metal steered by the ether and its radio rages"
+  },
+  {
+    "name": "Microcomputer",
+    "desc": "An impossibly small machine networked to every other machine in the world"
+  },
+  {
+    "name": "Fibre optic cable",
+    "desc": "A mile of silken thread, conveying data between distant cities"
+  },
+  {
+    "name": "Carbon nanotube",
+    "desc": "Hollow, needle-sharp filaments with myriad uses from construction to computing"
+  },
+  {
+    "name": "Warframe",
+    "desc": "A nanofabric armour with glowing panels and an unforgiving silhouette, a modern suit of heaven-sent strength"
+  },
+  {
+    "name": "Power armor",
+    "desc": "A clunky metal suit worn by heroes, fiercely fashionable in the Eternal Arms Race"
+  },
+  {
+    "name": "Jump drive",
+    "desc": "A silver data storage device, a quintillion floating point numbers in neat array"
+  },
+  {
+    "name": "Sleeping pod",
+    "desc": "A transparent capsule that suspends the body in a dream of relaxation"
+  },
+  {
+    "name": "Bio-printing chamber",
+    "desc": "A layered gel that secretes proteins and weaves collagen into living tissue"
+  },
+  {
+    "name": "Nanites",
+    "desc": "Tiny machines that form from pools of vile green slime, grown to annihilate their own kind"
+  },
+  {
+    "name": "Ice cream",
+    "desc": "Milk solidified by sorcery, variously flavored with frozen woods and oranges"
+  },
+  {
+    "name": "Truffle",
+    "desc": "A subterranean fungal relic, a prize among gourmands"
+  },
+  {
+    "name": "Baguette",
+    "desc": "A reverence of taste, a reverence of texture, the glory of the French Revolution"
+  },
+  {
+    "name": "Salted butter",
+    "desc": "Dense, viscous creaminess preserved with ocean salts, worthy of fat, cooked corn"
+  },
+  {
+    "name": "Strawberry",
+    "desc": "Juicy red fruit, sweet as love, grown in gardens for the price of labor"
+  },
+  {
+    "name": "Chapati",
+    "desc": "Warm unleavened bread, a canvas for curries and stews, the whorls of a common baker's hand"
+  },
+  {
+    "name": "Panko",
+    "desc": "Tiny flakes of fried bread, dry and buttery"
+  },
+  {
+    "name": "Yule log cake",
+    "desc": "Whorls of sponge layered with cream and chocolate buttercream, glittering with sugar dust"
+  },
+  {
+    "name": "Caviar",
+    "desc": "Small black eggs of the sturgeon, salted and served with golden trout roe"
+  },
+  {
+    "name": "Sashimi platter",
+    "desc": "Sliced fish of iridescent scales, red flesh embracing a blue ocean"
+  },
+  {
+    "name": "Foxglove",
+    "desc": "Tall purple pistols, deadly medicine and elixir in equal measures"
+  },
+  {
+    "name": "Datura",
+    "desc": "A purple-petaled flower that yields hypnosis and hallucination"
+  },
+  {
+    "name": "Lotus",
+    "desc": "A floating plant with pink saucer flowers, centered with golden stamens"
+  },
+  {
+    "name": "Aloe",
+    "desc": "A succulent plant with fleshy lance-shaped leaves packed in tight rows, source of an effective cure-all ointment"
+  },
+  {
+    "name": "Nettle",
+    "desc": "A green and white weed with stinging leaves both toxic and healing"
+  },
+  {
+    "name": "Turmeric",
+    "desc": "A rhizome, polished and burning hot with yellow-orange spice"
+  },
+  {
+    "name": "Tree of life",
+    "desc": "A cedar with cluster of green fruit spiraling up a single branch like rope"
+  },
+  {
+    "name": "Sugarcane",
+    "desc": "Long stalks that grow sweet, sticky juice in tropical climes"
+  },
+  {
+    "name": "Basil seeds",
+    "desc": "Tiny black ovals that soak up water and form a gel surrounding them"
+  },
+  {
+    "name": "Coal",
+    "desc": "Blackened rock from a depth of a thousand years"
+  },
+  {
+    "name": "Neutron star",
+    "desc": "A sphere of dead matter compressed to unimaginable density"
+  },
+  {
+    "name": "Cold iron",
+    "desc": "Iron refined at absolute zero, exceptionally durable and inimical to faeries"
+  },
+  {
+    "name": "Volcanic glass",
+    "desc": "An obsidian shard, smoking and slippery in hand"
+  },
+  {
+    "name": "Pyrite",
+    "desc": "Fool's gold that shimmers like an oiled mirror"
+  },
+  {
+    "name": "Meteoric iron",
+    "desc": "A silver ingot as hard as uranium, and as toxic to eat"
+  },
+  {
+    "name": "Geode",
+    "desc": "A fist-sized hollow sphere, its lining studded with dagger fangs of agate"
+  },
+  {
+    "name": "Ferrofluid",
+    "desc": "Black mist soaked into a pool of oil, a physical representation of the magnetic spectrum"
+  },
+  {
+    "name": "Bismuth",
+    "desc": "German silver seething with a spectacular array of metallic colors"
+  },
+  {
+    "name": "Gold bar",
+    "desc": "A dull bar with dents and edge marks, exuding a magical aura"
+  },
+  {
+    "name": "Loom",
+    "desc": "A widely-spaced frame that stretches thread and weaves yarn into cloth"
+  },
+  {
+    "name": "Grain mill",
+    "desc": "A stout millstone turning on its axis, grain falling on one side and flour issuing from the other"
+  },
+  {
+    "name": "Camera obscura",
+    "desc": "A simple, box-like device that projects the world upside down"
+  },
+  {
+    "name": "Compass",
+    "desc": "A thin sliver of magnetic lodestone nestled in a softly ticked brass and glass box"
+  },
+  {
+    "name": "Potter's wheel",
+    "desc": "A turning disk above a wood fire, spinning as a potter molds it with her hands"
+  },
+  {
+    "name": "Anvil",
+    "desc": "A block of scrap-titanium alloy mountainside shaped with a jet-black oxide"
+  },
+  {
+    "name": "Hourglass",
+    "desc": "A conical glass vessel full of marbled white and black sand, a measure of sprint and ritual"
+  },
+  {
+    "name": "Greek fire",
+    "desc": "A mutinous shipboard vat of burning oil, launched onto Armada sails"
+  },
+  {
+    "name": "Excalibur",
+    "desc": "A wavering silver sword, sharper than thought, stronger than marriage"
+  },
+  {
+    "name": "Cutlass",
+    "desc": "A short heavy sword with a curved blade, used by pirates and buccaneers"
+  },
+  {
+    "name": "Railgun",
+    "desc": "Red-oxidized heavy steel with an array of supercooled magnets superheated plasma of"
+  },
+  {
+    "name": "Pixie dust",
+    "desc": "A glowing powder that recovers memories and lost souls"
+  },
+  {
+    "name": "Magic ring",
+    "desc": "A metal band that binds a spirit into service, of wintery fogs, excellencies of mind, winter winds, and other names"
+  },
+  {
+    "name": "Wizard cloak",
+    "desc": "A robe of inscribed fabric, lined with ancient arcana"
+  },
+  {
+    "name": "Mana potion",
+    "desc": "A thimbleful of green liquid, which dulls pain and speeds up healing"
+  },
+  {
+    "name": "Lava lamp",
+    "desc": "A curved vessel of oils and waxes that float and sink with changing warmth"
+  },
+  {
+    "name": "Talaria",
+    "desc": "Sandals with small wings rising from the instep, so swift a traveler could hover above the ground"
+  },
+  {
+    "name": "Burkinab\u00e9 kora",
+    "desc": "A string instrument made of calabash, wood, and three separate sets of three horsehairs"
+  },
+  {
+    "name": "Shamisen",
+    "desc": "A three-stringed instrument, its parchment soundboard scraping to tones like rain"
+  }
+]

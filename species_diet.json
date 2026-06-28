@@ -1,0 +1,1866 @@
+{
+  "Human": {
+    "diet": "omnivore",
+    "conf": 0.922,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.922,
+      "other": 0.053
+    },
+    "kingdom": "Animals"
+  },
+  "Axolotl": {
+    "diet": "carnivore",
+    "conf": 0.561,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.561,
+      "omnivore": 0.262,
+      "other": 0.142
+    },
+    "kingdom": "Animals"
+  },
+  "Orca": {
+    "diet": "carnivore",
+    "conf": 0.965,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.965
+    },
+    "kingdom": "Animals"
+  },
+  "Lion": {
+    "diet": "carnivore",
+    "conf": 0.991,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.991
+    },
+    "kingdom": "Animals"
+  },
+  "Raccoon": {
+    "diet": "omnivore",
+    "conf": 0.942,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.942,
+      "herbivore": 0.029
+    },
+    "kingdom": "Animals"
+  },
+  "Platypus": {
+    "diet": "omnivore",
+    "conf": 0.685,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.685,
+      "carnivore": 0.15,
+      "other": 0.137,
+      "herbivore": 0.02
+    },
+    "kingdom": "Animals"
+  },
+  "Jaguar": {
+    "diet": "carnivore",
+    "conf": 0.992,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.992
+    },
+    "kingdom": "Animals"
+  },
+  "Cattle": {
+    "diet": "herbivore",
+    "conf": 0.983,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.983
+    },
+    "kingdom": "Animals"
+  },
+  "Loquat": {
+    "diet": "photosynthetic",
+    "conf": 0.832,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.832,
+      "herbivore": 0.09,
+      "omnivore": 0.043,
+      "other": 0.025
+    },
+    "kingdom": "Plants"
+  },
+  "Horse": {
+    "diet": "herbivore",
+    "conf": 0.985,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.985
+    },
+    "kingdom": "Animals"
+  },
+  "Tiger": {
+    "diet": "carnivore",
+    "conf": 0.985,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.985
+    },
+    "kingdom": "Animals"
+  },
+  "Hippopotamus": {
+    "diet": "herbivore",
+    "conf": 0.9,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.9,
+      "omnivore": 0.091
+    },
+    "kingdom": "Animals"
+  },
+  "Kākāpō": {
+    "diet": "herbivore",
+    "conf": 0.872,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.872,
+      "omnivore": 0.119
+    },
+    "kingdom": "Animals"
+  },
+  "Osprey": {
+    "diet": "carnivore",
+    "conf": 0.885,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.885,
+      "omnivore": 0.065,
+      "other": 0.04
+    },
+    "kingdom": "Animals"
+  },
+  "Portuguese man o' war": {
+    "diet": "carnivore",
+    "conf": 0.68,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.68,
+      "other": 0.169,
+      "omnivore": 0.13
+    },
+    "kingdom": "Animals"
+  },
+  "Cheetah": {
+    "diet": "carnivore",
+    "conf": 0.99,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.99
+    },
+    "kingdom": "Animals"
+  },
+  "Fisher": {
+    "diet": "carnivore",
+    "conf": 0.493,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.493,
+      "omnivore": 0.435,
+      "herbivore": 0.034,
+      "other": 0.03
+    },
+    "kingdom": "Animals"
+  },
+  "Bonobo": {
+    "diet": "omnivore",
+    "conf": 0.593,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.593,
+      "herbivore": 0.371,
+      "other": 0.026
+    },
+    "kingdom": "Animals"
+  },
+  "Aardwolf": {
+    "diet": "omnivore",
+    "conf": 0.417,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.417,
+      "carnivore": 0.309,
+      "other": 0.186,
+      "herbivore": 0.045,
+      "decomposer": 0.043
+    },
+    "kingdom": "Animals"
+  },
+  "Jackfruit": {
+    "diet": "photosynthetic",
+    "conf": 0.875,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.875,
+      "herbivore": 0.059,
+      "omnivore": 0.042
+    },
+    "kingdom": "Plants"
+  },
+  "Maize": {
+    "diet": "photosynthetic",
+    "conf": 0.91,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.91,
+      "herbivore": 0.047,
+      "omnivore": 0.029
+    },
+    "kingdom": "Plants"
+  },
+  "Watermelon": {
+    "diet": "photosynthetic",
+    "conf": 0.914,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.914,
+      "herbivore": 0.036,
+      "omnivore": 0.033
+    },
+    "kingdom": "Plants"
+  },
+  "Dandelion": {
+    "diet": "photosynthetic",
+    "conf": 0.937,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.937,
+      "omnivore": 0.026,
+      "herbivore": 0.023
+    },
+    "kingdom": "Plants"
+  },
+  "Clove": {
+    "diet": "photosynthetic",
+    "conf": 0.41,
+    "unsure": true,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.41,
+      "herbivore": 0.376,
+      "omnivore": 0.083,
+      "other": 0.077,
+      "decomposer": 0.049
+    },
+    "kingdom": "Plants"
+  },
+  "Mayfly": {
+    "diet": "herbivore",
+    "conf": 0.383,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.383,
+      "other": 0.287,
+      "omnivore": 0.238,
+      "decomposer": 0.067
+    },
+    "kingdom": "Animals"
+  },
+  "Leopard": {
+    "diet": "carnivore",
+    "conf": 0.984,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.984
+    },
+    "kingdom": "Animals"
+  },
+  "Tomato": {
+    "diet": "photosynthetic",
+    "conf": 0.914,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.914,
+      "herbivore": 0.042,
+      "omnivore": 0.03
+    },
+    "kingdom": "Plants"
+  },
+  "Blue-ringed octopus": {
+    "diet": "carnivore",
+    "conf": 0.876,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.876,
+      "omnivore": 0.064,
+      "other": 0.047
+    },
+    "kingdom": "Animals"
+  },
+  "Secretarybird": {
+    "diet": "carnivore",
+    "conf": 0.488,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.488,
+      "omnivore": 0.372,
+      "herbivore": 0.058,
+      "other": 0.054,
+      "decomposer": 0.028
+    },
+    "kingdom": "Animals"
+  },
+  "Chimpanzee": {
+    "diet": "omnivore",
+    "conf": 0.843,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.843,
+      "herbivore": 0.137
+    },
+    "kingdom": "Animals"
+  },
+  "Catnip": {
+    "diet": "photosynthetic",
+    "conf": 0.931,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.931,
+      "herbivore": 0.034
+    },
+    "kingdom": "Plants"
+  },
+  "Fossa": {
+    "diet": "carnivore",
+    "conf": 0.872,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.872,
+      "omnivore": 0.106
+    },
+    "kingdom": "Animals"
+  },
+  "Oat": {
+    "diet": "photosynthetic",
+    "conf": 0.868,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.868,
+      "herbivore": 0.072,
+      "omnivore": 0.034
+    },
+    "kingdom": "Plants"
+  },
+  "Edelweiss": {
+    "diet": "photosynthetic",
+    "conf": 0.724,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.724,
+      "herbivore": 0.125,
+      "other": 0.086,
+      "omnivore": 0.039,
+      "decomposer": 0.025
+    },
+    "kingdom": "Plants"
+  },
+  "Soybean": {
+    "diet": "photosynthetic",
+    "conf": 0.818,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.818,
+      "herbivore": 0.098,
+      "omnivore": 0.062
+    },
+    "kingdom": "Plants"
+  },
+  "Pineapple": {
+    "diet": "photosynthetic",
+    "conf": 0.841,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.841,
+      "omnivore": 0.073,
+      "herbivore": 0.047,
+      "other": 0.029
+    },
+    "kingdom": "Plants"
+  },
+  "Sorghum": {
+    "diet": "photosynthetic",
+    "conf": 0.768,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.768,
+      "herbivore": 0.124,
+      "omnivore": 0.064,
+      "other": 0.032
+    },
+    "kingdom": "Plants"
+  },
+  "Pistachio": {
+    "diet": "photosynthetic",
+    "conf": 0.894,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.894,
+      "herbivore": 0.047,
+      "omnivore": 0.033
+    },
+    "kingdom": "Plants"
+  },
+  "Donkey": {
+    "diet": "herbivore",
+    "conf": 0.982,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.982
+    },
+    "kingdom": "Animals"
+  },
+  "Przewalski's horse": {
+    "diet": "herbivore",
+    "conf": 0.995,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.995
+    },
+    "kingdom": "Animals"
+  },
+  "Fig": {
+    "diet": "photosynthetic",
+    "conf": 0.514,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.514,
+      "omnivore": 0.257,
+      "herbivore": 0.18,
+      "other": 0.029
+    },
+    "kingdom": "Plants"
+  },
+  "Lentil": {
+    "diet": "photosynthetic",
+    "conf": 0.584,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.584,
+      "herbivore": 0.267,
+      "omnivore": 0.107,
+      "other": 0.026
+    },
+    "kingdom": "Plants"
+  },
+  "Blackcurrant": {
+    "diet": "photosynthetic",
+    "conf": 0.932,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.932,
+      "herbivore": 0.03
+    },
+    "kingdom": "Plants"
+  },
+  "Wild onion": {
+    "diet": "photosynthetic",
+    "conf": 0.451,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.451,
+      "herbivore": 0.27,
+      "omnivore": 0.165,
+      "decomposer": 0.054,
+      "other": 0.053
+    },
+    "kingdom": "Plants"
+  },
+  "Sorrel": {
+    "diet": "photosynthetic",
+    "conf": 0.353,
+    "unsure": true,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.353,
+      "herbivore": 0.348,
+      "omnivore": 0.166,
+      "other": 0.073,
+      "decomposer": 0.056
+    },
+    "kingdom": "Plants"
+  },
+  "Sesame": {
+    "diet": "photosynthetic",
+    "conf": 0.669,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.669,
+      "herbivore": 0.163,
+      "omnivore": 0.097,
+      "other": 0.05,
+      "decomposer": 0.02
+    },
+    "kingdom": "Plants"
+  },
+  "Pallas's cat": {
+    "diet": "carnivore",
+    "conf": 0.954,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.954,
+      "omnivore": 0.026
+    },
+    "kingdom": "Animals"
+  },
+  "Pronghorn": {
+    "diet": "herbivore",
+    "conf": 0.992,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.992
+    },
+    "kingdom": "Animals"
+  },
+  "Quokka": {
+    "diet": "herbivore",
+    "conf": 0.939,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.939,
+      "omnivore": 0.057
+    },
+    "kingdom": "Animals"
+  },
+  "Groundhog": {
+    "diet": "herbivore",
+    "conf": 0.926,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.926,
+      "omnivore": 0.07
+    },
+    "kingdom": "Animals"
+  },
+  "Basa": {
+    "diet": "herbivore",
+    "conf": 0.432,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.432,
+      "omnivore": 0.372,
+      "other": 0.109,
+      "decomposer": 0.063,
+      "carnivore": 0.023
+    },
+    "kingdom": "Animals"
+  },
+  "Great horned owl": {
+    "diet": "carnivore",
+    "conf": 0.909,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.909,
+      "omnivore": 0.069
+    },
+    "kingdom": "Animals"
+  },
+  "Castor bean": {
+    "diet": "herbivore",
+    "conf": 0.356,
+    "unsure": true,
+    "grounded_plant": true,
+    "dist": {
+      "herbivore": 0.356,
+      "other": 0.341,
+      "omnivore": 0.127,
+      "photosynthetic": 0.113,
+      "decomposer": 0.056
+    },
+    "kingdom": "Plants"
+  },
+  "Avocado": {
+    "diet": "photosynthetic",
+    "conf": 0.792,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.792,
+      "herbivore": 0.109,
+      "omnivore": 0.059,
+      "other": 0.033
+    },
+    "kingdom": "Plants"
+  },
+  "Lovebug": {
+    "diet": "other",
+    "conf": 0.33,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.33,
+      "herbivore": 0.242,
+      "decomposer": 0.241,
+      "omnivore": 0.168
+    },
+    "kingdom": "Animals"
+  },
+  "Emu": {
+    "diet": "herbivore",
+    "conf": 0.777,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.777,
+      "omnivore": 0.205
+    },
+    "kingdom": "Animals"
+  },
+  "Anise": {
+    "diet": "photosynthetic",
+    "conf": 0.627,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.627,
+      "herbivore": 0.235,
+      "omnivore": 0.065,
+      "other": 0.05
+    },
+    "kingdom": "Plants"
+  },
+  "Rutabaga": {
+    "diet": "photosynthetic",
+    "conf": 0.77,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.77,
+      "herbivore": 0.081,
+      "omnivore": 0.066,
+      "decomposer": 0.044,
+      "other": 0.04
+    },
+    "kingdom": "Plants"
+  },
+  "Northern white rhinoceros": {
+    "diet": "herbivore",
+    "conf": 0.993,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.993
+    },
+    "kingdom": "Animals"
+  },
+  "Brown recluse spider": {
+    "diet": "carnivore",
+    "conf": 0.937,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.937,
+      "omnivore": 0.027
+    },
+    "kingdom": "Animals"
+  },
+  "Calamansi": {
+    "diet": "photosynthetic",
+    "conf": 0.827,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.827,
+      "herbivore": 0.091,
+      "other": 0.049,
+      "omnivore": 0.025
+    },
+    "kingdom": "Plants"
+  },
+  "Blue-footed booby": {
+    "diet": "carnivore",
+    "conf": 0.79,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.79,
+      "omnivore": 0.107,
+      "other": 0.085
+    },
+    "kingdom": "Animals"
+  },
+  "Hawaiian monk seal": {
+    "diet": "carnivore",
+    "conf": 0.966,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.966
+    },
+    "kingdom": "Animals"
+  },
+  "Pomegranate": {
+    "diet": "photosynthetic",
+    "conf": 0.897,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.897,
+      "herbivore": 0.042,
+      "omnivore": 0.038
+    },
+    "kingdom": "Plants"
+  },
+  "Calabash": {
+    "diet": "herbivore",
+    "conf": 0.455,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "herbivore": 0.455,
+      "photosynthetic": 0.227,
+      "omnivore": 0.154,
+      "other": 0.109,
+      "decomposer": 0.051
+    },
+    "kingdom": "Plants"
+  },
+  "Coriander": {
+    "diet": "photosynthetic",
+    "conf": 0.885,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.885,
+      "herbivore": 0.057,
+      "omnivore": 0.025
+    },
+    "kingdom": "Plants"
+  },
+  "Ergot": {
+    "diet": "decomposer",
+    "conf": 0.537,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "decomposer": 0.537,
+      "herbivore": 0.361,
+      "other": 0.063,
+      "omnivore": 0.031
+    },
+    "kingdom": "Fungi"
+  },
+  "Quinoa": {
+    "diet": "photosynthetic",
+    "conf": 0.859,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.859,
+      "herbivore": 0.069,
+      "omnivore": 0.045
+    },
+    "kingdom": "Plants"
+  },
+  "Columbine": {
+    "diet": "photosynthetic",
+    "conf": 0.741,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.741,
+      "herbivore": 0.159,
+      "omnivore": 0.063,
+      "other": 0.02
+    },
+    "kingdom": "Plants"
+  },
+  "Steller's jay": {
+    "diet": "omnivore",
+    "conf": 0.849,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.849,
+      "herbivore": 0.123
+    },
+    "kingdom": "Animals"
+  },
+  "Cochineal": {
+    "diet": "herbivore",
+    "conf": 0.857,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.857,
+      "other": 0.062,
+      "omnivore": 0.056,
+      "decomposer": 0.023
+    },
+    "kingdom": "Animals"
+  },
+  "Dugong": {
+    "diet": "herbivore",
+    "conf": 0.963,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.963,
+      "omnivore": 0.028
+    },
+    "kingdom": "Animals"
+  },
+  "Eastern gray squirrel": {
+    "diet": "herbivore",
+    "conf": 0.608,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.608,
+      "omnivore": 0.387
+    },
+    "kingdom": "Animals"
+  },
+  "Asian giant hornet": {
+    "diet": "omnivore",
+    "conf": 0.493,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.493,
+      "carnivore": 0.288,
+      "other": 0.168,
+      "decomposer": 0.027,
+      "herbivore": 0.024
+    },
+    "kingdom": "Animals"
+  },
+  "Swan": {
+    "diet": "herbivore",
+    "conf": 0.79,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.79,
+      "omnivore": 0.202
+    },
+    "kingdom": "Animals"
+  },
+  "Alfalfa": {
+    "diet": "photosynthetic",
+    "conf": 0.878,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.878,
+      "herbivore": 0.056,
+      "omnivore": 0.03,
+      "other": 0.028
+    },
+    "kingdom": "Plants"
+  },
+  "Pea": {
+    "diet": "photosynthetic",
+    "conf": 0.372,
+    "unsure": true,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.372,
+      "omnivore": 0.326,
+      "herbivore": 0.232,
+      "other": 0.05
+    },
+    "kingdom": "Plants"
+  },
+  "Watercress": {
+    "diet": "photosynthetic",
+    "conf": 0.488,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.488,
+      "herbivore": 0.182,
+      "omnivore": 0.167,
+      "other": 0.095,
+      "decomposer": 0.067
+    },
+    "kingdom": "Plants"
+  },
+  "Jaguarundi": {
+    "diet": "carnivore",
+    "conf": 0.809,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.809,
+      "omnivore": 0.158
+    },
+    "kingdom": "Animals"
+  },
+  "Spix's macaw": {
+    "diet": "herbivore",
+    "conf": 0.842,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.842,
+      "omnivore": 0.113,
+      "other": 0.042
+    },
+    "kingdom": "Animals"
+  },
+  "Black-footed cat": {
+    "diet": "carnivore",
+    "conf": 0.975,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.975
+    },
+    "kingdom": "Animals"
+  },
+  "Galápagos tortoise": {
+    "diet": "herbivore",
+    "conf": 0.965,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.965,
+      "omnivore": 0.033
+    },
+    "kingdom": "Animals"
+  },
+  "Tamarind": {
+    "diet": "photosynthetic",
+    "conf": 0.512,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.512,
+      "herbivore": 0.205,
+      "omnivore": 0.178,
+      "other": 0.079,
+      "decomposer": 0.023
+    },
+    "kingdom": "Plants"
+  },
+  "Liquorice": {
+    "diet": "herbivore",
+    "conf": 0.575,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "herbivore": 0.575,
+      "omnivore": 0.184,
+      "other": 0.131,
+      "photosynthetic": 0.059,
+      "decomposer": 0.04
+    },
+    "kingdom": "Plants"
+  },
+  "Alpaca": {
+    "diet": "herbivore",
+    "conf": 0.975,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.975
+    },
+    "kingdom": "Animals"
+  },
+  "Peach": {
+    "diet": "photosynthetic",
+    "conf": 0.894,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.894,
+      "herbivore": 0.05,
+      "omnivore": 0.043
+    },
+    "kingdom": "Plants"
+  },
+  "Spinach": {
+    "diet": "photosynthetic",
+    "conf": 0.916,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.916,
+      "herbivore": 0.045,
+      "omnivore": 0.023
+    },
+    "kingdom": "Plants"
+  },
+  "Walleye": {
+    "diet": "omnivore",
+    "conf": 0.427,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.427,
+      "carnivore": 0.423,
+      "other": 0.084,
+      "herbivore": 0.053
+    },
+    "kingdom": "Animals"
+  },
+  "Khat": {
+    "diet": "herbivore",
+    "conf": 0.398,
+    "unsure": true,
+    "grounded_plant": true,
+    "dist": {
+      "herbivore": 0.398,
+      "other": 0.237,
+      "photosynthetic": 0.205,
+      "omnivore": 0.09,
+      "decomposer": 0.06
+    },
+    "kingdom": "Plants"
+  },
+  "Garlic": {
+    "diet": "photosynthetic",
+    "conf": 0.751,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.751,
+      "herbivore": 0.143,
+      "omnivore": 0.057,
+      "other": 0.026,
+      "decomposer": 0.023
+    },
+    "kingdom": "Plants"
+  },
+  "Australian plague locust": {
+    "diet": "herbivore",
+    "conf": 0.976,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.976
+    },
+    "kingdom": "Animals"
+  },
+  "Giant golden-crowned flying fox": {
+    "diet": "herbivore",
+    "conf": 0.901,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.901,
+      "omnivore": 0.081
+    },
+    "kingdom": "Animals"
+  },
+  "Saguaro": {
+    "diet": "photosynthetic",
+    "conf": 0.805,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.805,
+      "other": 0.082,
+      "omnivore": 0.057,
+      "decomposer": 0.035
+    },
+    "kingdom": "Plants"
+  },
+  "Asian black bear": {
+    "diet": "omnivore",
+    "conf": 0.747,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.747,
+      "herbivore": 0.231
+    },
+    "kingdom": "Animals"
+  },
+  "Fleabane": {
+    "diet": "photosynthetic",
+    "conf": 0.82,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.82,
+      "herbivore": 0.087,
+      "omnivore": 0.046,
+      "other": 0.03
+    },
+    "kingdom": "Plants"
+  },
+  "Rose-breasted grosbeak": {
+    "diet": "omnivore",
+    "conf": 0.602,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.602,
+      "herbivore": 0.331,
+      "other": 0.052
+    },
+    "kingdom": "Animals"
+  },
+  "Pansy": {
+    "diet": "photosynthetic",
+    "conf": 0.906,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.906,
+      "herbivore": 0.041,
+      "omnivore": 0.022,
+      "other": 0.021
+    },
+    "kingdom": "Plants"
+  },
+  "Housefly": {
+    "diet": "decomposer",
+    "conf": 0.544,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "decomposer": 0.544,
+      "other": 0.271,
+      "omnivore": 0.149,
+      "herbivore": 0.02
+    },
+    "kingdom": "Animals"
+  },
+  "Aye-aye": {
+    "diet": "herbivore",
+    "conf": 0.507,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.507,
+      "omnivore": 0.405,
+      "other": 0.057,
+      "carnivore": 0.023
+    },
+    "kingdom": "Animals"
+  },
+  "Allspice": {
+    "diet": "photosynthetic",
+    "conf": 0.652,
+    "unsure": false,
+    "grounded_plant": true,
+    "dist": {
+      "photosynthetic": 0.652,
+      "herbivore": 0.24,
+      "other": 0.058,
+      "omnivore": 0.033
+    },
+    "kingdom": "Plants"
+  },
+  "Makit": {
+    "diet": "other",
+    "conf": 0.494,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.494,
+      "decomposer": 0.438,
+      "omnivore": 0.045
+    },
+    "kingdom": "Fantasy"
+  },
+  "Wallflower": {
+    "diet": "other",
+    "conf": 0.347,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.347,
+      "herbivore": 0.326,
+      "omnivore": 0.147,
+      "photosynthetic": 0.101,
+      "decomposer": 0.055,
+      "carnivore": 0.024
+    },
+    "kingdom": "Fantasy"
+  },
+  "Emoorah": {
+    "diet": "other",
+    "conf": 0.55,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.55,
+      "omnivore": 0.189,
+      "carnivore": 0.138,
+      "herbivore": 0.076,
+      "decomposer": 0.04
+    },
+    "kingdom": "Fantasy"
+  },
+  "Treant": {
+    "diet": "photosynthetic",
+    "conf": 0.405,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "photosynthetic": 0.405,
+      "herbivore": 0.207,
+      "other": 0.186,
+      "omnivore": 0.141,
+      "decomposer": 0.058
+    },
+    "kingdom": "Fantasy"
+  },
+  "Aspidochiron": {
+    "diet": "herbivore",
+    "conf": 0.641,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "herbivore": 0.641,
+      "other": 0.165,
+      "omnivore": 0.142,
+      "decomposer": 0.038
+    },
+    "kingdom": "Fantasy"
+  },
+  "Saketachew": {
+    "diet": "other",
+    "conf": 0.745,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.745,
+      "decomposer": 0.134,
+      "omnivore": 0.034,
+      "photosynthetic": 0.03,
+      "herbivore": 0.029,
+      "carnivore": 0.028
+    },
+    "kingdom": "Fantasy"
+  },
+  "Baku": {
+    "diet": "other",
+    "conf": 0.573,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.573,
+      "decomposer": 0.264,
+      "omnivore": 0.143
+    },
+    "kingdom": "Fantasy"
+  },
+  "Moonlight dragon": {
+    "diet": "other",
+    "conf": 0.503,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.503,
+      "carnivore": 0.163,
+      "decomposer": 0.131,
+      "omnivore": 0.104,
+      "herbivore": 0.069,
+      "photosynthetic": 0.03
+    },
+    "kingdom": "Fantasy"
+  },
+  "Unicorn": {
+    "diet": "other",
+    "conf": 0.809,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.809,
+      "herbivore": 0.082,
+      "omnivore": 0.061
+    },
+    "kingdom": "Fantasy"
+  },
+  "Yi Ni": {
+    "diet": "other",
+    "conf": 0.806,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.806,
+      "decomposer": 0.103,
+      "omnivore": 0.061
+    },
+    "kingdom": "Fantasy"
+  },
+  "Xerephs": {
+    "diet": "other",
+    "conf": 0.392,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.392,
+      "decomposer": 0.377,
+      "herbivore": 0.15,
+      "omnivore": 0.039,
+      "photosynthetic": 0.025
+    },
+    "kingdom": "Fantasy"
+  },
+  "Odonsaii": {
+    "diet": "other",
+    "conf": 0.372,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.372,
+      "carnivore": 0.253,
+      "omnivore": 0.226,
+      "decomposer": 0.089,
+      "herbivore": 0.052
+    },
+    "kingdom": "Fantasy"
+  },
+  "Squishmeat": {
+    "diet": "other",
+    "conf": 0.402,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.402,
+      "omnivore": 0.262,
+      "carnivore": 0.177,
+      "decomposer": 0.087,
+      "herbivore": 0.061
+    },
+    "kingdom": "Fantasy"
+  },
+  "Whooly": {
+    "diet": "other",
+    "conf": 0.529,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.529,
+      "omnivore": 0.188,
+      "photosynthetic": 0.095,
+      "herbivore": 0.093,
+      "decomposer": 0.073,
+      "carnivore": 0.022
+    },
+    "kingdom": "Fantasy"
+  },
+  "Striped Snurggle": {
+    "diet": "carnivore",
+    "conf": 0.424,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.424,
+      "other": 0.42,
+      "omnivore": 0.116,
+      "decomposer": 0.03
+    },
+    "kingdom": "Fantasy"
+  },
+  "Grimoire": {
+    "diet": "other",
+    "conf": 0.698,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.698,
+      "decomposer": 0.127,
+      "omnivore": 0.093,
+      "carnivore": 0.063
+    },
+    "kingdom": "Fantasy"
+  },
+  "Tsuredure": {
+    "diet": "other",
+    "conf": 0.596,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.596,
+      "omnivore": 0.127,
+      "decomposer": 0.115,
+      "carnivore": 0.078,
+      "herbivore": 0.063,
+      "photosynthetic": 0.021
+    },
+    "kingdom": "Fantasy"
+  },
+  "Hex Pig": {
+    "diet": "other",
+    "conf": 0.323,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.323,
+      "omnivore": 0.266,
+      "herbivore": 0.16,
+      "carnivore": 0.141,
+      "decomposer": 0.1
+    },
+    "kingdom": "Fantasy"
+  },
+  "Mundane": {
+    "diet": "other",
+    "conf": 0.355,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.355,
+      "omnivore": 0.352,
+      "carnivore": 0.114,
+      "herbivore": 0.11,
+      "decomposer": 0.067
+    },
+    "kingdom": "Fantasy"
+  },
+  "The Lone Local": {
+    "diet": "other",
+    "conf": 0.395,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.395,
+      "decomposer": 0.185,
+      "omnivore": 0.181,
+      "carnivore": 0.146,
+      "herbivore": 0.069,
+      "photosynthetic": 0.024
+    },
+    "kingdom": "Fantasy"
+  },
+  "Brownie": {
+    "diet": "other",
+    "conf": 0.709,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.709,
+      "carnivore": 0.101,
+      "omnivore": 0.075,
+      "decomposer": 0.073,
+      "herbivore": 0.038
+    },
+    "kingdom": "Fantasy"
+  },
+  "Ogre": {
+    "diet": "omnivore",
+    "conf": 0.381,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.381,
+      "carnivore": 0.254,
+      "other": 0.193,
+      "herbivore": 0.164
+    },
+    "kingdom": "Fantasy"
+  },
+  "Sabertooth": {
+    "diet": "carnivore",
+    "conf": 0.952,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.952,
+      "other": 0.022
+    },
+    "kingdom": "Fantasy"
+  },
+  "Banolion": {
+    "diet": "other",
+    "conf": 0.295,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.295,
+      "omnivore": 0.283,
+      "carnivore": 0.249,
+      "herbivore": 0.117,
+      "decomposer": 0.049
+    },
+    "kingdom": "Fantasy"
+  },
+  "Kitawa": {
+    "diet": "omnivore",
+    "conf": 0.451,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.451,
+      "other": 0.25,
+      "herbivore": 0.192,
+      "carnivore": 0.068,
+      "decomposer": 0.039
+    },
+    "kingdom": "Fantasy"
+  },
+  "Ginormous chicken": {
+    "diet": "other",
+    "conf": 0.46,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.46,
+      "omnivore": 0.219,
+      "carnivore": 0.212,
+      "decomposer": 0.057,
+      "herbivore": 0.048
+    },
+    "kingdom": "Fantasy"
+  },
+  "Manbearpig": {
+    "diet": "carnivore",
+    "conf": 0.403,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.403,
+      "omnivore": 0.347,
+      "other": 0.203,
+      "herbivore": 0.028
+    },
+    "kingdom": "Fantasy"
+  },
+  "Deva": {
+    "diet": "other",
+    "conf": 0.901,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.901,
+      "omnivore": 0.045,
+      "photosynthetic": 0.03
+    },
+    "kingdom": "Fantasy"
+  },
+  "Eyegore": {
+    "diet": "other",
+    "conf": 0.427,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.427,
+      "carnivore": 0.246,
+      "omnivore": 0.207,
+      "decomposer": 0.118
+    },
+    "kingdom": "Fantasy"
+  },
+  "Locho": {
+    "diet": "decomposer",
+    "conf": 0.29,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "decomposer": 0.29,
+      "other": 0.276,
+      "carnivore": 0.275,
+      "omnivore": 0.134
+    },
+    "kingdom": "Fantasy"
+  },
+  "Horrificasculus": {
+    "diet": "decomposer",
+    "conf": 0.882,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "decomposer": 0.882,
+      "other": 0.048,
+      "carnivore": 0.048
+    },
+    "kingdom": "Fantasy"
+  },
+  "Embryoth": {
+    "diet": "carnivore",
+    "conf": 0.498,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.498,
+      "decomposer": 0.269,
+      "omnivore": 0.129,
+      "other": 0.095
+    },
+    "kingdom": "Fantasy"
+  },
+  "Hollow": {
+    "diet": "other",
+    "conf": 0.563,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.563,
+      "omnivore": 0.19,
+      "carnivore": 0.147,
+      "decomposer": 0.096
+    },
+    "kingdom": "Fantasy"
+  },
+  "Nuckelavee": {
+    "diet": "other",
+    "conf": 0.502,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.502,
+      "decomposer": 0.315,
+      "omnivore": 0.106,
+      "carnivore": 0.069
+    },
+    "kingdom": "Fantasy"
+  },
+  "Charrhawk": {
+    "diet": "carnivore",
+    "conf": 0.773,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.773,
+      "other": 0.122,
+      "omnivore": 0.072,
+      "decomposer": 0.029
+    },
+    "kingdom": "Fantasy"
+  },
+  "Thousand Pox": {
+    "diet": "other",
+    "conf": 0.357,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.357,
+      "decomposer": 0.27,
+      "herbivore": 0.236,
+      "omnivore": 0.112
+    },
+    "kingdom": "Fantasy"
+  },
+  "Charybdis": {
+    "diet": "carnivore",
+    "conf": 0.317,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.317,
+      "other": 0.296,
+      "omnivore": 0.253,
+      "decomposer": 0.13
+    },
+    "kingdom": "Fantasy"
+  },
+  "Quinom'": {
+    "diet": "photosynthetic",
+    "conf": 0.891,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "photosynthetic": 0.891,
+      "other": 0.079
+    },
+    "kingdom": "Fantasy"
+  },
+  "Nidhogg": {
+    "diet": "decomposer",
+    "conf": 0.968,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "decomposer": 0.968
+    },
+    "kingdom": "Fantasy"
+  },
+  "Bahamut": {
+    "diet": "other",
+    "conf": 0.58,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.58,
+      "carnivore": 0.296,
+      "omnivore": 0.076,
+      "decomposer": 0.031
+    },
+    "kingdom": "Fantasy"
+  },
+  "Kraken": {
+    "diet": "carnivore",
+    "conf": 0.737,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.737,
+      "other": 0.178,
+      "omnivore": 0.065
+    },
+    "kingdom": "Fantasy"
+  },
+  "Couatl": {
+    "diet": "other",
+    "conf": 0.551,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.551,
+      "omnivore": 0.189,
+      "carnivore": 0.185,
+      "decomposer": 0.033,
+      "herbivore": 0.03
+    },
+    "kingdom": "Fantasy"
+  },
+  "Nightmare": {
+    "diet": "carnivore",
+    "conf": 0.292,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "carnivore": 0.292,
+      "other": 0.271,
+      "decomposer": 0.232,
+      "omnivore": 0.196
+    },
+    "kingdom": "Fantasy"
+  },
+  "Dethelfin": {
+    "diet": "other",
+    "conf": 0.453,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.453,
+      "decomposer": 0.196,
+      "carnivore": 0.157,
+      "omnivore": 0.155,
+      "photosynthetic": 0.022
+    },
+    "kingdom": "Fantasy"
+  },
+  "Mnemosyne": {
+    "diet": "other",
+    "conf": 0.375,
+    "unsure": true,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.375,
+      "decomposer": 0.372,
+      "carnivore": 0.139,
+      "omnivore": 0.112
+    },
+    "kingdom": "Fantasy"
+  },
+  "Mimir": {
+    "diet": "other",
+    "conf": 0.503,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.503,
+      "decomposer": 0.339,
+      "omnivore": 0.086,
+      "carnivore": 0.055
+    },
+    "kingdom": "Fantasy"
+  },
+  "Ouroboronion": {
+    "diet": "other",
+    "conf": 0.881,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.881,
+      "carnivore": 0.051,
+      "omnivore": 0.042
+    },
+    "kingdom": "Fantasy"
+  },
+  "Lyrebird": {
+    "diet": "omnivore",
+    "conf": 0.598,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "omnivore": 0.598,
+      "herbivore": 0.208,
+      "other": 0.149,
+      "carnivore": 0.041
+    },
+    "kingdom": "Fantasy"
+  },
+  "Dresden": {
+    "diet": "other",
+    "conf": 0.786,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.786,
+      "omnivore": 0.131,
+      "decomposer": 0.061,
+      "carnivore": 0.021
+    },
+    "kingdom": "Fantasy"
+  },
+  "Anosy": {
+    "diet": "other",
+    "conf": 0.862,
+    "unsure": false,
+    "grounded_plant": false,
+    "dist": {
+      "other": 0.862,
+      "omnivore": 0.05,
+      "carnivore": 0.047,
+      "decomposer": 0.023
+    },
+    "kingdom": "Fantasy"
+  }
+}
