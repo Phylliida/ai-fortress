@@ -83,18 +83,17 @@ PLAN_FEWSHOT = (
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
 
 # diff: distinctive parts BEYOND what the template already covers. We list the species' ALREADY-INCLUDED parts
-# (the pruned template) as context before the question, so the model spends its answer on genuinely new parts
-# (a mane) instead of re-listing covered ones (which we'd otherwise just filter out, wasting the slots).
-# Under the COUNTERFACTUAL "if it were real" (like prune/verify) so a mythical creature's distinctive parts (a
-# dragon's wings) aren't suppressed by the "isn't real" reflex right at generation. POSITIVE framing — "name
-# only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing (an elf's "pointy hat") and adjectives
-# (Makit's "porous") WITHOUT naming them (a base model latches onto a mentioned "don't X"). The verify backstops
-# with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
+# (the pruned template) as context so the model names genuinely NEW parts (a mane), not covered ones. Under
+# the COUNTERFACTUAL "if it were real" (like prune/verify) so a mythical creature's parts aren't suppressed as
+# "not real". POSITIVE framing — "name only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing
+# and adjectives WITHOUT naming them (a base model latches onto a mentioned "don't X"); the verify backstops.
+# Exemplar ANSWERS are multi-part with VARYING counts (2/4/3) so the model doesn't learn to emit just one;
+# exemplars span plans (bird / fantasy-reptile / fish).
 _DIFF_INSTR = "Name only its natural body parts, like a mane, tusks, or pointed ears"
 DIFF_FEWSHOT = (
-    f"If a peacock were real, it would have these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: crest\n"
-    f"If an elf were real, it would have these parts: head, arms, hands, legs, skin, hair, eyes, teeth. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: pointed ears\n"
-    f"If a catfish were real, it would have these parts: fins, gills, scales, tail, eyes, mouth, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: barbels\n")
+    f"If a peacock were real, it would have these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: crest, long train\n"
+    f"If a dragon were real, it would have these parts: head, legs, tail, scales, claws, teeth, heart, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: wings, horns, spikes, tail frills\n"
+    f"If a catfish were real, it would have these parts: fins, gills, scales, tail, eyes, mouth, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: barbels, adipose fin, fin spines\n")
 # verify (adversarial) — "would X be a real body part of it" rejects a quality/adjective ("porous") AND
 # CLOTHING / worn items ("a hat"), not just "does it have X" (an adjective/hat passes that). Under the
 # COUNTERFACTUAL so a mythical creature's real part (a dragon's wings) isn't denied as "not real". Mixed
@@ -129,7 +128,7 @@ def classify_body_plan(server, species, desc=None):
     return o2c[top], round(probs[top], 3)
 
 
-def species_part_diff(server, species, plan, desc=None, known_parts=None, samples=3, threshold=0.5):
+def species_part_diff(server, species, plan, desc=None, known_parts=None, samples=4, threshold=0.5):
     """Distinctive parts beyond what the template covers. Lists `known_parts` (the pruned template) as context
     so the model names genuinely NEW parts; multi-sample union (recall) -> adversarial verify (rejects
     qualities/adjectives and clothing)."""
