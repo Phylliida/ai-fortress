@@ -17,7 +17,7 @@ BODY_PLANS = {
         "head", "neck", "arms", "legs", "hands", "feet", "paws", "fingers", "toes", "tail", "ears", "eyes", "eyelids", "eyelashes", "eyebrows",
         "nose", "nostrils", "mouth", "lips", "gums", "teeth", "tongue", "whiskers", "claws", "nipples",
         "belly button", "genitals", "anus",
-        "meat", "hide", "fur", "hair", "bone", "ribs", "cartilage", "blood", "veins", "fat", "sinew", "marrow",
+        "meat", "hide", "skin", "fur", "hair", "bone", "ribs", "cartilage", "blood", "veins", "fat", "sinew", "marrow",
         "heart", "liver", "lungs", "brain", "spinal cord", "stomach", "intestines", "kidneys", "bladder",
         "spleen", "pancreas", "gallbladder",
         "fingernails", "toenails", "saliva", "mucus", "earwax", "sweat", "tears", "urine", "droppings", "milk",
@@ -88,8 +88,10 @@ PLAN_FEWSHOT = (
 # "not real". POSITIVE framing — "name only its NATURAL BODY PARTS" — scopes to anatomy, keeping out clothing
 # and adjectives WITHOUT naming them (a base model latches onto a mentioned "don't X"); the verify backstops.
 # Exemplar ANSWERS are multi-part with VARYING counts (2/4/3) so the model doesn't learn to emit just one;
-# exemplars span plans (bird / fantasy-reptile / fish).
-_DIFF_INSTR = "Name only its natural body parts, like a mane, tusks, or pointed ears"
+# exemplars span plans (bird / fantasy-reptile / fish). The instruction anchors GRANULARITY positively — "at
+# a similar level of detail as the parts listed" — so it matches the template's level (a mane, not the
+# "sartorius muscle"; chromatophores, not a "paralarva" life-stage) without a negative "don't go too fine".
+_DIFF_INSTR = "Name only its natural body parts, at a similar level of detail as the parts listed (like a mane, tusks, or pointed ears)"
 DIFF_FEWSHOT = (
     f"If a peacock were real, it would have these parts: feathers, wings, beak, legs, tail, eyes, meat, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: crest, long train\n"
     f"If a dragon were real, it would have these parts: head, legs, tail, scales, claws, teeth, heart, bone. Besides those, what other distinctive body parts would it have? {_DIFF_INSTR}.\nAnswer: wings, horns, spikes, tail frills\n"
