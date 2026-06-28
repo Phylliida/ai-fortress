@@ -8,27 +8,57 @@ and the exception layer. (Per-species pruning of inapplicable template parts is 
 """
 import baseModelPrimitives as bmp
 
-# Templates bootstrapped via sample_union ("harvestable parts/organs/tissues of a typical {plan}") then
-# curated to the COMMON, harvest-granularity organ complement. Species-specific parts (horns, antlers,
-# tusks, wool, hooves, mane) deliberately live in the species-diff, not here; pruning drops any template
-# organ a given species lacks.
+# Templates = the COMMON full-body inventory per plan, bootstrapped via sample_union (a broad prompt spanning
+# EXTERNAL parts / ORGANS / TISSUES / SUBSTANCES) then curated; grouped by layer below. Species-specific parts
+# (horns, antlers, tusks, wool, hooves, mane, fingers) live in the species-diff, not here; pruning drops any
+# template part a given species lacks (a snake's legs, an octopus's shell).
 BODY_PLANS = {
-    "mammal":    ["meat", "hide", "fur", "bone", "blood", "fat", "sinew", "heart", "liver", "lungs", "brain",
-                  "stomach", "intestines", "kidneys", "spleen", "bladder", "marrow", "eyes", "tongue", "teeth"],
-    "bird":      ["meat", "feathers", "bone", "blood", "fat", "heart", "liver", "lungs", "gizzard", "crop",
-                  "kidneys", "brain", "eyes", "beak", "egg", "talons"],
-    "reptile":   ["meat", "skin", "scales", "bone", "blood", "fat", "heart", "liver", "lungs", "kidneys",
-                  "stomach", "eggs", "claws", "eyes", "teeth"],
-    "amphibian": ["meat", "skin", "bone", "blood", "fat", "heart", "liver", "lungs", "kidneys", "brain", "eggs", "eyes"],
-    "fish":      ["meat", "scales", "bone", "fins", "gills", "roe", "liver", "heart", "kidneys", "stomach",
-                  "swim bladder", "brain", "eyes"],
-    "insect":    ["exoskeleton", "wings", "legs", "antennae", "mandibles", "compound eyes", "hemolymph", "gut", "eggs"],
-    "mollusc":   ["meat", "shell", "mantle", "foot", "gills", "tentacles", "ink", "radula", "siphon",
-                  "liver", "kidney", "gonads", "heart", "eyes"],
-    "plant":     ["root", "stem", "leaves", "bark", "flower", "fruit", "seed", "sap", "wood", "pollen"],
-    "fungus":    ["cap", "stem", "spores", "mycelium", "gills"],
-    "mineral":   ["ore", "crystal", "stone", "dust"],
-    "construct": ["frame", "plating", "wiring", "core", "gears"],
+    "mammal": [
+        "head", "neck", "legs", "paws", "toes", "tail", "ears", "eyes", "nose", "mouth", "lips", "teeth", "tongue", "whiskers", "claws",
+        "meat", "hide", "fur", "bone", "blood", "fat", "sinew", "marrow",
+        "heart", "liver", "lungs", "brain", "stomach", "intestines", "kidneys", "bladder", "spleen", "pancreas",
+        "nails", "saliva", "mucus", "earwax", "sweat", "tears", "urine", "droppings", "milk"],
+    "bird": [
+        "head", "beak", "neck", "wings", "legs", "feet", "talons", "tail", "eyes",
+        "feathers", "meat", "skin", "bone", "blood", "fat",
+        "heart", "liver", "lungs", "gizzard", "crop", "kidneys", "intestines", "brain",
+        "egg", "saliva", "mucus", "droppings"],
+    "reptile": [
+        "head", "jaws", "tail", "legs", "feet", "claws", "eyes", "nostrils", "mouth", "tongue", "teeth",
+        "scales", "skin", "meat", "bone", "blood", "fat",
+        "heart", "liver", "lungs", "kidneys", "stomach", "brain",
+        "eggs", "saliva", "mucus", "droppings"],
+    "amphibian": [
+        "head", "legs", "toes", "eyes", "mouth", "tongue", "teeth",
+        "skin", "meat", "bone", "blood", "fat",
+        "heart", "liver", "lungs", "kidneys", "brain", "stomach",
+        "eggs", "mucus", "slime"],
+    "fish": [
+        "head", "fins", "tail", "scales", "gills", "eyes", "mouth", "teeth",
+        "meat", "skin", "bone", "cartilage", "blood", "fat",
+        "heart", "liver", "kidneys", "stomach", "swim bladder", "brain",
+        "roe", "bile", "mucus", "slime"],
+    "insect": [
+        "head", "thorax", "abdomen", "legs", "wings", "antennae", "mandibles", "compound eyes", "mouthparts",
+        "exoskeleton", "chitin",
+        "gut", "heart",
+        "hemolymph", "eggs"],
+    "mollusc": [
+        "head", "foot", "mantle", "shell", "eyes", "mouth", "radula", "tentacles", "siphon", "gills",
+        "meat", "blood",
+        "heart", "liver", "kidney", "gonads",
+        "ink", "mucus", "slime"],
+    "plant": [
+        "roots", "stem", "trunk", "branches", "bark", "leaves", "buds", "flowers", "fruit", "seeds",
+        "pollen", "nectar", "sap", "resin", "wood"],
+    "fungus": [
+        "cap", "stem", "gills", "pores", "ring", "volva",
+        "spores", "mycelium", "hyphae", "fruiting body", "flesh"],
+    "mineral": ["ore", "crystal", "facets", "veins", "dust", "core"],
+    "construct": [
+        "casing", "chassis", "frame", "plating", "joints",
+        "wiring", "cables", "circuits", "processor", "core", "gears", "motors", "actuators", "sensors",
+        "battery", "fuel"],
 }
 PLAN_OPTS = [("mammal", "mammal"), ("bird", "bird"), ("reptile", "reptile"), ("amphibian", "amphibian"),
              ("fish", "fish"), ("insect", "insect"), ("mollusc", "mollusc"), ("plant", "plant"),
