@@ -74,11 +74,12 @@ PLAN_FEWSHOT = (
     f"What body plan does a salmon have? {_PO}\nAnswer: fish\n"
     f"What body plan does a robot have? {_PO}\nAnswer: machine\n")
 
-# diff: distinctive parts beyond the typical plan. Demands concrete NOUN BODY PARTS — excludes (a) descriptions/
-# adjectives (Makit echoed "smooth-skinned, porous") and (b) CLOTHING / worn items / tools (an elf gave "pointy
-# hat", which is the separate clothing system, not anatomy). The elf exemplar models "pointed ears" to teach
-# exactly that. Exemplars span body-plans (bird / fantasy-mammal / fish), not all-mammal.
-_DIFF_INSTR = "Name only body parts (like a mane, tusks, or pointed ears) — not clothing, tools, or things it wears or carries"
+# diff: distinctive parts beyond the typical plan. POSITIVE framing — "name only its NATURAL BODY PARTS (like
+# a mane, tusks, pointed ears)" — positively scopes to anatomy, which keeps out clothing/tools (an elf's
+# "pointy hat" is a separate system) and adjectives (Makit's "porous") WITHOUT naming them: a base model
+# latches onto a mentioned "don't X" concept, so negative prompting backfires. The elf exemplar models
+# "pointed ears"; the verify backstops with labeled counter-examples. Exemplars span plans (bird/fantasy/fish).
+_DIFF_INSTR = "Name only its natural body parts, like a mane, tusks, or pointed ears"
 DIFF_FEWSHOT = (
     f"Question: What distinctive body parts does a peacock have that a typical bird lacks? {_DIFF_INSTR}.\nAnswer: crest\n"
     f"Question: What distinctive body parts does an elf have that a typical mammal lacks? {_DIFF_INSTR}.\nAnswer: pointed ears\n"

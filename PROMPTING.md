@@ -32,6 +32,12 @@ indirection we kept removing, and the direct form that fixed it:
 - **A quantity question answered with a category** ("how much would X sell for? (worthless…priceless)") →
   a **direct adjective** ("how expensive is X?"). The mismatch — asking a number, wanting a word — is itself
   indirection.
+- **Negative instructions** ("*don't* name clothing", "*not* descriptions") → say what TO do, **positively**.
+  A base model latches onto the mentioned concept (telling it "not clothing" can *prime* clothing) or just
+  drops the negation — negative prompting is unreliable. Scope the target directly instead: *"name only its
+  natural body parts"* keeps out hats without ever saying "hat" (the elf gives *pointed ears*, not *pointy
+  hat*). Teach the boundary with labeled counter-examples in the few-shot (`hat → No`), not with a "don't" in
+  the instruction.
 
 **Pre-flight test:** before sending a prompt, ask *"is the model being asked to resolve a reference, map a
 header onto items, or convert a concept into an arbitrary code?"* If yes, remove it.
@@ -193,6 +199,7 @@ the diet-classifier (a crop name reads as the food, not the organism):
 | diversity collapses (1000 near-dups) | embedding dedup-on-name; diversify the few-shot exemplars |
 | a gate over-fires (chair→shelter) | ask the *mode-appropriate* question, not a generic one |
 | you want a non-0.5 Y/N threshold (e.g. 0.3) | the framing measures the wrong predicate — fix the question, keep 0.5 |
+| a "don't do X" instruction is ignored or primes X | positive framing — scope what TO do ("only its body parts"); counter-examples in the few-shot |
 | a gate denies a fictional thing its parts/needs | counterfactual framing: "if a {X} were real, would it…" |
 | categorical argmax flaky / want confidence | `gen_categorical` — read the distribution, don't sample |
 | bare name read as the wrong sense (garlic→food) | model-gate "is it a plant?" → re-ask "X plant" (don't assign from metadata) |
