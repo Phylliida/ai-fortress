@@ -16,26 +16,26 @@ BODY_PLANS = {
     "mammal": [
         "head", "neck", "arms", "legs", "hands", "feet", "paws", "fingers", "toes", "tail", "ears", "eyes", "eyelids", "eyelashes", "eyebrows",
         "nose", "nostrils", "mouth", "lips", "gums", "teeth", "tongue", "whiskers", "claws", "nipples",
-        "belly button", "genitals", "anus",
+        "belly button", "genitals", "anus", "eardrums",
         "meat", "hide", "skin", "fur", "hair", "bone", "ribs", "cartilage", "blood", "veins", "fat", "sinew", "marrow",
         "heart", "liver", "lungs", "brain", "spinal cord", "stomach", "intestines", "kidneys", "bladder",
         "spleen", "pancreas", "gallbladder",
         "fingernails", "toenails", "saliva", "mucus", "earwax", "sweat", "tears", "urine", "droppings", "milk",
         "stomach acid", "bile"],
     "bird": [
-        "head", "beak", "neck", "wings", "legs", "feet", "talons", "claws", "tail", "eyes", "nostrils", "tongue",
+        "head", "beak", "neck", "wings", "legs", "feet", "talons", "claws", "tail", "eyes", "eardrums", "nostrils", "tongue",
         "feathers", "down", "meat", "skin", "bone", "marrow", "blood", "fat",
         "heart", "liver", "lungs", "trachea", "gizzard", "crop", "kidneys", "intestines", "spleen", "pancreas",
         "brain", "cloaca",
         "egg", "saliva", "mucus", "droppings", "stomach acid"],
     "reptile": [
-        "head", "jaws", "tail", "legs", "feet", "claws", "eyes", "nostrils", "mouth", "tongue", "teeth",
+        "head", "jaws", "tail", "legs", "feet", "claws", "eyes", "eardrums", "nostrils", "mouth", "tongue", "teeth",
         "scales", "skin", "meat", "bone", "blood", "fat",
         "heart", "liver", "lungs", "kidneys", "stomach", "intestines", "spleen", "pancreas", "bladder", "brain",
         "cloaca",
         "eggs", "saliva", "mucus", "droppings", "stomach acid"],
     "amphibian": [
-        "head", "legs", "feet", "toes", "eyes", "nostrils", "mouth", "tongue", "teeth", "gills",
+        "head", "legs", "feet", "toes", "eyes", "eardrums", "nostrils", "mouth", "tongue", "teeth", "gills",
         "skin", "meat", "bone", "blood", "fat",
         "heart", "liver", "lungs", "kidneys", "spleen", "bladder", "brain", "spinal cord", "stomach", "cloaca",
         "eggs", "mucus", "slime", "stomach acid"],
@@ -52,7 +52,7 @@ BODY_PLANS = {
         "hemolymph", "eggs"],
     "mollusc": [
         "head", "foot", "mantle", "shell", "eyes", "mouth", "beak", "radula", "tentacles", "siphon", "gills",
-        "meat", "blood",
+        "meat", "skin", "blood",
         "brain", "heart", "liver", "kidney", "gonads", "visceral mass",
         "ink", "mucus", "slime", "anus"],
     "plant": [
