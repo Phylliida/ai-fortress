@@ -185,15 +185,23 @@ DECOMP_GATE_FEWSHOT = (
     "Question: Can a nail be taken apart into several smaller pieces?\nAnswer: No\n"
     "Question: Can a spring be taken apart into several smaller pieces?\nAnswer: No\n"
     "Question: Can a circuit board be taken apart into several smaller pieces?\nAnswer: Yes\n")
+# per-part verify against the parent — filters derailed temp-1 draws (a "cyclotron" in a shock absorber).
+# Counterfactual + "would it have" (consistent with the body-part prune); mixed Yes/No, high-perplexity (Y N N Y).
+VERIFY_SUBPART_FEWSHOT = (
+    "Question: If an engine were real, would it have a piston?\nAnswer: Yes\n"
+    "Question: If a shock absorber were real, would it have a cyclotron?\nAnswer: No\n"
+    "Question: If a bicycle were real, would it have a banana?\nAnswer: No\n"
+    "Question: If a laptop were real, would it have a hard drive?\nAnswer: Yes\n")
 
 
-def machine_subparts(server, thing, desc=None, samples=4):
-    """The main parts of `thing` (a machine or one of its components), as a sample-union list, embed-deduped
-    (collapses the singular/plural + synonym redundancy the union amplifies: pistons/piston, block/cylinder block)."""
+def machine_subparts(server, thing, desc=None, samples=4, threshold=0.5):
+    """The main parts of `thing` (a machine or component): sample-union -> embed-dedup (collapses pistons/piston
+    redundancy) -> per-part VERIFY against the parent (kills derailed draws like a cyclotron in a shock absorber)."""
     ctx = f"{thing} is {desc}.\n" if desc else ""
     raw = server.sample_union(ctx + SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
                               samples=samples, n_predict=50, max_words=3)
-    return embed_dedup(raw)
+    return [p for p in embed_dedup(raw) if server.yes_no_prob(
+        ctx + VERIFY_SUBPART_FEWSHOT + f"Question: If a {thing} were real, would it have a {p}?\nAnswer:") >= threshold]
 
 
 def is_decomposable(server, part):
