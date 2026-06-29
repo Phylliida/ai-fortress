@@ -58,6 +58,13 @@ header onto items, or convert a concept into an arbitrary code?"* If yes, remove
   counts (`2 / 4 / 3`, not always the same length) so it lists several and doesn't lock to a fixed count. (The
   distinctive-parts diff returned exactly *one* part per creature until the exemplars showed `crest, long
   train` / `wings, horns, spikes, tail frills` / `barbels, adipose fin, fin spines`.)
+- **VALIDATE ON TEST CASES DISTINCT FROM THE FEW-SHOT — testing an exemplar subject is cheating.** If your
+  test case appears (or nearly appears) in the few-shot, the model can copy the exemplar answer, so you're
+  measuring *memorization, not generalization* — the prompt looks great and silently fails on anything new.
+  Always probe with fresh subjects/values the few-shot never names. (Caught twice: the ADP decomposition
+  "worked" only because `blood→…→ADP` was an exemplar; the loot dressing "worked" on goblin-raider /
+  beggar / elf-merchant — every one a few-shot subject. The fix is to *change the test cases*, not the
+  few-shot: keep the curated exemplars, validate on a dwarf jeweler, an orc outcast, a gnome tinkerer.)
 - **Make the answer-shape *order* unpredictable — don't group, and don't regularly alternate either.** When
   exemplars come in shapes (Yes vs No, multi-ingredient vs single), the *sequence* of shapes should carry no
   signal, so the model is forced onto the content mapping instead of a positional one. **Both extremes leak
