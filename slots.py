@@ -48,6 +48,7 @@ HUMAN_SLOTS = [
 
 # sites that come in MULTIPLES (re-counted per species: a 4-armed mob → 4 gloves/held); value = human default.
 MULTI_SITES = {"ears": 2, "hands": 2, "fingers": 8, "wrists": 2, "ankles": 2, "feet": 2}
+MAX_SLOT_COUNT = 12     # clamp absurd counts (octopus "suckers: 3000", "armour: 64"); >12 wearable slots is impractical
 
 # count: small-integer "how many X" (base models handle these fine; only big/fuzzy numbers confabulate).
 # Mixed answers spanning 1..8, varied creatures/parts.
@@ -64,10 +65,12 @@ KNOWN_SITES = ", ".join(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
 # extras: spots a species has BEYOND the ones it already covers (listed in-prompt). POSITIVE framing, multi-
 # answer varying counts; "none" so human-like species add nothing. EXTRA_VERIFY backstops the human-shared
 # parts the context can't catch (shoulders/hair/knees aren't in KNOWN_SITES, so the model may still leak them).
+_EXTRA_Q = (lambda sp: f"A {sp} has body parts like {KNOWN_SITES}. Beyond those, what EXTRA body parts does a "
+            f"{sp} have that you could wear or hang something on (like a tail, horns, or wings)? Name the body parts.")
 SLOT_EXTRA_FEWSHOT = (
-    f"A snake already has spots like {KNOWN_SITES}. Beyond those, what other spots does a snake have where you could wear or hang something? Name the spots.\nAnswer: none\n"
-    f"A dragon already has spots like {KNOWN_SITES}. Beyond those, what other spots does a dragon have where you could wear or hang something? Name the spots.\nAnswer: horns, wings, tail, snout\n"
-    f"A centaur already has spots like {KNOWN_SITES}. Beyond those, what other spots does a centaur have where you could wear or hang something? Name the spots.\nAnswer: horse back, hooves, horse tail\n")
+    f"{_EXTRA_Q('snake')}\nAnswer: none\n"
+    f"{_EXTRA_Q('dragon')}\nAnswer: horns, wings, tail, snout\n"
+    f"{_EXTRA_Q('centaur')}\nAnswer: horse back, hooves, horse tail\n")
 # keep only spots a HUMAN LACKS (subtracts the shared parts the generator still leaks). Mixed Y/N, high-perplexity.
 EXTRA_VERIFY_FEWSHOT = (
     "Question: Does a human have a tail?\nAnswer: No\n"
@@ -97,15 +100,21 @@ def extract_count(server, species, site, desc=None):
 
 
 def slot_extras(server, species, desc=None, samples=4):
-    """Wearable spots a species has beyond the ones it already covers (KNOWN_SITES given as context, so the
-    generator names only new ones): sample-union -> embed-dedup (self) -> per-extra verify a HUMAN LACKS it."""
+    """Extra wearable body parts a species has beyond the ones it already covers (KNOWN_SITES given as context).
+    sample-union -> embed-dedup -> TWO verifies: (a) it's a real body PART of the species (reuses
+    parts.VERIFY_PART_FEWSHOT — rejects items like 'dagger'/'armour' and hallucinations like spider-wings), and
+    (b) a HUMAN lacks it (subtracts shared parts like shoulders/hair the context can't catch)."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    raw = server.sample_union(
-        ctx + SLOT_EXTRA_FEWSHOT +
-        f"A {species} already has spots like {KNOWN_SITES}. Beyond those, what other spots does a {species} have where you could wear or hang something? Name the spots.\nAnswer:",
-        samples=samples, n_predict=40, max_words=3, reject=lambda k: k in parts.NULL_TOKENS)
-    return [e for e in parts.embed_dedup(raw)                   # self-dedup only (no big seed embed -> no timeout)
-            if server.yes_no_prob(EXTRA_VERIFY_FEWSHOT + f"Question: Does a human have {e}?\nAnswer:") < 0.5]
+    raw = server.sample_union(ctx + SLOT_EXTRA_FEWSHOT + _EXTRA_Q(species) + "\nAnswer:",
+                              samples=samples, n_predict=40, max_words=3, reject=lambda k: k in parts.NULL_TOKENS)
+    out = []
+    for e in parts.embed_dedup(raw):
+        is_part = server.yes_no_prob(ctx + parts.VERIFY_PART_FEWSHOT +
+                                     f"Question: If a {species} were real, would {e} be a real body part of it?\nAnswer:") >= 0.5
+        human_has = server.yes_no_prob(EXTRA_VERIFY_FEWSHOT + f"Question: Does a human have {e}?\nAnswer:") >= 0.5
+        if is_part and not human_has:
+            out.append(e)
+    return out
 
 
 def species_slots(server, species, desc=None):
@@ -113,13 +122,14 @@ def species_slots(server, species, desc=None):
     Returns a list of {slot, site, kind, count}."""
     sites = list(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
     have = {site: server.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP for site in sites}
+    clamp = lambda c: max(1, min(c, MAX_SLOT_COUNT))
     counts = {}
     for site in sites:
         if have[site] and site in MULTI_SITES:
-            counts[site] = extract_count(server, species, site, desc) or MULTI_SITES[site]
+            counts[site] = clamp(extract_count(server, species, site, desc) or MULTI_SITES[site])
     out = [{**s, "count": counts.get(s["site"], s["count"])} for s in HUMAN_SLOTS if have[s["site"]]]
     for e in slot_extras(server, species, desc):                # species-specific extra spots
         name, cnt = _strip_count(e)                             # 'eight tentacles' -> ('tentacles', 8)
-        cnt = cnt or extract_count(server, species, name, desc) or 1
+        cnt = clamp(cnt or extract_count(server, species, name, desc) or 1)
         out.append({"slot": name, "site": name, "kind": "worn", "count": cnt})
     return out
