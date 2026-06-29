@@ -57,21 +57,23 @@ COUNT_FEWSHOT = (
     "How many tongues does a dog have?\nAnswer: 1\n"
     "How many arms does an octopus have?\nAnswer: 8\n")
 
-# extras: wearable/hang spots a species has BEYOND a human. POSITIVE framing, multi-answer varying counts;
-# "none" exemplar so human-like species add nothing. The generator alone leaks human-shared parts (it lists
-# "shoulders"/"hair" regardless of "beyond a human"), so EXTRA_VERIFY subtracts them per-extra.
+# the spots we already cover — passed AS CONTEXT so the generator names only NEW ones (known-slots trick, same
+# as the parts diff). Joined once, reused in the few-shot + query.
+KNOWN_SITES = ", ".join(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
+
+# extras: spots a species has BEYOND the ones it already covers (listed in-prompt). POSITIVE framing, multi-
+# answer varying counts; "none" so human-like species add nothing. EXTRA_VERIFY backstops the human-shared
+# parts the context can't catch (shoulders/hair/knees aren't in KNOWN_SITES, so the model may still leak them).
 SLOT_EXTRA_FEWSHOT = (
-    "Beyond a human's, what body spots does a snake have where you could wear or hang something? Name the spots.\nAnswer: none\n"
-    "Beyond a human's, what body spots does a dragon have where you could wear or hang something? Name the spots.\nAnswer: horns, wings, tail, snout\n"
-    "Beyond a human's, what body spots does a centaur have where you could wear or hang something? Name the spots.\nAnswer: horse back, four hooves, horse tail\n")
-# keep only spots a HUMAN LACKS (subtracts the shared parts the generator leaks). Mixed Y/N, high-perplexity.
+    f"A snake already has spots like {KNOWN_SITES}. Beyond those, what other spots does a snake have where you could wear or hang something? Name the spots.\nAnswer: none\n"
+    f"A dragon already has spots like {KNOWN_SITES}. Beyond those, what other spots does a dragon have where you could wear or hang something? Name the spots.\nAnswer: horns, wings, tail, snout\n"
+    f"A centaur already has spots like {KNOWN_SITES}. Beyond those, what other spots does a centaur have where you could wear or hang something? Name the spots.\nAnswer: horse back, hooves, horse tail\n")
+# keep only spots a HUMAN LACKS (subtracts the shared parts the generator still leaks). Mixed Y/N, high-perplexity.
 EXTRA_VERIFY_FEWSHOT = (
     "Question: Does a human have a tail?\nAnswer: No\n"
     "Question: Does a human have shoulders?\nAnswer: Yes\n"
     "Question: Does a human have wings?\nAnswer: No\n"
     "Question: Does a human have knees?\nAnswer: Yes\n")
-# names the generator/sites we dedup extras against, + leading count-word stripping ("eight tentacles" -> 8).
-SITE_NAMES = [s["site"] for s in HUMAN_SLOTS] + [s["slot"] for s in HUMAN_SLOTS]
 _NUMWORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
 
 
@@ -95,15 +97,14 @@ def extract_count(server, species, site, desc=None):
 
 
 def slot_extras(server, species, desc=None, samples=4):
-    """Wearable spots a species has beyond a human (tail/wings/horns): sample-union -> embed-dedup against the
-    human slots/sites (drops shared parts + self-dups) -> per-extra verify that a HUMAN actually LACKS it."""
+    """Wearable spots a species has beyond the ones it already covers (KNOWN_SITES given as context, so the
+    generator names only new ones): sample-union -> embed-dedup (self) -> per-extra verify a HUMAN LACKS it."""
     ctx = f"{species} is {desc}.\n" if desc else ""
     raw = server.sample_union(
         ctx + SLOT_EXTRA_FEWSHOT +
-        f"Beyond a human's, what body spots does a {species} have where you could wear or hang something? Name the spots.\nAnswer:",
+        f"A {species} already has spots like {KNOWN_SITES}. Beyond those, what other spots does a {species} have where you could wear or hang something? Name the spots.\nAnswer:",
         samples=samples, n_predict=40, max_words=3, reject=lambda k: k in parts.NULL_TOKENS)
-    cand = parts.embed_dedup(raw, seed=SITE_NAMES)              # drop ones matching a human slot/site + self-dups
-    return [e for e in cand                                     # keep only what a HUMAN lacks
+    return [e for e in parts.embed_dedup(raw)                   # self-dedup only (no big seed embed -> no timeout)
             if server.yes_no_prob(EXTRA_VERIFY_FEWSHOT + f"Question: Does a human have {e}?\nAnswer:") < 0.5]
 
 
