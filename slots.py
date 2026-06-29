@@ -171,16 +171,35 @@ def slot_extras(server, species, desc=None, samples=4):
     return out
 
 
+# species-level gate: does this thing wear clothing AT ALL? A mimic/wolf/ooze has a "torso" (survives the
+# site-prune) but doesn't wear a shirt — the human worn-slots don't apply, only its natural parts do. Cleanly
+# separates clothes-wearers from not (human/goblin/elf high, mimic/wolf/chest/ooze low). Mixed Y/N, Y N N Y.
+WEARS_CLOTHING_FEWSHOT = (
+    "Question: Does a human wear clothing?\nAnswer: Yes\n"
+    "Question: Does a wolf wear clothing?\nAnswer: No\n"
+    "Question: Does a slime wear clothing?\nAnswer: No\n"
+    "Question: Does an elf wear clothing?\nAnswer: Yes\n")
+
+
+def wears_clothing(server, species, desc=None):
+    """Does this species wear clothing/equipment at all? Gates the whole human worn-slot set (a mimic is a
+    chest, not a chest in a cotton shirt — it keeps only its natural parts)."""
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    return server.yes_no_prob(ctx + WEARS_CLOTHING_FEWSHOT + f"Question: Does a {species} wear clothing?\nAnswer:") >= 0.5
+
+
 def species_slots(server, species, desc=None):
-    """Per-species paper-doll: surviving HUMAN_SLOTS (site pruned) with per-species counts, plus extra slots.
-    Returns a list of {slot, site, kind, count}."""
-    sites = list(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
-    have = {site: server.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP for site in sites}
-    counts = site_counts(server, species, have, desc)
+    """Per-species paper-doll: surviving HUMAN_SLOTS (site pruned) with per-species counts, plus extra natural
+    parts. Non-clothes-wearers (mimic/wolf/ooze) skip the human worn-slots entirely — only their natural parts."""
     clamp = lambda c: max(1, min(c, MAX_SLOT_COUNT))
-    out = [{**s, "count": counts.get(s["site"], s["count"])} for s in HUMAN_SLOTS if have[s["site"]]]
-    for e in slot_extras(server, species, desc):                # species-specific extra spots
+    out = []
+    if wears_clothing(server, species, desc):                   # clothes-wearer: the full human paper-doll
+        sites = list(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
+        have = {site: server.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP for site in sites}
+        counts = site_counts(server, species, have, desc)
+        out = [{**s, "count": counts.get(s["site"], s["count"])} for s in HUMAN_SLOTS if have[s["site"]]]
+    for e in slot_extras(server, species, desc):                # natural-part extras always apply (lid/knob, fur)
         name, cnt = _strip_count(e)                             # 'eight tentacles' -> ('tentacles', 8)
         cnt = clamp(cnt or extract_count(server, species, name, desc) or 1)
-        out.append({"slot": name, "site": name, "kind": "worn", "count": cnt})
+        out.append({"slot": name, "site": name, "kind": "extra", "count": cnt})
     return out
