@@ -161,14 +161,24 @@ def prune_template(server, species, template, desc=None):
 
 def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
     """Drop near-duplicate strings by embedding cosine (peacock tail/plumage/train-plumage -> one). `seed`
-    are kept-but-unemitted anchors (the template), so distinctive parts also dedup against the template."""
-    anchors = list(bmp.embed_texts(seed, url)) if seed else []
-    out = []
-    for it in items:
-        e = bmp.embed_texts([it], url)[0]
-        if all(bmp.cosine(e, a) < sim for a in anchors):
-            out.append(it); anchors.append(e)
-    return out
+    are kept-but-unemitted anchors (the template), so distinctive parts also dedup against the template.
+    Falls back to exact (case-insensitive) dedup if the embed server is unreachable — so a flaky 8062 degrades
+    dedup quality but never BLANKS a runtime result (a mimic's whole bag once vanished on an embed outage)."""
+    try:
+        anchors = list(bmp.embed_texts(seed, url)) if seed else []
+        out = []
+        for it in items:
+            e = bmp.embed_texts([it], url)[0]
+            if all(bmp.cosine(e, a) < sim for a in anchors):
+                out.append(it); anchors.append(e)
+        return out
+    except Exception:                                      # embed down -> exact dedup, preserve order
+        seen, out = set(), []
+        for it in items:
+            k = it.lower().strip()
+            if k and k not in seen:
+                seen.add(k); out.append(it)
+        return out
 
 
 # --- MACHINES: recursive decomposition instead of a template. Living things share a finite set of body plans
