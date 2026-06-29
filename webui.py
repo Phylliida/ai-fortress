@@ -1043,13 +1043,17 @@ def api_item():
             tr["emission"] = T.bake_emission(SERVER, subject)
             yield sse({"type": "emission", "emission": tr["emission"]})
 
-            yield sse({"type": "status", "message": "ingredients…"})
-            ingr = categories_mod.verified_ingredients(SERVER, subject)   # recall -> per-ingredient Y/N verify
-            yield sse({"type": "ingredients", "items": ingr})
-
-            yield sse({"type": "status", "message": "composition…"})
-            food = needs.classify_food_type(SERVER, subject)
-            yield sse({"type": "food", "food": food})
+            yield sse({"type": "status", "message": "breaking it down…"})
+            decomp = parts.is_decomposable(SERVER, subject)
+            ingr = plist = food = None
+            if decomp:                                      # has separable parts -> show PARTS (decompose), not materials
+                plist = parts.machine_subparts(SERVER, subject)
+                yield sse({"type": "parts", "items": plist})
+            else:                                           # homogeneous -> MATERIALS (verified) + biological composition
+                ingr = categories_mod.verified_ingredients(SERVER, subject)
+                yield sse({"type": "ingredients", "items": ingr})
+                food = needs.classify_food_type(SERVER, subject)
+                yield sse({"type": "food", "food": food})
 
             yield sse({"type": "status", "message": f"sweeping {len(ITEM_NEED_LIST)} needs…"})
             served = {}
@@ -1062,7 +1066,8 @@ def api_item():
             record = {"id": uuid.uuid4().hex[:12],
                       "ts": datetime.datetime.now().isoformat(timespec="seconds"),
                       "name": name, "desc": desc, "subject": subject,
-                      "traits": tr, "ingredients": ingr, "food": food, "needs": served}
+                      "traits": tr, "decomposable": decomp, "ingredients": ingr, "parts": plist,
+                      "food": food, "needs": served}
             _append_item(record)
             yield sse({"type": "done", "record": record})
         except Exception as e:
