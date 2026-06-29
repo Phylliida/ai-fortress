@@ -39,6 +39,8 @@
   .hchip { background:#15110d; color:var(--muted); border:1px solid var(--line); border-radius:14px; padding:3px 11px; font-size:12px; cursor:pointer; white-space:nowrap; font-family:Georgia,serif; }
   .hchip:hover { color:var(--ink); border-color:var(--accent); }
   .hchip.cur { color:#1b1410; background:var(--accent); border-color:var(--accent); }
+  #coins { color:var(--jewelry); font-size:14px; font-style:italic; margin:0 2px 12px; min-height:18px; }
+  .group.bag h2 { color:var(--container); }
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin:14px 2px 2px; font-size:11px; color:var(--muted); }
   .legend span { display:inline-flex; align-items:center; gap:5px; } .legend .dot { width:8px; height:8px; border-radius:50%; }
 </style>
@@ -70,6 +72,7 @@
   <div id="history" class="history"></div>
   <div class="who" id="who"></div>
   <div id="status"></div>
+  <div id="coins"></div>
   <div class="groups" id="groups"></div>
 </div>
 
@@ -82,7 +85,9 @@ const REGION = {
   wrists:'Arms & Hands', hands:'Arms & Hands', fingers:'Arms & Hands',
   hips:'Lower Body', legs:'Lower Body', ankles:'Lower Body', feet:'Lower Body',
 };
-const ORDER = ['Head & Face','Neck & Torso','Arms & Hands','Lower Body','Carried','Held','Extra'];
+const ORDER = ['Head & Face','Neck & Torso','Arms & Hands','Lower Body','Held','Carried','Extra',
+               'Weapons','Tools','Consumables','Valuables','Personal'];
+const BAG_CATS = new Set(['Weapons','Tools','Consumables','Valuables','Personal']);
 let es = null;
 // slot -> body site (mirrors slots.HUMAN_SLOTS) so worn/jewelry/piercing items land in the right region
 const SLOT_SITE = {
@@ -96,7 +101,7 @@ function groupChips(name) {
   let g = document.getElementById('grp-' + name);
   if (!g) {
     g = document.createElement('div');
-    g.className = 'group' + (name === 'Extra' ? ' extra' : '');
+    g.className = 'group' + (name === 'Extra' ? ' extra' : '') + (BAG_CATS.has(name) ? ' bag' : '');
     g.id = 'grp-' + name;
     g.innerHTML = `<h2>${name}</h2>`;
     const groups = $('groups'); const idx = ORDER.indexOf(name); let before = null;
@@ -122,6 +127,16 @@ function addItem(m) {
   g.appendChild(row);
 }
 
+function addCarry(category, item) {                  // a carried-inventory item under its category group
+  const cat = category[0].toUpperCase() + category.slice(1);
+  const g = groupChips(cat);
+  const row = document.createElement('div'); row.className = 'item';
+  const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = 'var(--container)';
+  const what = document.createElement('span'); what.className = 'what'; what.textContent = item;
+  row.append(dot, what);
+  g.appendChild(row);
+}
+
 let HISTORY = [];
 async function loadHistory() {
   try { HISTORY = await (await fetch('/api/dress_history')).json(); } catch { HISTORY = []; }
@@ -144,9 +159,11 @@ function renderRecord(rec) {                  // show a stored dressed character
   if (es) es.close();
   $('groups').innerHTML = '';
   $('who').textContent = (rec.entity && rec.entity.prefix) || '';
+  $('coins').textContent = rec.coins ? '💰 ' + rec.coins : '';
   const items = rec.items || [];
   $('status').textContent = `from history — ${items.filter(i => i.item).length} of ${items.length} slots equipped · ${rec.ts || ''}`;
   for (const it of items) addItem(it);
+  if (rec.carried) for (const [cat, list] of Object.entries(rec.carried)) for (const it of (list || [])) addCarry(cat, it);
   if (rec.entity) for (const k of ['species','wealth','occupation','gender']) $(k).value = rec.entity[k] || '';
   markCurrent(rec.id);
 }
@@ -172,11 +189,13 @@ function dress() {
   const q = currentQuery();
   location.hash = q;               // store state in the hash so the URL is copy-paste shareable
   if (es) es.close();
-  $('groups').innerHTML = ''; $('who').textContent = ''; $('status').textContent = 'starting…';
+  $('groups').innerHTML = ''; $('who').textContent = ''; $('coins').textContent = ''; $('status').textContent = 'starting…';
   es = new EventSource('/api/dress?' + q);
   es.onmessage = ev => {
     const m = JSON.parse(ev.data);
     if (m.type === 'item') addItem(m);
+    else if (m.type === 'coins') $('coins').textContent = m.coins ? '💰 ' + m.coins : '';
+    else if (m.type === 'carry') addCarry(m.category, m.item);
     else if (m.type === 'prefix') $('who').textContent = m.text;
     else if (m.type === 'status') $('status').textContent = m.message;
     else if (m.type === 'done') {
