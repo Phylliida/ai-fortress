@@ -30,3 +30,4 @@ embeddinggemma-300M-Q8_0\.gguf
 __pycache__/
 *.pyc
 dress_history.jsonl
+item_history.jsonl

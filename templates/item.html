@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Item Lab · ai-fortress</title>
+<style>
+  :root { --bg:#1b1714; --panel:#262019; --ink:#ece3d4; --muted:#a99c86; --accent:#d8a657; --line:#3a3128;
+          --jewelry:#e8c84a; --extra:#8ab368; --held:#d77a61; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif; }
+  header { display:flex; align-items:baseline; gap:12px; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--panel); }
+  h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:21px; color:var(--accent); }
+  header small { color:var(--muted); font-size:12px; font-family:ui-monospace,monospace; }
+  header .links { margin-left:auto; display:flex; gap:14px; }
+  header a { color:var(--muted); font-size:12px; text-decoration:none; } header a:hover { color:var(--accent); }
+  .wrap { max-width:860px; margin:0 auto; padding:22px; }
+  .controls { display:flex; gap:9px; flex-wrap:wrap; }
+  input { background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:8px 11px; font:inherit; }
+  input::placeholder { color:var(--muted); } #item { flex:1 1 200px; } #desc { flex:2 1 280px; }
+  button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:8px 16px; font-weight:600; cursor:pointer; }
+  .history { display:flex; gap:6px; flex-wrap:wrap; margin:14px 2px 2px; max-height:104px; overflow-y:auto; }
+  .hchip { background:#15110d; color:var(--muted); border:1px solid var(--line); border-radius:14px; padding:3px 11px; font-size:12px; cursor:pointer; white-space:nowrap; font-family:Georgia,serif; }
+  .hchip:hover { color:var(--ink); border-color:var(--accent); } .hchip.cur { color:#1b1410; background:var(--accent); border-color:var(--accent); }
+  .who { font-family:Georgia,serif; font-size:21px; color:var(--accent); margin:18px 2px 4px; min-height:24px; }
+  #status { color:var(--muted); font-size:12px; font-style:italic; min-height:18px; margin:2px 2px 14px; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-bottom:14px; }
+  .stat { background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:9px 12px; }
+  .stat .lbl { color:var(--muted); font-size:11px; font-family:ui-monospace,monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .stat .val { font-size:17px; color:var(--ink); margin-top:2px; }
+  .panels { display:flex; flex-direction:column; gap:12px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px 14px; }
+  .panel h2 { margin:0 0 8px; font-size:11px; font-family:ui-monospace,monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+  .chip { display:inline-block; background:#15110d; border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-size:13px; margin:0 5px 5px 0; }
+  .need { display:flex; align-items:center; gap:10px; padding:2px 0; }
+  .need .nm { flex:0 0 130px; }
+  .need .bar { flex:1; height:7px; background:#15110d; border-radius:4px; overflow:hidden; }
+  .need .bar i { display:block; height:100%; background:var(--extra); }
+  .need .pct { flex:0 0 38px; text-align:right; color:var(--muted); font-size:12px; font-family:ui-monospace,monospace; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Item Lab</h1>
+  <small>weight · size · rarity · worth · source · emission · ingredients · needs filled</small>
+  <div class="links"><a href="/dress">loot →</a><a href="/decompose">take apart →</a><a href="/parts">innards →</a></div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <input id="item" placeholder="a thing — magma sword, wheel of cheese, healing potion…" autofocus>
+    <input id="desc" placeholder="optional description (helps for ambiguous/made-up items)">
+    <button id="go">Analyze</button>
+  </div>
+  <div id="history" class="history"></div>
+  <div class="who" id="who"></div>
+  <div id="status"></div>
+  <div id="stats" class="stats"></div>
+  <div id="panels" class="panels"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const TRAITS = [['weight_g','weight'],['size_cm','size'],['rarity','rarity'],['worth','worth'],['source','source']];
+const RARITY_WORDS = [[0,'everywhere'],[2.5,'common'],[5,'uncommon'],[7.5,'rare'],[10,'legendary']];
+const WORTH_WORDS  = [[0,'worthless'],[2.5,'cheap'],[5,'valuable'],[7.5,'precious'],[10,'priceless']];
+let es = null, HISTORY = [];
+
+const nearest = (scale, v) => scale.reduce((b,s) => Math.abs(s[0]-v) < Math.abs(b[0]-v) ? s : b)[1];
+function fmtWeight(g){ if(!g) return '—'; if(g>=1e6) return (g/1e6).toFixed(1)+' t'; if(g>=1000) return (g/1000).toFixed(g>=1e4?0:1)+' kg'; if(g>=1) return Math.round(g)+' g'; return (g*1000).toFixed(0)+' mg'; }
+function fmtSize(cm){ if(!cm) return '—'; if(cm>=100) return (cm/100).toFixed(1)+' m'; if(cm>=1) return (cm%1?cm.toFixed(1):cm)+' cm'; return (cm*10).toFixed(0)+' mm'; }
+function fmtTrait(k,v){
+  if(k==='weight_g') return fmtWeight(v);
+  if(k==='size_cm') return fmtSize(v);
+  if(k==='rarity') return v.toFixed(1)+' · '+nearest(RARITY_WORDS,v);
+  if(k==='worth') return v.toFixed(1)+' · '+nearest(WORTH_WORDS,v);
+  return v;
+}
+
+function ensureStats(){ if($('stats').children.length) return; for(const [k,label] of TRAITS){ const c=document.createElement('div'); c.className='stat'; c.id='stat-'+k; c.innerHTML=`<div class="lbl">${label}</div><div class="val">…</div>`; $('stats').appendChild(c); } }
+function setTrait(k,v){ ensureStats(); const c=$('stat-'+k); if(c) c.querySelector('.val').textContent=fmtTrait(k,v); }
+function panelBody(id,title){ let p=$('panel-'+id); if(!p){ p=document.createElement('div'); p.className='panel'; p.id='panel-'+id; p.innerHTML=`<h2>${title}</h2><div class="body"></div>`; $('panels').appendChild(p); } return p.querySelector('.body'); }
+function setEmission(em){ const ch=Object.entries(em||{}); if(!ch.length) return; panelBody('emission','Emits').textContent = ch.map(([c,d])=>`${c} · ${Math.round(d.strength*100)}% · ${d.radius} m`).join('      '); }
+function setIngredients(items){ const b=panelBody('ingredients','Made from'); b.innerHTML=''; if(!(items||[]).length){ b.textContent='—'; return; } for(const it of items){ const c=document.createElement('span'); c.className='chip'; c.textContent=it; b.appendChild(c); } }
+function setFood(f){ if(f && f.food_type) panelBody('food','Composition').textContent = `${f.food_type}${f.conf?` (${Math.round(f.conf*100)}%)`:''}`; }
+function addNeed(need,refill){ const b=panelBody('needs','Fills needs'); const row=document.createElement('div'); row.className='need'; row.innerHTML=`<span class="nm">${need}</span><span class="bar"><i style="width:${Math.round(refill*100)}%"></i></span><span class="pct">${Math.round(refill*100)}%</span>`; b.appendChild(row); }
+
+function clearOut(){ $('stats').innerHTML=''; $('panels').innerHTML=''; $('who').textContent=''; }
+
+// ---- history ----
+async function loadHistory(){ try{ HISTORY = await (await fetch('/api/item_history')).json(); }catch{ HISTORY=[]; } renderChips(); }
+function renderChips(){ const h=$('history'); h.innerHTML=''; for(const rec of HISTORY){ const c=document.createElement('button'); c.className='hchip'; c.dataset.id=rec.id; c.textContent=rec.name||'?'; c.title=rec.ts||''; c.onclick=()=>{ location.hash='id='+rec.id; }; h.appendChild(c); } }
+function markCurrent(id){ for(const c of $('history').children) c.classList.toggle('cur', c.dataset.id===id); }
+function renderRecord(rec){
+  if(es) es.close();
+  clearOut();
+  $('who').textContent = rec.name + (rec.desc?' — '+rec.desc:'');
+  $('status').textContent = 'from history · '+(rec.ts||'');
+  for(const [k] of TRAITS) if(rec.traits && k in rec.traits) setTrait(k, rec.traits[k]);
+  if(rec.traits) setEmission(rec.traits.emission);
+  setIngredients(rec.ingredients); setFood(rec.food);
+  if(rec.needs) for(const [n,v] of Object.entries(rec.needs)) addNeed(n,v);
+  $('item').value=rec.name||''; $('desc').value=rec.desc||'';
+  markCurrent(rec.id);
+}
+function renderRecordById(id){ const rec=HISTORY.find(r=>r.id===id); if(rec) renderRecord(rec); }
+
+function currentQuery(){ return ['item','desc'].map(k=>$(k).value.trim()?k+'='+encodeURIComponent($(k).value.trim()):'').filter(Boolean).join('&'); }
+function hashToState(){ const p=new URLSearchParams(location.hash.replace(/^#/,'')); for(const k of ['item','desc']) if(p.get(k)!=null) $(k).value=p.get(k); return !!(p.get('item')||'').trim(); }
+
+function analyze(){
+  const item = $('item').value.trim();
+  if(!item){ $('item').focus(); return; }
+  const q = currentQuery();
+  location.hash = q;
+  if(es) es.close();
+  clearOut(); $('status').textContent='starting…'; $('who').textContent=item;
+  es = new EventSource('/api/item?'+q);
+  es.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if(m.type==='trait') setTrait(m.key, m.value);
+    else if(m.type==='emission') setEmission(m.emission);
+    else if(m.type==='ingredients') setIngredients(m.items);
+    else if(m.type==='food') setFood(m.food);
+    else if(m.type==='need') addNeed(m.need, m.refill);
+    else if(m.type==='status') $('status').textContent=m.message;
+    else if(m.type==='done'){ es.close(); $('status').textContent='done.'; if(m.record){ HISTORY.unshift(m.record); renderChips(); markCurrent(m.record.id); } }
+    else if(m.type==='error'){ es.close(); $('status').textContent=m.message; }
+  };
+  es.onerror = () => { es.close(); $('status').textContent='connection lost'; };
+}
+
+$('go').onclick = analyze;
+for(const id of ['item','desc']) $(id).addEventListener('keydown', e => { if(e.key==='Enter') analyze(); });
+function applyHash(){ const h=location.hash.replace(/^#/,''); const id=new URLSearchParams(h).get('id'); if(id){ renderRecordById(id); return; } if(h===currentQuery()) return; if(hashToState()) analyze(); }
+window.addEventListener('hashchange', applyHash);
+loadHistory().then(applyHash);
+</script>
+</body>
+</html>
