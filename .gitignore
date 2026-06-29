@@ -31,3 +31,4 @@ __pycache__/
 *.pyc
 dress_history.jsonl
 item_history.jsonl
+loot_history.jsonl

@@ -872,6 +872,100 @@ def api_dress():
     return Response(gen(), mimetype="text/event-stream")
 
 
+# ------------------------------------------------ /loot: dress + harvest (worn + bag + body parts / teardown)
+LOOT_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "loot_history.jsonl")
+
+
+def _append_loot(record):
+    with open(LOOT_HISTORY, "a") as f:
+        f.write(json.dumps(record) + "\n")
+
+
+def _read_loot(limit=300):
+    if not os.path.exists(LOOT_HISTORY):
+        return []
+    out = []
+    with open(LOOT_HISTORY) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    out.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return out[-limit:]
+
+
+@app.route("/loot")
+def loot_page():
+    return render_template("loot.html")
+
+
+@app.route("/api/loot_history")
+def api_loot_history():
+    return Response(json.dumps(list(reversed(_read_loot()))), mimetype="application/json")
+
+
+@app.route("/api/loot")
+def api_loot():
+    """Everything a defeated entity yields: worn equipment + carried bag + coins (like /dress), PLUS the
+    harvestable body — parts.parts for living things (template + distinctive), or top-level machine_subparts
+    when it's a construct (doesn't fit a body-plan template). Streamed; persisted to loot_history.jsonl."""
+    entity = {"species": request.args.get("species", "").strip(),
+              "wealth": request.args.get("wealth", "").strip(),
+              "occupation": request.args.get("occupation", "").strip(),
+              "gender": request.args.get("gender", "").strip()}
+    desc = request.args.get("desc", "").strip() or None
+
+    @stream_with_context
+    def gen():
+        if not entity["species"]:
+            yield sse({"type": "error", "message": "Enter a species."}); return
+        sp = entity["species"]
+        try:
+            yield sse({"type": "prefix", "text": loot_mod.entity_prefix(entity)})
+            yield sse({"type": "status", "message": "building the paper-doll…"})
+            skeleton = slots_mod.species_slots(SERVER, sp, desc)
+            yield sse({"type": "status", "message": f"dressing the {sp}…"})
+            filled, items = 0, []
+            for s in skeleton:                              # worn (same as /dress)
+                item = (loot_mod.fill_slot(SERVER, entity, s["slot"], s["kind"])
+                        if loot_mod.has_slot(SERVER, entity, s["slot"], s["kind"]) else None)
+                if item:
+                    filled += 1
+                rec = {"slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item}
+                items.append(rec)
+                yield sse({"type": "item", **rec})
+            yield sse({"type": "status", "message": "packing the bag…"})
+            coins = loot_mod.carry_coins(SERVER, entity)
+            yield sse({"type": "coins", "coins": coins})
+            carried = {}
+            for cat, noun, typ in loot_mod.INVENTORY_CATEGORIES:
+                lst = loot_mod.carry_category(SERVER, entity, noun, typ)
+                carried[cat] = lst
+                for it in lst:
+                    yield sse({"type": "carry", "category": cat, "item": it})
+            yield sse({"type": "status", "message": "harvesting the body…"})
+            plan, conf = parts.classify_body_plan(SERVER, sp, desc)
+            if plan == "construct":                         # doesn't fit a body plan -> top-level teardown only
+                hparts = parts.machine_subparts(SERVER, sp, desc=desc)
+            else:                                           # living -> body-plan template + distinctive parts
+                hparts = parts.parts(SERVER, sp, desc)["parts"]
+            harvest = {"plan": plan, "parts": hparts}
+            yield sse({"type": "harvest", **harvest})
+
+            record = {"id": uuid.uuid4().hex[:12],
+                      "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+                      "entity": {**entity, "prefix": loot_mod.entity_prefix(entity)},
+                      "items": items, "coins": coins, "carried": carried, "harvest": harvest}
+            _append_loot(record)
+            yield sse({"type": "done", "filled": filled, "total": len(skeleton), "record": record})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
 # ------------------------------------------------ item analysis (traits + ingredients + needs-filled + food)
 ITEM_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "item_history.jsonl")
 
