@@ -33,6 +33,8 @@
   .item .slot { color:var(--muted); font-size:11px; font-family:ui-monospace,monospace; flex:0 0 84px; }
   .item .what { color:var(--ink); }
   .item .n { color:var(--muted); font-size:10px; }
+  .item.empty { opacity:.42; }
+  .item.empty .what { color:var(--muted); }
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin:14px 2px 2px; font-size:11px; color:var(--muted); }
   .legend span { display:inline-flex; align-items:center; gap:5px; } .legend .dot { width:8px; height:8px; border-radius:50%; }
 </style>
@@ -105,12 +107,13 @@ function addItem(m) {
   const region = (m.kind === 'extra') ? 'Extra' : (m.kind === 'container') ? 'Carried'
                : (m.kind === 'held') ? 'Held' : (REGION[SLOT_SITE[m.slot]] || 'Other');
   const g = groupChips(region);
-  const row = document.createElement('div'); row.className = 'item';
-  const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = `var(--${m.kind})`;
+  const empty = !m.item;
+  const row = document.createElement('div'); row.className = 'item' + (empty ? ' empty' : '');
+  const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = empty ? 'var(--line)' : `var(--${m.kind})`;
   const slot = document.createElement('span'); slot.className = 'slot'; slot.textContent = m.slot;
-  const what = document.createElement('span'); what.className = 'what'; what.textContent = m.item;
+  const what = document.createElement('span'); what.className = 'what'; what.textContent = empty ? '—' : m.item;
   row.append(dot, slot, what);
-  if (m.count > 1) { const n = document.createElement('span'); n.className = 'n'; n.textContent = '×' + m.count; row.appendChild(n); }
+  if (m.count > 1 && !empty) { const n = document.createElement('span'); n.className = 'n'; n.textContent = '×' + m.count; row.appendChild(n); }
   g.appendChild(row);
 }
 
@@ -138,7 +141,7 @@ function dress() {
     if (m.type === 'item') addItem(m);
     else if (m.type === 'prefix') $('who').textContent = m.text;
     else if (m.type === 'status') $('status').textContent = m.message;
-    else if (m.type === 'done') { es.close(); $('status').textContent = `dressed — ${m.n} items.`; }
+    else if (m.type === 'done') { es.close(); $('status').textContent = `dressed — ${m.filled} of ${m.total} slots equipped.`; }
     else if (m.type === 'error') { es.close(); $('status').textContent = m.message; }
   };
   es.onerror = () => { es.close(); $('status').textContent = 'connection lost'; };
