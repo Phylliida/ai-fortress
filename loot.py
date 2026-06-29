@@ -21,27 +21,29 @@ def entity_prefix(entity):
 # carries) are wealth-gated, but BASICS (a torso covering, legwear, a combatant's weapon) survive even for the
 # poor — a beggar still wears rags. Mixed Y/N, high-perplexity (Y N N Y Y N).
 PRESENCE_FEWSHOT = (
-    "Question: Does a destitute beggar wear something on their torso?\nAnswer: Yes\n"    # basic: even rags
-    "Question: Does a poor goblin raider wear a nose ring?\nAnswer: No\n"                 # luxury: wealth-gated
-    "Question: Does a destitute beggar wear rings on their fingers?\nAnswer: No\n"
-    "Question: Is a poor goblin raider carrying a weapon or tool?\nAnswer: Yes\n"         # combatant: armed
-    "Question: Does a wealthy merchant carry a satchel?\nAnswer: Yes\n"
-    "Question: Does a poor farmer wear a gold necklace?\nAnswer: No\n")
+    "Question: If a destitute beggar were real, would they wear something on their torso?\nAnswer: Yes\n"   # basic: even rags
+    "Question: If a poor goblin raider were real, would they wear a nose ring?\nAnswer: No\n"               # luxury: wealth-gated
+    "Question: If a destitute beggar were real, would they wear rings on their fingers?\nAnswer: No\n"
+    "Question: If a poor goblin raider were real, would they carry a weapon or tool?\nAnswer: Yes\n"        # combatant: armed
+    "Question: If a wealthy merchant were real, would they carry a satchel?\nAnswer: Yes\n"
+    "Question: If a poor farmer were real, would they wear a gold necklace?\nAnswer: No\n")
 
 # conditioned fill: wealth -> quality (silk vs threadbare), role -> appropriate gear. Anchors the drifty slots
 # (belt/satchel/nose) with explicit examples so the item stays a thing-OF-that-slot, short noun phrase. Per the
 # guidelines: EXPLICIT SUBJECT in the question (no 'they' pronoun), Question:/Answer: labels, mixed wealth/role/
 # species/kind.
 # answers OMIT the leading article (a/an/the) — saves a generation token per item and reads cleaner in a list.
+# COUNTERFACTUAL "if … were real, what would they" so mythical entities (a wraith, a lich) don't balk at being
+# dressed (same trick as the slot prune that kept dragons their organs).
 FILL_FEWSHOT = (
-    "Question: What does a wealthy human noble wear on their torso?\nAnswer: embroidered silk doublet\n"
-    "Question: What does a destitute human beggar wear on their torso?\nAnswer: filthy threadbare tunic\n"
-    "Question: What does a poor goblin raider wear in their nose?\nAnswer: crude bone nose-ring\n"
-    "Question: What does a modest human farmer wear on their head?\nAnswer: wide-brimmed straw hat\n"
-    "Question: What does a wealthy elf merchant wear on their fingers?\nAnswer: gold signet ring\n"
-    "Question: What does a poor human soldier hold in their hands?\nAnswer: notched iron shortsword\n"
-    "Question: What does a modest human traveler wear on their belt?\nAnswer: worn leather belt with a brass buckle\n"
-    "Question: What does a wealthy human lady carry as their satchel?\nAnswer: beaded velvet purse\n")
+    "Question: If a wealthy human noble were real, what would they wear on their torso?\nAnswer: embroidered silk doublet\n"
+    "Question: If a destitute human beggar were real, what would they wear on their torso?\nAnswer: filthy threadbare tunic\n"
+    "Question: If a poor goblin raider were real, what would they wear in their nose?\nAnswer: crude bone nose-ring\n"
+    "Question: If a modest human farmer were real, what would they wear on their head?\nAnswer: wide-brimmed straw hat\n"
+    "Question: If a wealthy elf merchant were real, what would they wear on their fingers?\nAnswer: gold signet ring\n"
+    "Question: If a poor human soldier were real, what would they hold in their hands?\nAnswer: notched iron shortsword\n"
+    "Question: If a modest human traveler were real, what would they wear on their belt?\nAnswer: worn leather belt with a brass buckle\n"
+    "Question: If a wealthy human lady were real, what would they carry as their satchel?\nAnswer: beaded velvet purse\n")
 
 # slot-adherence verify: is the generated item actually a thing-OF-that-slot? Catches the drift (belt -> "oak
 # canteen") and garbles. Two question forms (a-kind-of / holdable) matched to the slot kind. Mixed Y/N,
@@ -61,12 +63,14 @@ def _subj(entity):
 
 def _fill_q(subj, slot, kind):
     if kind == "held":
-        return f"What does {subj} hold in their hands?"
-    if kind == "container":
-        return f"What does {subj} carry as their {slot}?"
-    if kind in ("piercing", "jewelry"):
-        return f"What does {subj} wear in their {slot}?"
-    return f"What does {subj} wear on their {slot}?"
+        verb = "hold in their hands"
+    elif kind == "container":
+        verb = f"carry as their {slot}"
+    elif kind in ("piercing", "jewelry"):
+        verb = f"wear in their {slot}"
+    else:
+        verb = f"wear on their {slot}"
+    return f"If {subj} were real, what would they {verb}?"
 
 
 def has_slot(server, entity, slot, kind):
@@ -74,14 +78,14 @@ def has_slot(server, entity, slot, kind):
     basics survive for the poor."""
     subj = _subj(entity)
     if kind == "held":
-        q = f"Is {subj} carrying a weapon or tool?"
+        verb = "carry a weapon or tool"
     elif kind == "container":
-        q = f"Does {subj} carry a {slot}?"
+        verb = f"carry a {slot}"
     elif kind in ("piercing", "jewelry"):
-        q = f"Does {subj} wear a {slot}?"
+        verb = f"wear a {slot}"
     else:
-        q = f"Does {subj} wear something on their {slot}?"
-    return server.yes_no_prob(PRESENCE_FEWSHOT + f"Question: {q}\nAnswer:") >= 0.5
+        verb = f"wear something on their {slot}"
+    return server.yes_no_prob(PRESENCE_FEWSHOT + f"Question: If {subj} were real, would they {verb}?\nAnswer:") >= 0.5
 
 
 def _strip_article(s):
@@ -149,17 +153,17 @@ INVENTORY_CATEGORIES = [
 # one exemplar per category — explicit subject, Question:/Answer:, multi-answer VARYING counts (2/3/3/1/2),
 # articles dropped, wealth/role spread. Empty categories fall out naturally (a jeweler carries no spare weapons).
 CARRY_FEWSHOT = (
-    "Question: What spare weapons does a poor goblin raider carry?\nAnswer: throwing knives, rusty shiv\n"
-    "Question: What tools or useful gear does a wealthy elf merchant carry?\nAnswer: brass scale, abacus, wax seal\n"
-    "Question: What food, drink, or potions does a poor human soldier carry?\nAnswer: hardtack, dried meat, waterskin\n"
-    "Question: What valuables or trinkets does a destitute beggar carry?\nAnswer: chipped glass bead\n"
-    "Question: What personal belongings does a modest human farmer carry?\nAnswer: wooden charm, folded letter\n")
+    "Question: If a poor goblin raider were real, what spare weapons would they carry?\nAnswer: throwing knives, rusty shiv\n"
+    "Question: If a wealthy elf merchant were real, what tools or useful gear would they carry?\nAnswer: brass scale, abacus, wax seal\n"
+    "Question: If a poor human soldier were real, what food, drink, or potions would they carry?\nAnswer: hardtack, dried meat, waterskin\n"
+    "Question: If a destitute beggar were real, what valuables or trinkets would they carry?\nAnswer: chipped glass bead\n"
+    "Question: If a modest human farmer were real, what personal belongings would they carry?\nAnswer: wooden charm, folded letter\n")
 # plausibility verify: would THIS entity actually carry it? (a beggar wouldn't have a crown). Y N N Y.
 CARRY_VERIFY_FEWSHOT = (
-    "Question: Would a poor goblin raider carry a rat skull?\nAnswer: Yes\n"
-    "Question: Would a destitute beggar carry a golden crown?\nAnswer: No\n"
-    "Question: Would a peasant farmer carry a royal scepter?\nAnswer: No\n"
-    "Question: Would a wealthy merchant carry a coin purse?\nAnswer: Yes\n")
+    "Question: If a poor goblin raider were real, would they carry a rat skull?\nAnswer: Yes\n"
+    "Question: If a destitute beggar were real, would they carry a golden crown?\nAnswer: No\n"
+    "Question: If a peasant farmer were real, would they carry a royal scepter?\nAnswer: No\n"
+    "Question: If a wealthy merchant were real, would they carry a coin purse?\nAnswer: Yes\n")
 # category-adherence verify: is the item actually that TYPE of thing? Keeps categories clean (salt-shaker is
 # not a weapon) and drops garbles ('tiny' is not a tool). Mixed types, high-perplexity order (Y N N Y Y).
 CATEGORY_FITS_FEWSHOT = (
@@ -170,10 +174,10 @@ CATEGORY_FITS_FEWSHOT = (
     "Question: Is a magnifying glass a tool or piece of gear?\nAnswer: Yes\n")
 # coins as a CATEGORICAL amount (categories beat numbers for base models), wealth-graded. Keeps its article.
 COINS_FEWSHOT = (
-    "Question: How much money does a destitute beggar carry?\nAnswer: a few copper coins\n"
-    "Question: How much money does a wealthy merchant carry?\nAnswer: a heavy purse of gold\n"
-    "Question: How much money does a modest farmer carry?\nAnswer: a handful of silver\n"
-    "Question: How much money does a poor soldier carry?\nAnswer: a small pouch of copper\n")
+    "Question: If a destitute beggar were real, how much money would they carry?\nAnswer: a few copper coins\n"
+    "Question: If a wealthy merchant were real, how much money would they carry?\nAnswer: a heavy purse of gold\n"
+    "Question: If a modest farmer were real, how much money would they carry?\nAnswer: a handful of silver\n"
+    "Question: If a poor soldier were real, how much money would they carry?\nAnswer: a small pouch of copper\n")
 
 
 def category_fits(server, item, type_noun):
@@ -187,12 +191,12 @@ def carry_category(server, entity, noun, type_noun, samples=4, threshold=0.5, ma
     category-adherence (is it actually a {type}? — also kills garbles) AND plausibility (would they carry it?).
     Articles stripped. Empty list when they'd carry nothing of the kind."""
     subj = _subj(entity)
-    raw = server.sample_union(CARRY_FEWSHOT + f"Question: What {noun} does {subj} carry?\nAnswer:",
+    raw = server.sample_union(CARRY_FEWSHOT + f"Question: If {subj} were real, what {noun} would they carry?\nAnswer:",
                               samples=samples, n_predict=40, max_words=max_words, reject=lambda k: k in parts.NULL_TOKENS)
     out = []
     for it in parts.embed_dedup([_strip_article(x) for x in raw]):
         if (category_fits(server, it, type_noun) and
-                server.yes_no_prob(CARRY_VERIFY_FEWSHOT + f"Question: Would {subj} carry {it}?\nAnswer:") >= threshold):
+                server.yes_no_prob(CARRY_VERIFY_FEWSHOT + f"Question: If {subj} were real, would they carry {it}?\nAnswer:") >= threshold):
             out.append(it)
     return out
 
@@ -200,7 +204,7 @@ def carry_category(server, entity, noun, type_noun, samples=4, threshold=0.5, ma
 def carry_coins(server, entity):
     """A wealth-graded coin amount as a descriptive phrase ('a heavy purse of gold' / 'a few copper coins')."""
     subj = _subj(entity)
-    raw = server.gen_text(COINS_FEWSHOT + f"Question: How much money does {subj} carry?\nAnswer:",
+    raw = server.gen_text(COINS_FEWSHOT + f"Question: If {subj} were real, how much money would they carry?\nAnswer:",
                           stop=["\n", "."], n_predict=12)
     return raw.strip().strip(".,").strip() or None
 
