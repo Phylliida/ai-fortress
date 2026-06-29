@@ -35,7 +35,7 @@ HUMAN_SLOTS = [
     {"slot": "belt",        "site": "waist",    "kind": "worn",      "count": 1},
     {"slot": "bracelet",    "site": "wrists",   "kind": "jewelry",   "count": 2},
     {"slot": "gloves",      "site": "hands",    "kind": "worn",      "count": 2},
-    {"slot": "ring",        "site": "fingers",  "kind": "jewelry",   "count": 8},
+    {"slot": "ring",        "site": "fingers",  "kind": "jewelry",   "count": 10},
     {"slot": "held",        "site": "hands",    "kind": "held",      "count": 2},
     {"slot": "underwear",   "site": "hips",     "kind": "worn",      "count": 1},
     {"slot": "pants",       "site": "legs",     "kind": "worn",      "count": 1},
@@ -47,7 +47,10 @@ HUMAN_SLOTS = [
 ]
 
 # sites that come in MULTIPLES (re-counted per species: a 4-armed mob → 4 gloves/held); value = human default.
-MULTI_SITES = {"ears": 2, "hands": 2, "fingers": 8, "wrists": 2, "ankles": 2, "feet": 2}
+MULTI_SITES = {"ears": 2, "hands": 2, "fingers": 10, "wrists": 2, "ankles": 2, "feet": 2}
+# DIGIT sites are counted PER-LIMB × limb-count: "how many fingers?" returns per-hand (5), so rings = 5 × hands
+# = 10, not 5. Value = (limb-count key, singular limb word for the query).
+DIGIT_SITES = {"fingers": ("hands", "hand")}
 MAX_SLOT_COUNT = 12     # clamp absurd counts (octopus "suckers: 3000", "armour: 64"); >12 wearable slots is impractical
 
 # count: small-integer "how many X" (base models handle these fine; only big/fuzzy numbers confabulate).
@@ -55,7 +58,7 @@ MAX_SLOT_COUNT = 12     # clamp absurd counts (octopus "suckers: 3000", "armour:
 COUNT_FEWSHOT = (
     "How many eyes does a human have?\nAnswer: 2\n"
     "How many legs does a spider have?\nAnswer: 8\n"
-    "How many tongues does a dog have?\nAnswer: 1\n"
+    "How many fingers does a human have on each hand?\nAnswer: 5\n"
     "How many arms does an octopus have?\nAnswer: 8\n")
 
 # the spots we already cover — passed AS CONTEXT so the generator names only NEW ones (known-slots trick, same
@@ -90,13 +93,31 @@ def _strip_count(name):
     return name, None
 
 
-def extract_count(server, species, site, desc=None):
-    """Small integer for 'how many {site} does a {species} have?' (None if unparseable -> caller defaults)."""
+def extract_count(server, species, site, desc=None, per_of=None):
+    """Small integer for 'how many {site} does a {species} have?' (None if unparseable -> caller defaults).
+    `per_of` asks PER-LIMB ('...on each {per_of}?') so a digit site returns its per-limb count."""
     ctx = f"{species} is {desc}.\n" if desc else ""
-    raw = server.gen_text(ctx + COUNT_FEWSHOT + f"How many {site} does a {species} have?\nAnswer:",
-                          stop=["\n"], n_predict=6)
+    q = (f"How many {site} does a {species} have on each {per_of}?" if per_of
+         else f"How many {site} does a {species} have?")
+    raw = server.gen_text(ctx + COUNT_FEWSHOT + q + "\nAnswer:", stop=["\n"], n_predict=6)
     m = re.search(r"\d+", raw)
     return int(m.group()) if m else None
+
+
+def site_counts(server, species, have, desc=None):
+    """Per-site counts for the inherently-multiple sites (used by species_slots AND the webui). Direct
+    'how many X' for limbs (2 hands, 2 feet); DIGIT sites (fingers) are per-limb × limb-count — 'how many
+    fingers' returns per-HAND (5), so rings = 5 × hands = 10, not 5."""
+    clamp = lambda c: max(1, min(c, MAX_SLOT_COUNT))
+    counts = {}
+    for site in MULTI_SITES:
+        if have.get(site) and site not in DIGIT_SITES:
+            counts[site] = clamp(extract_count(server, species, site, desc) or MULTI_SITES[site])
+    for digit, (limb, limb_sg) in DIGIT_SITES.items():
+        if have.get(digit):
+            per = extract_count(server, species, digit, desc, per_of=limb_sg) or MULTI_SITES[digit] // 2
+            counts[digit] = clamp(per * (counts.get(limb) or MULTI_SITES.get(limb, 1)))
+    return counts
 
 
 def slot_extras(server, species, desc=None, samples=4):
@@ -122,11 +143,8 @@ def species_slots(server, species, desc=None):
     Returns a list of {slot, site, kind, count}."""
     sites = list(dict.fromkeys(s["site"] for s in HUMAN_SLOTS))
     have = {site: server.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP for site in sites}
+    counts = site_counts(server, species, have, desc)
     clamp = lambda c: max(1, min(c, MAX_SLOT_COUNT))
-    counts = {}
-    for site in sites:
-        if have[site] and site in MULTI_SITES:
-            counts[site] = clamp(extract_count(server, species, site, desc) or MULTI_SITES[site])
     out = [{**s, "count": counts.get(s["site"], s["count"])} for s in HUMAN_SLOTS if have[s["site"]]]
     for e in slot_extras(server, species, desc):                # species-specific extra spots
         name, cnt = _strip_count(e)                             # 'eight tentacles' -> ('tentacles', 8)
