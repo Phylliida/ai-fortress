@@ -236,6 +236,23 @@ def is_decomposable(server, part):
                               f"Question: Can a {part} be taken apart into several smaller pieces?\nAnswer:") >= 0.5
 
 
+# "assembled from DISTINCT parts" vs "a uniform material" — sharper than is_decomposable (which asks merely
+# 'cuttable', and cheese is cuttable). Routes the /item breakdown: assembled -> show PARTS, uniform -> show
+# MATERIALS. Mixed Y/N, high-perplexity (Y N N Y); exemplars chosen distinct from likely item queries.
+ASSEMBLED_FEWSHOT = (
+    "Question: Is a watch assembled from several distinct parts?\nAnswer: Yes\n"
+    "Question: Is butter assembled from several distinct parts?\nAnswer: No\n"
+    "Question: Is water assembled from several distinct parts?\nAnswer: No\n"
+    "Question: Is a car assembled from several distinct parts?\nAnswer: Yes\n")
+
+
+def is_assembled(server, item):
+    """Is `item` assembled from several DISTINCT parts (a clock, a sword -> show PARTS) vs a uniform material or
+    substance (cheese, steel, leather -> show MATERIALS)? The clean materials-vs-parts split for /item."""
+    return server.yes_no_prob(ASSEMBLED_FEWSHOT +
+                              f"Question: Is a {item} assembled from several distinct parts?\nAnswer:") >= 0.5
+
+
 def decompose_machine(server, machine, desc=None, max_depth=2, samples=4):
     """Recursively decompose `machine` into a part-tree {part: subtree}. Stops at max_depth or single pieces.
     The colony-sim drops = every node; the leaves are the atomic salvage."""

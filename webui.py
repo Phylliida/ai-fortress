@@ -1044,9 +1044,9 @@ def api_item():
             yield sse({"type": "emission", "emission": tr["emission"]})
 
             yield sse({"type": "status", "message": "breaking it down…"})
-            decomp = parts.is_decomposable(SERVER, subject)
+            decomp = parts.is_assembled(SERVER, subject)    # assembled-from-distinct-parts vs uniform material
             ingr = plist = food = None
-            if decomp:                                      # has separable parts -> show PARTS (decompose), not materials
+            if decomp:                                      # assembled -> show PARTS (decompose), not materials
                 plist = parts.machine_subparts(SERVER, subject)
                 yield sse({"type": "parts", "items": plist})
             else:                                           # homogeneous -> MATERIALS (verified) + biological composition
