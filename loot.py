@@ -38,8 +38,28 @@ def _fill_q(prefix, slot, kind):
 
 def fill_slot(server, entity, slot, kind="worn"):
     """The item in `slot` for this entity (or None if empty), conditioned on who they are. Quality is carried
-    by the wording the wealth tier elicits ('tattered leather' vs 'fine wool')."""
+    by the wording the wealth tier elicits ('tattered leather' vs 'fine wool'). The phrase naturally captures
+    plurality where it applies ('silver rings', 'a sword and shield'), so multi-capacity slots need no special
+    case — the skeleton's count is the body capacity, the phrase is what's actually worn."""
     raw = server.gen_text(FILL_FEWSHOT + _fill_q(entity_prefix(entity), slot, kind) + "\nAnswer:",
                           stop=["\n"], n_predict=20)
     item = raw.strip().strip(".").strip()
     return None if not item or item.lower() in parts.NULL_TOKENS else item
+
+
+def fill_worn(server, entity, skeleton):
+    """Dress every slot in the species `skeleton` (from slots.species_slots), conditioned on the entity.
+    Returns the FILLED slots as [{slot, kind, count, item}] — empty slots are dropped."""
+    out = []
+    for s in skeleton:
+        item = fill_slot(server, entity, s["slot"], s["kind"])
+        if item:
+            out.append({"slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item})
+    return out
+
+
+def dress(server, entity, desc=None):
+    """Full head-to-toe: build the species paper-doll, then fill it for this entity."""
+    import slots
+    skeleton = slots.species_slots(server, entity["species"], desc)
+    return fill_worn(server, entity, skeleton)
