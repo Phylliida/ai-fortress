@@ -114,10 +114,22 @@ function addItem(m) {
   g.appendChild(row);
 }
 
+function currentQuery() {
+  return ['species','wealth','occupation','gender']
+    .map(k => $(k).value.trim() ? k + '=' + encodeURIComponent($(k).value.trim()) : '')
+    .filter(Boolean).join('&');
+}
+function hashToState() {           // populate inputs from the URL hash; true if it carries a species
+  const p = new URLSearchParams(location.hash.replace(/^#/, ''));
+  for (const k of ['species','wealth','occupation','gender'])
+    if (p.get(k) != null) $(k).value = p.get(k);
+  return !!(p.get('species') || '').trim();
+}
 function dress() {
   const species = $('species').value.trim();
   if (!species) { $('species').focus(); return; }
-  const q = ['species','wealth','occupation','gender'].map(k => $(k).value.trim() ? k + '=' + encodeURIComponent($(k).value.trim()) : '').filter(Boolean).join('&');
+  const q = currentQuery();
+  location.hash = q;               // store state in the hash so the URL is copy-paste shareable
   if (es) es.close();
   $('groups').innerHTML = ''; $('who').textContent = ''; $('status').textContent = 'starting…';
   es = new EventSource('/api/dress?' + q);
@@ -135,6 +147,11 @@ function dress() {
 $('go').onclick = dress;
 for (const id of ['species','occupation','wealth','gender'])
   $(id).addEventListener('keydown', e => { if (e.key === 'Enter') dress(); });
+window.addEventListener('hashchange', () => {        // paste a shared URL into an open tab
+  if (location.hash.replace(/^#/, '') === currentQuery()) return;   // hash already matches inputs (we set it)
+  if (hashToState()) dress();
+});
+if (hashToState()) dress();                          // shared link: restore inputs + auto-dress on load
 </script>
 </body>
 </html>
