@@ -19,6 +19,7 @@ import baseModelPrimitives as bmp
 import needs
 import parts
 import slots as slots_mod
+import loot as loot_mod
 import sim
 import store
 
@@ -776,6 +777,46 @@ def api_slots():
                 cnt = clamp(cnt or slots_mod.extract_count(SERVER, species, name, desc) or 1)
                 yield sse({"type": "slot", "slot": name, "site": name, "kind": "extra", "count": cnt})
             yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+# ------------------------------------------------ loot: dress an entity (slots.py skeleton + loot.py fill)
+@app.route("/dress")
+def dress_page():
+    return render_template("dress.html")
+
+
+@app.route("/api/dress")
+def api_dress():
+    """Build the species paper-doll, then dress it conditioned on {wealth, gender, occupation}: presence-gate
+    each slot (poor -> sparse), fill the ones that pass, streamed as each item is generated."""
+    entity = {"species": request.args.get("species", "").strip(),
+              "wealth": request.args.get("wealth", "").strip(),
+              "occupation": request.args.get("occupation", "").strip(),
+              "gender": request.args.get("gender", "").strip()}
+    desc = request.args.get("desc", "").strip() or None
+
+    @stream_with_context
+    def gen():
+        if not entity["species"]:
+            yield sse({"type": "error", "message": "Enter a species."}); return
+        try:
+            yield sse({"type": "prefix", "text": loot_mod.entity_prefix(entity)})
+            yield sse({"type": "status", "message": "building the paper-doll skeleton…"})
+            skeleton = slots_mod.species_slots(SERVER, entity["species"], desc)
+            yield sse({"type": "status", "message": f"dressing the {entity['species']}…"})
+            n = 0
+            for s in skeleton:                              # presence-gate then fill, streamed
+                if not loot_mod.has_slot(SERVER, entity, s["slot"], s["kind"]):
+                    continue
+                item = loot_mod.fill_slot(SERVER, entity, s["slot"], s["kind"])
+                if item:
+                    n += 1
+                    yield sse({"type": "item", "slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item})
+            yield sse({"type": "done", "n": n})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
 
