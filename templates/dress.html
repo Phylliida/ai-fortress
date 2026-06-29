@@ -41,6 +41,7 @@
   .hchip.cur { color:#1b1410; background:var(--accent); border-color:var(--accent); }
   #coins { color:var(--jewelry); font-size:14px; font-style:italic; margin:0 2px 12px; min-height:18px; }
   .group.bag h2 { color:var(--container); }
+  .ilink { color:inherit; text-decoration:none; cursor:pointer; } .ilink:hover { color:var(--accent); text-decoration:underline; }
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin:14px 2px 2px; font-size:11px; color:var(--muted); }
   .legend span { display:inline-flex; align-items:center; gap:5px; } .legend .dot { width:8px; height:8px; border-radius:50%; }
 </style>
@@ -78,6 +79,8 @@
 
 <script>
 const $ = id => document.getElementById(id);
+const itemHref = text => '/item#item=' + encodeURIComponent(text);   // click any item -> Item Lab (new tab)
+function linkEl(tag, cls, text) { const a = document.createElement(tag); a.className = cls; a.textContent = text; a.href = itemHref(text); a.target = '_blank'; a.rel = 'noopener'; return a; }
 const REGION = {
   head:'Head & Face', eyes:'Head & Face', face:'Head & Face', ears:'Head & Face', nose:'Head & Face',
   lips:'Head & Face', eyebrows:'Head & Face', tongue:'Head & Face',
@@ -121,7 +124,8 @@ function addItem(m) {
   const row = document.createElement('div'); row.className = 'item' + (empty ? ' empty' : '');
   const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = empty ? 'var(--line)' : `var(--${m.kind})`;
   const slot = document.createElement('span'); slot.className = 'slot'; slot.textContent = m.slot;
-  const what = document.createElement('span'); what.className = 'what'; what.textContent = empty ? '—' : m.item;
+  const what = empty ? Object.assign(document.createElement('span'), {className:'what', textContent:'—'})
+                     : linkEl('a', 'what ilink', m.item);
   row.append(dot, slot, what);
   if (m.count > 1 && !empty) { const n = document.createElement('span'); n.className = 'n'; n.textContent = '×' + m.count; row.appendChild(n); }
   g.appendChild(row);
@@ -132,8 +136,7 @@ function addCarry(category, item) {                  // a carried-inventory item
   const g = groupChips(cat);
   const row = document.createElement('div'); row.className = 'item';
   const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = 'var(--container)';
-  const what = document.createElement('span'); what.className = 'what'; what.textContent = item;
-  row.append(dot, what);
+  row.append(dot, linkEl('a', 'what ilink', item));
   g.appendChild(row);
 }
 

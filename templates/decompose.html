@@ -36,6 +36,8 @@
   .row.leaf .label { color:var(--muted); }
   .meta { color:var(--muted); font-size:11px; font-style:italic; margin-left:6px; }
   .meta.err { color:var(--err); font-style:normal; }
+  .ilink { color:var(--muted); text-decoration:none; font-size:11px; margin-left:6px; opacity:.55; }
+  .ilink:hover { color:var(--accent); opacity:1; }
 </style>
 </head>
 <body>
@@ -63,8 +65,11 @@ function makeNode(name, path, desc) {     // path = full lineage (root..this), s
   const row = document.createElement('div'); row.className = 'row';
   const caret = document.createElement('span'); caret.className = 'caret'; caret.textContent = '▸';
   const label = document.createElement('span'); label.className = 'label'; label.textContent = name;
+  const ilink = document.createElement('a'); ilink.className = 'ilink'; ilink.textContent = '↗';
+  ilink.href = '/item#item=' + encodeURIComponent(name); ilink.target = '_blank'; ilink.rel = 'noopener';
+  ilink.title = 'analyze in Item Lab'; ilink.onclick = e => e.stopPropagation();   // don't trigger expand
   const meta = document.createElement('span'); meta.className = 'meta';
-  row.append(caret, label, meta);
+  row.append(caret, label, ilink, meta);
   const children = document.createElement('div'); children.className = 'children';
   node.append(row, children);
   let loaded = false, loading = false, open = false, count = 0;

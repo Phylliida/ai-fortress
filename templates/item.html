@@ -32,6 +32,7 @@
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px 14px; }
   .panel h2 { margin:0 0 8px; font-size:11px; font-family:ui-monospace,monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
   .chip { display:inline-block; background:#15110d; border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-size:13px; margin:0 5px 5px 0; }
+  a.chip { text-decoration:none; color:var(--ink); cursor:pointer; } a.chip:hover { border-color:var(--accent); color:var(--accent); }
   .need { display:flex; align-items:center; gap:10px; padding:2px 0; }
   .need .nm { flex:0 0 130px; }
   .need .bar { flex:1; height:7px; background:#15110d; border-radius:4px; overflow:hidden; }
@@ -81,7 +82,7 @@ function ensureStats(){ if($('stats').children.length) return; for(const [k,labe
 function setTrait(k,v){ ensureStats(); const c=$('stat-'+k); if(c) c.querySelector('.val').textContent=fmtTrait(k,v); }
 function panelBody(id,title){ let p=$('panel-'+id); if(!p){ p=document.createElement('div'); p.className='panel'; p.id='panel-'+id; p.innerHTML=`<h2>${title}</h2><div class="body"></div>`; $('panels').appendChild(p); } return p.querySelector('.body'); }
 function setEmission(em){ const ch=Object.entries(em||{}); if(!ch.length) return; panelBody('emission','Emits').textContent = ch.map(([c,d])=>`${c} · ${Math.round(d.strength*100)}% · ${d.radius} m`).join('      '); }
-function setIngredients(items){ const b=panelBody('ingredients','Made from'); b.innerHTML=''; if(!(items||[]).length){ b.textContent='—'; return; } for(const it of items){ const c=document.createElement('span'); c.className='chip'; c.textContent=it; b.appendChild(c); } }
+function setIngredients(items){ const b=panelBody('ingredients','Made from'); b.innerHTML=''; if(!(items||[]).length){ b.textContent='—'; return; } for(const it of items){ const c=document.createElement('a'); c.className='chip'; c.textContent=it; c.href='/item#item='+encodeURIComponent(it); c.target='_blank'; c.rel='noopener'; b.appendChild(c); } }
 function setFood(f){ if(f && f.food_type) panelBody('food','Composition').textContent = `${f.food_type}${f.conf?` (${Math.round(f.conf*100)}%)`:''}`; }
 function addNeed(need,refill){ const b=panelBody('needs','Fills needs'); const row=document.createElement('div'); row.className='need'; row.innerHTML=`<span class="nm">${need}</span><span class="bar"><i style="width:${Math.round(refill*100)}%"></i></span><span class="pct">${Math.round(refill*100)}%</span>`; b.appendChild(row); }
 
