@@ -10,6 +10,8 @@ Needs the GLM server (worldRefactored.SERVER_URL) and the embedding server (EMBE
 Run:  pip install flask && python3 webui.py  -> http://127.0.0.1:5005
 """
 import json
+import os
+import uuid
 import datetime
 from types import SimpleNamespace
 from flask import Flask, render_template, request, Response, stream_with_context
@@ -784,9 +786,39 @@ def api_slots():
 
 
 # ------------------------------------------------ loot: dress an entity (slots.py skeleton + loot.py fill)
+DRESS_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dress_history.jsonl")
+
+
+def _append_dress(record):
+    """Append-only JSONL: one dressed character per line (entity descriptor + full paper-doll incl. empties)."""
+    with open(DRESS_HISTORY, "a") as f:
+        f.write(json.dumps(record) + "\n")
+
+
+def _read_dress(limit=300):
+    if not os.path.exists(DRESS_HISTORY):
+        return []
+    out = []
+    with open(DRESS_HISTORY) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    out.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return out[-limit:]
+
+
 @app.route("/dress")
 def dress_page():
     return render_template("dress.html")
+
+
+@app.route("/api/dress_history")
+def api_dress_history():
+    """All dressed characters so far, newest first (entity + full slot list, for hopping between them)."""
+    return Response(json.dumps(list(reversed(_read_dress()))), mimetype="application/json")
 
 
 @app.route("/api/dress")
@@ -808,14 +840,21 @@ def api_dress():
             yield sse({"type": "status", "message": "building the paper-doll skeleton…"})
             skeleton = slots_mod.species_slots(SERVER, entity["species"], desc)
             yield sse({"type": "status", "message": f"dressing the {entity['species']}…"})
-            filled = 0
+            filled, items = 0, []
             for s in skeleton:                              # stream EVERY slot (empty too), filled or not
                 item = (loot_mod.fill_slot(SERVER, entity, s["slot"], s["kind"])
                         if loot_mod.has_slot(SERVER, entity, s["slot"], s["kind"]) else None)
                 if item:
                     filled += 1
-                yield sse({"type": "item", "slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item})
-            yield sse({"type": "done", "filled": filled, "total": len(skeleton)})
+                rec = {"slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item}
+                items.append(rec)
+                yield sse({"type": "item", **rec})
+            record = {"id": uuid.uuid4().hex[:12],
+                      "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+                      "entity": {**entity, "prefix": loot_mod.entity_prefix(entity)},
+                      "items": items}
+            _append_dress(record)                           # persist to the global history
+            yield sse({"type": "done", "filled": filled, "total": len(skeleton), "record": record})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
 
