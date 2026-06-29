@@ -760,14 +760,12 @@ def api_slots():
             clamp = lambda c: max(1, min(c, slots_mod.MAX_SLOT_COUNT))
             sites = list(dict.fromkeys(s["site"] for s in slots_mod.HUMAN_SLOTS))
             yield sse({"type": "status", "message": "checking which body sites exist…"})
-            have, counts = {}, {}
+            have = {}
             for site in sites:                                  # prune (presence) per site, streamed
                 keep = SERVER.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP
                 have[site] = keep
                 yield sse({"type": "site", "site": site, "keep": keep})
-            for site in sites:                                  # count the inherently-multiple sites
-                if have[site] and site in slots_mod.MULTI_SITES:
-                    counts[site] = clamp(slots_mod.extract_count(SERVER, species, site, desc) or slots_mod.MULTI_SITES[site])
+            counts = slots_mod.site_counts(SERVER, species, have, desc)   # limbs direct, digits per-limb×limb
             for s in slots_mod.HUMAN_SLOTS:                      # surviving human slots
                 if have[s["site"]]:
                     yield sse({"type": "slot", "slot": s["slot"], "site": s["site"], "kind": s["kind"],
