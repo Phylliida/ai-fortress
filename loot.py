@@ -32,15 +32,16 @@ PRESENCE_FEWSHOT = (
 # (belt/satchel/nose) with explicit examples so the item stays a thing-OF-that-slot, short noun phrase. Per the
 # guidelines: EXPLICIT SUBJECT in the question (no 'they' pronoun), Question:/Answer: labels, mixed wealth/role/
 # species/kind.
+# answers OMIT the leading article (a/an/the) — saves a generation token per item and reads cleaner in a list.
 FILL_FEWSHOT = (
-    "Question: What does a wealthy human noble wear on their torso?\nAnswer: an embroidered silk doublet\n"
-    "Question: What does a destitute human beggar wear on their torso?\nAnswer: a filthy threadbare tunic\n"
-    "Question: What does a poor goblin raider wear in their nose?\nAnswer: a crude bone nose-ring\n"
-    "Question: What does a modest human farmer wear on their head?\nAnswer: a wide-brimmed straw hat\n"
-    "Question: What does a wealthy elf merchant wear on their fingers?\nAnswer: a gold signet ring\n"
-    "Question: What does a poor human soldier hold in their hands?\nAnswer: a notched iron shortsword\n"
-    "Question: What does a modest human traveler wear on their belt?\nAnswer: a worn leather belt with a brass buckle\n"
-    "Question: What does a wealthy human lady carry as their satchel?\nAnswer: a beaded velvet purse\n")
+    "Question: What does a wealthy human noble wear on their torso?\nAnswer: embroidered silk doublet\n"
+    "Question: What does a destitute human beggar wear on their torso?\nAnswer: filthy threadbare tunic\n"
+    "Question: What does a poor goblin raider wear in their nose?\nAnswer: crude bone nose-ring\n"
+    "Question: What does a modest human farmer wear on their head?\nAnswer: wide-brimmed straw hat\n"
+    "Question: What does a wealthy elf merchant wear on their fingers?\nAnswer: gold signet ring\n"
+    "Question: What does a poor human soldier hold in their hands?\nAnswer: notched iron shortsword\n"
+    "Question: What does a modest human traveler wear on their belt?\nAnswer: worn leather belt with a brass buckle\n"
+    "Question: What does a wealthy human lady carry as their satchel?\nAnswer: beaded velvet purse\n")
 
 # slot-adherence verify: is the generated item actually a thing-OF-that-slot? Catches the drift (belt -> "oak
 # canteen") and garbles. Two question forms (a-kind-of / holdable) matched to the slot kind. Mixed Y/N,
@@ -83,6 +84,15 @@ def has_slot(server, entity, slot, kind):
     return server.yes_no_prob(PRESENCE_FEWSHOT + f"Question: {q}\nAnswer:") >= 0.5
 
 
+def _strip_article(s):
+    """Drop a leading 'a '/'an '/'the ' (backstop — the few-shot already omits it)."""
+    low = s.lower()
+    for art in ("an ", "a ", "the "):
+        if low.startswith(art):
+            return s[len(art):]
+    return s
+
+
 def fits_slot(server, item, slot, kind):
     """Slot-adherence: is `item` actually a thing that belongs in this slot? (a-kind-of for worn/jewelry/
     container, holdable for held). Rejects belt->'oak canteen', shirt->'a pendant', garbles."""
@@ -96,7 +106,7 @@ def fill_slot(server, entity, slot, kind="worn", max_words=7, tries=3):
     rather than show a mismatched item). Quality rides the wealth wording; plurality rides the phrase."""
     prompt = FILL_FEWSHOT + "Question: " + _fill_q(_subj(entity), slot, kind) + "\nAnswer:"
     for _ in range(tries):
-        item = server.gen_text(prompt, stop=["\n", "."], n_predict=14).strip().strip(".,").strip()
+        item = _strip_article(server.gen_text(prompt, stop=["\n", "."], n_predict=14).strip().strip(".,").strip())
         if not item or item.lower() in parts.NULL_TOKENS or len(item.split()) > max_words:
             continue
         if fits_slot(server, item, slot, kind):
