@@ -849,10 +849,19 @@ def api_dress():
                 rec = {"slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item}
                 items.append(rec)
                 yield sse({"type": "item", **rec})
+            yield sse({"type": "status", "message": "packing the bag…"})   # carried inventory
+            coins = loot_mod.carry_coins(SERVER, entity)
+            yield sse({"type": "coins", "coins": coins})
+            carried = {}
+            for cat, noun, typ in loot_mod.INVENTORY_CATEGORIES:
+                lst = loot_mod.carry_category(SERVER, entity, noun, typ)
+                carried[cat] = lst
+                for it in lst:
+                    yield sse({"type": "carry", "category": cat, "item": it})
             record = {"id": uuid.uuid4().hex[:12],
                       "ts": datetime.datetime.now().isoformat(timespec="seconds"),
                       "entity": {**entity, "prefix": loot_mod.entity_prefix(entity)},
-                      "items": items}
+                      "items": items, "coins": coins, "carried": carried}
             _append_dress(record)                           # persist to the global history
             yield sse({"type": "done", "filled": filled, "total": len(skeleton), "record": record})
         except Exception as e:
