@@ -29,3 +29,4 @@ embeddinggemma-300M-Q8_0\.gguf
 # Python
 __pycache__/
 *.pyc
+dress_history.jsonl

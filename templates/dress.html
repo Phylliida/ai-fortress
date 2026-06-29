@@ -35,6 +35,10 @@
   .item .n { color:var(--muted); font-size:10px; }
   .item.empty { opacity:.42; }
   .item.empty .what { color:var(--muted); }
+  .history { display:flex; gap:6px; flex-wrap:wrap; margin:14px 2px 2px; max-height:104px; overflow-y:auto; }
+  .hchip { background:#15110d; color:var(--muted); border:1px solid var(--line); border-radius:14px; padding:3px 11px; font-size:12px; cursor:pointer; white-space:nowrap; font-family:Georgia,serif; }
+  .hchip:hover { color:var(--ink); border-color:var(--accent); }
+  .hchip.cur { color:#1b1410; background:var(--accent); border-color:var(--accent); }
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin:14px 2px 2px; font-size:11px; color:var(--muted); }
   .legend span { display:inline-flex; align-items:center; gap:5px; } .legend .dot { width:8px; height:8px; border-radius:50%; }
 </style>
@@ -63,6 +67,7 @@
     <span><i class="dot" style="background:var(--jewelry)"></i>jewelry</span>
     <span><i class="dot" style="background:var(--extra)"></i>extra</span>
   </div>
+  <div id="history" class="history"></div>
   <div class="who" id="who"></div>
   <div id="status"></div>
   <div class="groups" id="groups"></div>
@@ -117,6 +122,39 @@ function addItem(m) {
   g.appendChild(row);
 }
 
+let HISTORY = [];
+async function loadHistory() {
+  try { HISTORY = await (await fetch('/api/dress_history')).json(); } catch { HISTORY = []; }
+  renderChips();
+}
+function renderChips() {
+  const h = $('history'); h.innerHTML = '';
+  for (const rec of HISTORY) {
+    const chip = document.createElement('button'); chip.className = 'hchip'; chip.dataset.id = rec.id;
+    chip.textContent = (rec.entity && rec.entity.prefix) || (rec.entity && rec.entity.species) || '?';
+    chip.title = rec.ts || '';
+    chip.onclick = () => { location.hash = 'id=' + rec.id; };
+    h.appendChild(chip);
+  }
+}
+function markCurrent(id) {
+  for (const c of $('history').children) c.classList.toggle('cur', c.dataset.id === id);
+}
+function renderRecord(rec) {                  // show a stored dressed character (no re-generation)
+  if (es) es.close();
+  $('groups').innerHTML = '';
+  $('who').textContent = (rec.entity && rec.entity.prefix) || '';
+  const items = rec.items || [];
+  $('status').textContent = `from history — ${items.filter(i => i.item).length} of ${items.length} slots equipped · ${rec.ts || ''}`;
+  for (const it of items) addItem(it);
+  if (rec.entity) for (const k of ['species','wealth','occupation','gender']) $(k).value = rec.entity[k] || '';
+  markCurrent(rec.id);
+}
+function renderRecordById(id) {
+  const rec = HISTORY.find(r => r.id === id);
+  if (rec) renderRecord(rec);
+}
+
 function currentQuery() {
   return ['species','wealth','occupation','gender']
     .map(k => $(k).value.trim() ? k + '=' + encodeURIComponent($(k).value.trim()) : '')
@@ -141,7 +179,11 @@ function dress() {
     if (m.type === 'item') addItem(m);
     else if (m.type === 'prefix') $('who').textContent = m.text;
     else if (m.type === 'status') $('status').textContent = m.message;
-    else if (m.type === 'done') { es.close(); $('status').textContent = `dressed — ${m.filled} of ${m.total} slots equipped.`; }
+    else if (m.type === 'done') {
+      es.close();
+      $('status').textContent = `dressed — ${m.filled} of ${m.total} slots equipped.`;
+      if (m.record) { HISTORY.unshift(m.record); renderChips(); markCurrent(m.record.id); }   // add to gallery
+    }
     else if (m.type === 'error') { es.close(); $('status').textContent = m.message; }
   };
   es.onerror = () => { es.close(); $('status').textContent = 'connection lost'; };
@@ -150,11 +192,14 @@ function dress() {
 $('go').onclick = dress;
 for (const id of ['species','occupation','wealth','gender'])
   $(id).addEventListener('keydown', e => { if (e.key === 'Enter') dress(); });
-window.addEventListener('hashchange', () => {        // paste a shared URL into an open tab
-  if (location.hash.replace(/^#/, '') === currentQuery()) return;   // hash already matches inputs (we set it)
+function applyHash() {                                // route the hash: #id=… views a stored char, else dress inputs
+  const h = location.hash.replace(/^#/, '');
+  if (new URLSearchParams(h).get('id')) { renderRecordById(new URLSearchParams(h).get('id')); return; }
+  if (h === currentQuery()) return;                  // we set it from inputs (or no-op) -> don't re-dress
   if (hashToState()) dress();
-});
-if (hashToState()) dress();                          // shared link: restore inputs + auto-dress on load
+}
+window.addEventListener('hashchange', applyHash);
+loadHistory().then(applyHash);                       // fetch the gallery, then route the initial hash
 </script>
 </body>
 </html>
