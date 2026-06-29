@@ -22,6 +22,8 @@ import needs
 import parts
 import slots as slots_mod
 import loot as loot_mod
+import traits as traits_mod
+import categories as categories_mod
 import sim
 import store
 
@@ -864,6 +866,111 @@ def api_dress():
                       "items": items, "coins": coins, "carried": carried}
             _append_dress(record)                           # persist to the global history
             yield sse({"type": "done", "filled": filled, "total": len(skeleton), "record": record})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+# ------------------------------------------------ item analysis (traits + ingredients + needs-filled + food)
+ITEM_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "item_history.jsonl")
+
+
+def _append_item(record):
+    with open(ITEM_HISTORY, "a") as f:
+        f.write(json.dumps(record) + "\n")
+
+
+def _read_item(limit=300):
+    if not os.path.exists(ITEM_HISTORY):
+        return []
+    out = []
+    with open(ITEM_HISTORY) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    out.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return out[-limit:]
+
+
+def _item_need_list():
+    """The need vocabulary item-affordances are swept over: recurring needs (>=2 species), as in bake_item_needs.py."""
+    from collections import Counter
+    recs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "species_needs_clean.json")))
+    vocab = Counter()
+    for r in recs:
+        for n in set(r.get("have", [])) | set(r.get("extra", [])):
+            vocab[n] += 1
+    return sorted((n for n, c in vocab.items() if c >= 2), key=lambda n: -vocab[n])
+
+
+ITEM_NEED_LIST = _item_need_list()
+
+
+@app.route("/item")
+def item_page():
+    return render_template("item.html")
+
+
+@app.route("/api/item_history")
+def api_item_history():
+    return Response(json.dumps(list(reversed(_read_item()))), mimetype="application/json")
+
+
+@app.route("/api/item")
+def api_item():
+    """Run every per-item analysis we have, streamed: traits (weight/size/rarity/worth/source/emission, traits.py),
+    ingredients (categories.py 'made from'), composition (needs.classify_food_type), and which needs it fills
+    (needs.bake_item_affordances over the recurring-need vocabulary). Persists each item to item_history.jsonl."""
+    name = request.args.get("item", "").strip()
+    desc = request.args.get("desc", "").strip()
+    subject = f"{name}: {desc}" if desc else name        # 'name: description' grounds ambiguous creative items
+
+    @stream_with_context
+    def gen():
+        if not name:
+            yield sse({"type": "error", "message": "Enter an item."}); return
+        T = traits_mod
+        try:
+            yield sse({"type": "status", "message": "weighing & appraising…"})
+            tr = {}
+            for key, fn in [
+                ("weight_g", lambda: T.bake_number(SERVER, T.WEIGHT_Q, T.WEIGHT_ANCHORS, T.WEIGHT_UNITS, subject)),
+                ("size_cm",  lambda: T.bake_number(SERVER, T.SIZE_Q, T.SIZE_ANCHORS, T.SIZE_UNITS, subject)),
+                ("rarity",   lambda: T.bake_scale(SERVER, T.RARITY_Q, T.RARITY_ANCHORS, T.RARITY_SCALE, subject)),
+                ("worth",    lambda: T.bake_scale(SERVER, T.WORTH_Q, T.WORTH_ANCHORS, T.WORTH_SCALE, subject)),
+                ("source",   lambda: T.bake_category(SERVER, T.SOURCE_Q, T.SOURCE_ANCHORS, T.SOURCE_TIERS, subject)),
+            ]:
+                tr[key] = fn()
+                yield sse({"type": "trait", "key": key, "value": tr[key]})
+            tr["emission"] = T.bake_emission(SERVER, subject)
+            yield sse({"type": "emission", "emission": tr["emission"]})
+
+            yield sse({"type": "status", "message": "ingredients…"})
+            ingr = categories_mod.extract_ingredients(SERVER, subject)
+            yield sse({"type": "ingredients", "items": ingr})
+
+            yield sse({"type": "status", "message": "composition…"})
+            food = needs.classify_food_type(SERVER, subject)
+            yield sse({"type": "food", "food": food})
+
+            yield sse({"type": "status", "message": f"sweeping {len(ITEM_NEED_LIST)} needs…"})
+            served = {}
+            for need in ITEM_NEED_LIST:
+                r = needs.bake_item_affordance(SERVER, subject, need)
+                if r["applies"] and r["refill"] > 0:
+                    served[need] = r["refill"]
+                    yield sse({"type": "need", "need": need, "refill": r["refill"]})
+
+            record = {"id": uuid.uuid4().hex[:12],
+                      "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+                      "name": name, "desc": desc, "subject": subject,
+                      "traits": tr, "ingredients": ingr, "food": food, "needs": served}
+            _append_item(record)
+            yield sse({"type": "done", "record": record})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
 
