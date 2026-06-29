@@ -18,6 +18,7 @@ import worldRefactored as wr
 import baseModelPrimitives as bmp
 import needs
 import parts
+import slots as slots_mod
 import sim
 import store
 
@@ -731,6 +732,51 @@ def api_decompose():
                 if SERVER.yes_no_prob(ctx + parts.VERIFY_SUBPART_FEWSHOT +
                                       f"Question: If a {thing} were real, would it have a {p}?\nAnswer:") >= 0.5:
                     yield sse({"type": "part", "part": p})
+            yield sse({"type": "done"})
+        except Exception as e:
+            yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
+
+    return Response(gen(), mimetype="text/event-stream")
+
+
+# ------------------------------------------------ per-species paper-doll (wearable slots, slots.py)
+@app.route("/slots")
+def slots_page():
+    return render_template("slots.html")
+
+
+@app.route("/api/slots")
+def api_slots():
+    """Per-species paper-doll skeleton, streamed: prune each body SITE -> count the multiples -> surviving
+    slots -> extra body parts beyond a human. The empty wearable skeleton, before we fill it."""
+    species = request.args.get("species", "").strip()
+    desc = request.args.get("desc", "").strip() or None
+
+    @stream_with_context
+    def gen():
+        if not species:
+            yield sse({"type": "error", "message": "Enter a species."}); return
+        try:
+            clamp = lambda c: max(1, min(c, slots_mod.MAX_SLOT_COUNT))
+            sites = list(dict.fromkeys(s["site"] for s in slots_mod.HUMAN_SLOTS))
+            yield sse({"type": "status", "message": "checking which body sites exist…"})
+            have, counts = {}, {}
+            for site in sites:                                  # prune (presence) per site, streamed
+                keep = SERVER.yes_no_prob(parts.prune_prompt(species, site, desc)) >= parts.PRUNE_KEEP
+                have[site] = keep
+                yield sse({"type": "site", "site": site, "keep": keep})
+            for site in sites:                                  # count the inherently-multiple sites
+                if have[site] and site in slots_mod.MULTI_SITES:
+                    counts[site] = clamp(slots_mod.extract_count(SERVER, species, site, desc) or slots_mod.MULTI_SITES[site])
+            for s in slots_mod.HUMAN_SLOTS:                      # surviving human slots
+                if have[s["site"]]:
+                    yield sse({"type": "slot", "slot": s["slot"], "site": s["site"], "kind": s["kind"],
+                               "count": counts.get(s["site"], s["count"])})
+            yield sse({"type": "status", "message": "finding extra body parts…"})
+            for e in slots_mod.slot_extras(SERVER, species, desc):   # species-specific extras
+                name, cnt = slots_mod._strip_count(e)
+                cnt = clamp(cnt or slots_mod.extract_count(SERVER, species, name, desc) or 1)
+                yield sse({"type": "slot", "slot": name, "site": name, "kind": "extra", "count": cnt})
             yield sse({"type": "done"})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
