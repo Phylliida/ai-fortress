@@ -58,7 +58,7 @@
 <script>
 const $ = id => document.getElementById(id);
 
-function makeNode(name, desc) {
+function makeNode(name, path, desc) {     // path = full lineage (root..this), sent as context
   const node = document.createElement('div'); node.className = 'node';
   const row = document.createElement('div'); row.className = 'row';
   const caret = document.createElement('span'); caret.className = 'caret'; caret.textContent = '▸';
@@ -79,11 +79,11 @@ function makeNode(name, desc) {
     }
     loading = true; count = 0; meta.className = 'meta'; meta.textContent = '';
     caret.textContent = '◌'; caret.classList.add('spin');
-    const url = '/api/decompose?thing=' + encodeURIComponent(name) + (desc ? '&desc=' + encodeURIComponent(desc) : '');
+    const url = '/api/decompose?path=' + encodeURIComponent(path.join('|')) + (desc ? '&desc=' + encodeURIComponent(desc) : '');
     const es = new EventSource(url);
     es.onmessage = ev => {
       const m = JSON.parse(ev.data);
-      if (m.type === 'part') { children.appendChild(makeNode(m.part, '')); count++; children.style.display = 'block'; }
+      if (m.type === 'part') { children.appendChild(makeNode(m.part, path.concat(m.part), '')); count++; children.style.display = 'block'; }
       else if (m.type === 'status') { meta.textContent = m.message; }
       else if (m.type === 'done') {
         es.close(); loading = false; loaded = true; open = true;
@@ -106,7 +106,7 @@ function explore() {
   if (!thing) { $('thing').focus(); return; }
   const desc = $('desc').value.trim();
   $('tree').innerHTML = '';
-  const root = makeNode(thing, desc);
+  const root = makeNode(thing, [thing], desc);
   $('tree').appendChild(root);
   root.querySelector('.row').click();               // auto-expand the root
 }
