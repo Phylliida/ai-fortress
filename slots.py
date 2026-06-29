@@ -81,12 +81,13 @@ SLOT_EXTRA_FEWSHOT = (
     f"{_EXTRA_Q('snake')}\nAnswer: none\n"
     f"{_EXTRA_Q('dragon')}\nAnswer: horns, wings, tail, snout\n"
     f"{_EXTRA_Q('centaur')}\nAnswer: horse back, hooves, horse tail\n")
-# keep only spots a HUMAN LACKS (subtracts the shared parts the generator still leaks). Mixed Y/N, high-perplexity.
+# keep only spots a HUMAN LACKS (subtracts the shared parts the generator still leaks). Mixed Y/N,
+# high-perplexity order (N Y Y N — not strict alternation).
 EXTRA_VERIFY_FEWSHOT = (
     "Question: Does a human have a tail?\nAnswer: No\n"
     "Question: Does a human have shoulders?\nAnswer: Yes\n"
-    "Question: Does a human have wings?\nAnswer: No\n"
-    "Question: Does a human have knees?\nAnswer: Yes\n")
+    "Question: Does a human have knees?\nAnswer: Yes\n"
+    "Question: Does a human have wings?\nAnswer: No\n")
 _NUMWORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
 
 
