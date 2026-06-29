@@ -42,6 +42,16 @@ FILL_FEWSHOT = (
     "Question: What does a modest human traveler wear on their belt?\nAnswer: a worn leather belt with a brass buckle\n"
     "Question: What does a wealthy human lady carry as their satchel?\nAnswer: a beaded velvet purse\n")
 
+# slot-adherence verify: is the generated item actually a thing-OF-that-slot? Catches the drift (belt -> "oak
+# canteen") and garbles. Two question forms (a-kind-of / holdable) matched to the slot kind. Mixed Y/N,
+# high-perplexity order (Y N N Y Y).
+FITS_FEWSHOT = (
+    "Question: Is a silk doublet a kind of shirt?\nAnswer: Yes\n"
+    "Question: Is a carved oak canteen a kind of belt?\nAnswer: No\n"
+    "Question: Could a wide-brimmed straw hat be held in the hands?\nAnswer: No\n"
+    "Question: Is a silver hoop a kind of earring?\nAnswer: Yes\n"
+    "Question: Could a notched iron sword be held in the hands?\nAnswer: Yes\n")
+
 
 def _subj(entity):
     p = entity_prefix(entity)
@@ -73,16 +83,25 @@ def has_slot(server, entity, slot, kind):
     return server.yes_no_prob(PRESENCE_FEWSHOT + f"Question: {q}\nAnswer:") >= 0.5
 
 
-def fill_slot(server, entity, slot, kind="worn", max_words=7):
-    """The item in `slot` for this entity (or None if empty / a ramble), conditioned on who they are. Quality
-    is carried by the wording the wealth tier elicits. Stops at a period and caps length so it stays a short
-    noun phrase, not a sentence. Plurality rides the phrase ('silver rings'), so multi slots need no special case."""
-    raw = server.gen_text(FILL_FEWSHOT + "Question: " + _fill_q(_subj(entity), slot, kind) + "\nAnswer:",
-                          stop=["\n", "."], n_predict=14)
-    item = raw.strip().strip(".,").strip()
-    if not item or item.lower() in parts.NULL_TOKENS or len(item.split()) > max_words:
-        return None
-    return item
+def fits_slot(server, item, slot, kind):
+    """Slot-adherence: is `item` actually a thing that belongs in this slot? (a-kind-of for worn/jewelry/
+    container, holdable for held). Rejects belt->'oak canteen', shirt->'a pendant', garbles."""
+    q = f"Could {item} be held in the hands?" if kind == "held" else f"Is {item} a kind of {slot}?"
+    return server.yes_no_prob(FITS_FEWSHOT + f"Question: {q}\nAnswer:") >= 0.5
+
+
+def fill_slot(server, entity, slot, kind="worn", max_words=7, tries=3):
+    """The item in `slot` for this entity (or None), conditioned on who they are. Generate -> guard (length/
+    null) -> slot-adherence verify; retry up to `tries` (sampling gives variety), else None (drop the slot
+    rather than show a mismatched item). Quality rides the wealth wording; plurality rides the phrase."""
+    prompt = FILL_FEWSHOT + "Question: " + _fill_q(_subj(entity), slot, kind) + "\nAnswer:"
+    for _ in range(tries):
+        item = server.gen_text(prompt, stop=["\n", "."], n_predict=14).strip().strip(".,").strip()
+        if not item or item.lower() in parts.NULL_TOKENS or len(item.split()) > max_words:
+            continue
+        if fits_slot(server, item, slot, kind):
+            return item
+    return None
 
 
 def fill_worn(server, entity, skeleton):
