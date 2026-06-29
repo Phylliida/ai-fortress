@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper Doll · ai-fortress</title>
+<style>
+  :root {
+    --bg:#1b1714; --panel:#262019; --ink:#ece3d4; --muted:#a99c86; --accent:#d8a657; --line:#3a3128;
+    --worn:#d8a657; --held:#d77a61; --container:#b08a5a; --piercing:#c08fd0; --jewelry:#e8c84a; --extra:#8ab368;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif; }
+  header { display:flex; align-items:baseline; gap:12px; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--panel); }
+  h1 { font-family:Georgia,serif; font-weight:600; margin:0; font-size:21px; color:var(--accent); }
+  header small { color:var(--muted); font-size:12px; font-family:ui-monospace,monospace; }
+  header .links { margin-left:auto; display:flex; gap:14px; }
+  header a { color:var(--muted); font-size:12px; text-decoration:none; } header a:hover { color:var(--accent); }
+  .wrap { max-width:860px; margin:0 auto; padding:22px; }
+  .controls { display:flex; gap:9px; flex-wrap:wrap; }
+  input { background:#15110d; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:8px 11px; font:inherit; }
+  input::placeholder { color:var(--muted); } #species { flex:1 1 220px; } #desc { flex:2 1 260px; }
+  button { background:var(--accent); color:#1b1410; border:0; border-radius:7px; padding:8px 15px; font-weight:600; cursor:pointer; }
+  #status { color:var(--muted); font-size:12px; font-style:italic; min-height:18px; margin:10px 2px; }
+  .groups { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:14px; }
+  .group { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .group h2 { margin:0 0 9px; font-size:12px; font-family:ui-monospace,monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+  .group.extra { border-color:var(--extra); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:20px; font-size:13px;
+          background:#15110d; border:1px solid var(--line); }
+  .chip .dot { width:8px; height:8px; border-radius:50%; flex:0 0 8px; }
+  .chip .n { color:var(--muted); font-size:11px; font-family:ui-monospace,monospace; }
+  .legend { display:flex; flex-wrap:wrap; gap:12px; margin:14px 2px; font-size:11px; color:var(--muted); }
+  .legend span { display:inline-flex; align-items:center; gap:5px; }
+  .legend .dot { width:8px; height:8px; border-radius:50%; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Paper Doll</h1>
+  <small>per-species wearable slots — the empty skeleton before we dress it</small>
+  <div class="links"><a href="/parts">innards →</a><a href="/decompose">take apart →</a><a href="/">world →</a></div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <input id="species" placeholder="human, naga, four-armed automaton, dragon…" autofocus>
+    <input id="desc" placeholder="optional description">
+    <button id="go">Show slots</button>
+  </div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--worn)"></i>worn</span>
+    <span><i class="dot" style="background:var(--held)"></i>held</span>
+    <span><i class="dot" style="background:var(--container)"></i>container</span>
+    <span><i class="dot" style="background:var(--piercing)"></i>piercing</span>
+    <span><i class="dot" style="background:var(--jewelry)"></i>jewelry</span>
+    <span><i class="dot" style="background:var(--extra)"></i>extra body part</span>
+  </div>
+  <div id="status"></div>
+  <div class="groups" id="groups"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+// site -> display region. extras get their own region regardless of site.
+const REGION = {
+  head:'Head & Face', eyes:'Head & Face', face:'Head & Face', ears:'Head & Face', nose:'Head & Face',
+  lips:'Head & Face', eyebrows:'Head & Face', tongue:'Head & Face',
+  neck:'Neck & Torso', back:'Neck & Torso', chest:'Neck & Torso', torso:'Neck & Torso', navel:'Neck & Torso', waist:'Neck & Torso',
+  wrists:'Arms & Hands', hands:'Arms & Hands', fingers:'Arms & Hands',
+  hips:'Lower Body', legs:'Lower Body', ankles:'Lower Body', feet:'Lower Body',
+};
+const ORDER = ['Head & Face','Neck & Torso','Arms & Hands','Lower Body','Carried','Extra Body Parts'];
+let es = null;
+
+function regionOf(m) {
+  if (m.kind === 'extra') return 'Extra Body Parts';
+  if (m.kind === 'container') return 'Carried';
+  return REGION[m.site] || 'Other';
+}
+
+function groupEl(name) {
+  let g = document.getElementById('grp-' + name);
+  if (!g) {
+    g = document.createElement('div');
+    g.className = 'group' + (name === 'Extra Body Parts' ? ' extra' : '');
+    g.id = 'grp-' + name;
+    g.innerHTML = `<h2>${name}</h2><div class="chips"></div>`;
+    // insert in canonical order
+    const groups = $('groups'); const idx = ORDER.indexOf(name);
+    let before = null;
+    for (const child of groups.children) {
+      const ci = ORDER.indexOf(child.id.replace('grp-', ''));
+      if (ci > idx) { before = child; break; }
+    }
+    groups.insertBefore(g, before);
+  }
+  return g.querySelector('.chips');
+}
+
+function addSlot(m) {
+  const chips = groupEl(regionOf(m));
+  const chip = document.createElement('span'); chip.className = 'chip';
+  const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = `var(--${m.kind})`;
+  chip.appendChild(dot);
+  chip.appendChild(document.createTextNode(m.slot));
+  if (m.count > 1) { const n = document.createElement('span'); n.className = 'n'; n.textContent = '×' + m.count; chip.appendChild(n); }
+  chips.appendChild(chip);
+}
+
+function show() {
+  const species = $('species').value.trim();
+  if (!species) { $('species').focus(); return; }
+  const desc = $('desc').value.trim();
+  if (es) es.close();
+  $('groups').innerHTML = ''; $('status').textContent = 'starting…';
+  const url = '/api/slots?species=' + encodeURIComponent(species) + (desc ? '&desc=' + encodeURIComponent(desc) : '');
+  es = new EventSource(url);
+  es.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.type === 'slot') addSlot(m);
+    else if (m.type === 'status') $('status').textContent = m.message;
+    else if (m.type === 'done') { es.close(); $('status').textContent = 'done.'; }
+    else if (m.type === 'error') { es.close(); $('status').textContent = m.message; }
+  };
+  es.onerror = () => { es.close(); $('status').textContent = 'connection lost'; };
+}
+
+$('go').onclick = show;
+$('species').addEventListener('keydown', e => { if (e.key === 'Enter') show(); });
+$('desc').addEventListener('keydown', e => { if (e.key === 'Enter') show(); });
+</script>
+</body>
+</html>
