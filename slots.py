@@ -57,12 +57,32 @@ COUNT_FEWSHOT = (
     "How many tongues does a dog have?\nAnswer: 1\n"
     "How many arms does an octopus have?\nAnswer: 8\n")
 
-# extras: wearable/hang spots a species has BEYOND a human. Counterfactual-free (real anatomy of the form),
-# POSITIVE framing, multi-answer with varying counts; "none" exemplar so human-like species add nothing.
+# extras: wearable/hang spots a species has BEYOND a human. POSITIVE framing, multi-answer varying counts;
+# "none" exemplar so human-like species add nothing. The generator alone leaks human-shared parts (it lists
+# "shoulders"/"hair" regardless of "beyond a human"), so EXTRA_VERIFY subtracts them per-extra.
 SLOT_EXTRA_FEWSHOT = (
     "Beyond a human's, what body spots does a snake have where you could wear or hang something? Name the spots.\nAnswer: none\n"
     "Beyond a human's, what body spots does a dragon have where you could wear or hang something? Name the spots.\nAnswer: horns, wings, tail, snout\n"
     "Beyond a human's, what body spots does a centaur have where you could wear or hang something? Name the spots.\nAnswer: horse back, four hooves, horse tail\n")
+# keep only spots a HUMAN LACKS (subtracts the shared parts the generator leaks). Mixed Y/N, high-perplexity.
+EXTRA_VERIFY_FEWSHOT = (
+    "Question: Does a human have a tail?\nAnswer: No\n"
+    "Question: Does a human have shoulders?\nAnswer: Yes\n"
+    "Question: Does a human have wings?\nAnswer: No\n"
+    "Question: Does a human have knees?\nAnswer: Yes\n")
+# names the generator/sites we dedup extras against, + leading count-word stripping ("eight tentacles" -> 8).
+SITE_NAMES = [s["site"] for s in HUMAN_SLOTS] + [s["slot"] for s in HUMAN_SLOTS]
+_NUMWORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+
+
+def _strip_count(name):
+    """Pull a leading count off an extra name: 'eight tentacles' -> ('tentacles', 8), 'horns' -> ('horns', None)."""
+    w = name.split()
+    if w and w[0].isdigit():
+        return " ".join(w[1:]) or name, int(w[0])
+    if w and w[0].lower() in _NUMWORDS:
+        return " ".join(w[1:]) or name, _NUMWORDS[w[0].lower()]
+    return name, None
 
 
 def extract_count(server, species, site, desc=None):
@@ -75,13 +95,16 @@ def extract_count(server, species, site, desc=None):
 
 
 def slot_extras(server, species, desc=None, samples=4):
-    """Wearable spots a species has beyond a human (tail/wings/horns) — sample-union, embed-deduped."""
+    """Wearable spots a species has beyond a human (tail/wings/horns): sample-union -> embed-dedup against the
+    human slots/sites (drops shared parts + self-dups) -> per-extra verify that a HUMAN actually LACKS it."""
     ctx = f"{species} is {desc}.\n" if desc else ""
     raw = server.sample_union(
         ctx + SLOT_EXTRA_FEWSHOT +
         f"Beyond a human's, what body spots does a {species} have where you could wear or hang something? Name the spots.\nAnswer:",
         samples=samples, n_predict=40, max_words=3, reject=lambda k: k in parts.NULL_TOKENS)
-    return parts.embed_dedup(raw)
+    cand = parts.embed_dedup(raw, seed=SITE_NAMES)              # drop ones matching a human slot/site + self-dups
+    return [e for e in cand                                     # keep only what a HUMAN lacks
+            if server.yes_no_prob(EXTRA_VERIFY_FEWSHOT + f"Question: Does a human have {e}?\nAnswer:") < 0.5]
 
 
 def species_slots(server, species, desc=None):
@@ -95,5 +118,7 @@ def species_slots(server, species, desc=None):
             counts[site] = extract_count(server, species, site, desc) or MULTI_SITES[site]
     out = [{**s, "count": counts.get(s["site"], s["count"])} for s in HUMAN_SLOTS if have[s["site"]]]
     for e in slot_extras(server, species, desc):                # species-specific extra spots
-        out.append({"slot": e, "site": e, "kind": "worn", "count": extract_count(server, species, e, desc) or 1})
+        name, cnt = _strip_count(e)                             # 'eight tentacles' -> ('tentacles', 8)
+        cnt = cnt or extract_count(server, species, name, desc) or 1
+        out.append({"slot": name, "site": name, "kind": "worn", "count": cnt})
     return out
