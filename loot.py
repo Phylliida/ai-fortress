@@ -136,12 +136,14 @@ def dress(server, entity, desc=None):
 
 
 # ---------- carried inventory (the bag): category-conditioned lists + coins as a wealth-tier amount ----------
+# (key, generation noun, verify TYPE) — the type drives the category-adherence check ("is X a weapon?"), which
+# both keeps items on-category (no salt-shaker under weapons) and drops garbles (a "tiny" isn't a weapon either).
 INVENTORY_CATEGORIES = [
-    ("weapons",     "spare weapons"),
-    ("tools",       "tools or useful gear"),
-    ("consumables", "food, drink, or potions"),
-    ("valuables",   "valuables or trinkets"),
-    ("personal",    "personal belongings"),
+    ("weapons",     "spare weapons",           "a weapon"),
+    ("tools",       "tools or useful gear",    "a tool or piece of gear"),
+    ("consumables", "food, drink, or potions", "something to eat, drink, or use up"),
+    ("valuables",   "valuables or trinkets",   "a valuable or trinket"),
+    ("personal",    "personal belongings",     "a personal belonging"),
 ]
 
 # one exemplar per category — explicit subject, Question:/Answer:, multi-answer VARYING counts (2/3/3/1/2),
@@ -158,6 +160,14 @@ CARRY_VERIFY_FEWSHOT = (
     "Question: Would a destitute beggar carry a golden crown?\nAnswer: No\n"
     "Question: Would a peasant farmer carry a royal scepter?\nAnswer: No\n"
     "Question: Would a wealthy merchant carry a coin purse?\nAnswer: Yes\n")
+# category-adherence verify: is the item actually that TYPE of thing? Keeps categories clean (salt-shaker is
+# not a weapon) and drops garbles ('tiny' is not a tool). Mixed types, high-perplexity order (Y N N Y Y).
+CATEGORY_FITS_FEWSHOT = (
+    "Question: Is a rusty dagger a weapon?\nAnswer: Yes\n"
+    "Question: Is a salt shaker a weapon?\nAnswer: No\n"
+    "Question: Is bare hands a tool or piece of gear?\nAnswer: No\n"
+    "Question: Is dried meat something to eat, drink, or use up?\nAnswer: Yes\n"
+    "Question: Is a magnifying glass a tool or piece of gear?\nAnswer: Yes\n")
 # coins as a CATEGORICAL amount (categories beat numbers for base models), wealth-graded. Keeps its article.
 COINS_FEWSHOT = (
     "Question: How much money does a destitute beggar carry?\nAnswer: a few copper coins\n"
@@ -166,15 +176,23 @@ COINS_FEWSHOT = (
     "Question: How much money does a poor soldier carry?\nAnswer: a small pouch of copper\n")
 
 
-def carry_category(server, entity, noun, samples=4, threshold=0.5, max_words=4):
-    """Items in one carry category for this entity: sample-union (recall) -> embed-dedup -> per-item plausibility
-    verify (would they actually carry it?). Articles stripped. Empty list when they'd carry nothing of the kind."""
+def category_fits(server, item, type_noun):
+    """Category-adherence: is `item` actually that TYPE (a weapon / a tool / …)? Rejects mis-filed items and
+    garbles (a non-thing fails every type)."""
+    return server.yes_no_prob(CATEGORY_FITS_FEWSHOT + f"Question: Is {item} {type_noun}?\nAnswer:") >= 0.5
+
+
+def carry_category(server, entity, noun, type_noun, samples=4, threshold=0.5, max_words=4):
+    """Items in one carry category for this entity: sample-union (recall) -> embed-dedup -> TWO verifies:
+    category-adherence (is it actually a {type}? — also kills garbles) AND plausibility (would they carry it?).
+    Articles stripped. Empty list when they'd carry nothing of the kind."""
     subj = _subj(entity)
     raw = server.sample_union(CARRY_FEWSHOT + f"Question: What {noun} does {subj} carry?\nAnswer:",
                               samples=samples, n_predict=40, max_words=max_words, reject=lambda k: k in parts.NULL_TOKENS)
     out = []
     for it in parts.embed_dedup([_strip_article(x) for x in raw]):
-        if server.yes_no_prob(CARRY_VERIFY_FEWSHOT + f"Question: Would {subj} carry {it}?\nAnswer:") >= threshold:
+        if (category_fits(server, it, type_noun) and
+                server.yes_no_prob(CARRY_VERIFY_FEWSHOT + f"Question: Would {subj} carry {it}?\nAnswer:") >= threshold):
             out.append(it)
     return out
 
@@ -190,4 +208,4 @@ def carry_coins(server, entity):
 def carry_inventory(server, entity):
     """The whole bag: coins (wealth-tier amount) + items per category."""
     return {"coins": carry_coins(server, entity),
-            "categories": {cat: carry_category(server, entity, noun) for cat, noun in INVENTORY_CATEGORIES}}
+            "categories": {cat: carry_category(server, entity, noun, typ) for cat, noun, typ in INVENTORY_CATEGORIES}}
