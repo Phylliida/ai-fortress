@@ -175,10 +175,17 @@ def embed_dedup(items, seed=None, sim=0.82, url=bmp.EMBED_URL):
 #     (templates win); machines are open-ended (a clock vs a server vs a mech), so we'd need a template per
 #     TYPE — too many to be useful. Instead, ask a machine's high-level subsystems, then recurse each (with a
 #     stop-gate at single pieces) into a part-tree. Same generate-few-then-recurse pattern, multi-answer union.
+# Few-shot bootstrapped across DOMAINS (mechanical/food/biology/music) and DEPTHS (root/mid/deep). The ANCESTOR
+# breadcrumb is carried in for two reasons: (1) it disambiguates a deep leaf — "ADP" under blood→platelets→
+# activation is adenosine diphosphate, not the computing sense; (2) the "of the {leaf}" focus stops the model
+# decomposing the ROOT instead of the leaf (a "car → engine" must give engine parts, not wheels/doors). Root
+# nodes use the bare form; deeper nodes the "In {breadcrumb}, … of the {leaf}" form.
 SUBPART_FEWSHOT = (
-    "What are the main parts of a bicycle?\nAnswer: frame, wheels, pedals, chain, handlebars, brakes, seat\n"
-    "What are the main parts of a wheel?\nAnswer: rim, tire, spokes, hub\n"
-    "What are the main parts of a laptop?\nAnswer: screen, keyboard, battery, motherboard, hard drive, hinge\n")
+    "What are the main parts of a bicycle?\nAnswer: frame, wheels, pedals, chain, handlebars, seat\n"
+    "In a car → engine, what are the main parts of the engine?\nAnswer: pistons, cylinders, crankshaft, valves, spark plugs\n"
+    "In a pizza → topping, what are the main parts of the topping?\nAnswer: cheese, tomato sauce, pepperoni, herbs\n"
+    "In blood → platelets → platelet activation → ADP, what are the main parts of the ADP?\nAnswer: adenosine, ribose, phosphate groups\n"
+    "In a guitar → string, what are the main parts of the string?\nAnswer: core wire, winding, ball end\n")
 # stop-gate: recurse only into parts that are themselves assemblies. Mixed Yes/No, high-perplexity (Y N N Y).
 DECOMP_GATE_FEWSHOT = (
     "Question: Can an engine be taken apart into several smaller pieces?\nAnswer: Yes\n"
@@ -194,11 +201,20 @@ VERIFY_SUBPART_FEWSHOT = (
     "Question: If a laptop were real, would it have a hard drive?\nAnswer: Yes\n")
 
 
-def machine_subparts(server, thing, desc=None, samples=4, threshold=0.5):
-    """The main parts of `thing` (a machine or component): sample-union -> embed-dedup (collapses pistons/piston
-    redundancy) -> per-part VERIFY against the parent (kills derailed draws like a cyclotron in a shock absorber)."""
+def subpart_prompt(thing, ancestors=None):
+    """Generation question for `thing` in the context of its `ancestors` (root-first). Root -> bare form;
+    deeper -> 'In {breadcrumb}, what are the main parts of the {thing}?' (context + leaf-focus)."""
+    if ancestors:
+        return f"In {' → '.join(list(ancestors) + [thing])}, what are the main parts of the {thing}?"
+    return f"What are the main parts of a {thing}?"
+
+
+def machine_subparts(server, thing, ancestors=None, desc=None, samples=4, threshold=0.5):
+    """Main parts of `thing` in the context of its `ancestors` breadcrumb, so an ambiguous deep leaf decomposes
+    in context (ADP under blood→platelets = adenosine diphosphate, not the computing sense) and targets the leaf
+    not the root. sample-union -> embed-dedup -> per-part VERIFY (kills derailed draws like a cyclotron)."""
     ctx = f"{thing} is {desc}.\n" if desc else ""
-    raw = server.sample_union(ctx + SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
+    raw = server.sample_union(ctx + SUBPART_FEWSHOT + subpart_prompt(thing, ancestors) + "\nAnswer:",
                               samples=samples, n_predict=50, max_words=3)
     return [p for p in embed_dedup(raw) if server.yes_no_prob(
         ctx + VERIFY_SUBPART_FEWSHOT + f"Question: If a {thing} were real, would it have a {p}?\nAnswer:") >= threshold]
@@ -213,12 +229,12 @@ def is_decomposable(server, part):
 def decompose_machine(server, machine, desc=None, max_depth=2, samples=4):
     """Recursively decompose `machine` into a part-tree {part: subtree}. Stops at max_depth or single pieces.
     The colony-sim drops = every node; the leaves are the atomic salvage."""
-    def rec(thing, depth):
-        subs = machine_subparts(server, thing, samples=samples)
+    def rec(thing, ancestors, depth):
+        subs = machine_subparts(server, thing, ancestors=ancestors, samples=samples)
         if depth <= 1:
             return {s: {} for s in subs}
-        return {s: (rec(s, depth - 1) if is_decomposable(server, s) else {}) for s in subs}
-    return rec(machine, max_depth)
+        return {s: (rec(s, ancestors + [thing], depth - 1) if is_decomposable(server, s) else {}) for s in subs}
+    return rec(machine, [], max_depth)
 
 
 def _flatten_tree(tree):

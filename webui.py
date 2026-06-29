@@ -708,19 +708,22 @@ def decompose_page():
 
 @app.route("/api/decompose")
 def api_decompose():
-    """One level of `thing`'s parts via the open-ended decomposer (sample-union -> dedup -> per-part verify),
-    streamed as each part passes. The explorer calls this lazily per node, so the tree builds on click."""
-    thing = request.args.get("thing", "").strip()
+    """One level of the LAST node in `path`'s parts via the open-ended decomposer (sample-union -> dedup ->
+    per-part verify), streamed. `path` is the full ancestor breadcrumb (|-joined, leaf last), so a deep node
+    decomposes in context (ADP under blood→platelets reads as adenosine diphosphate, not the computing sense)."""
+    pathstr = request.args.get("path", "").strip()
     desc = request.args.get("desc", "").strip() or None
 
     @stream_with_context
     def gen():
-        if not thing:
+        crumb = [p.strip() for p in pathstr.split("|") if p.strip()]
+        if not crumb:
             yield sse({"type": "error", "message": "Enter something to take apart."}); return
+        thing, ancestors = crumb[-1], crumb[:-1]
         try:
-            ctx = f"{thing} is {desc}.\n" if desc else ""
+            ctx = f"{thing} is {desc}.\n" if desc else ""        # desc only grounds the root entity
             yield sse({"type": "status", "message": "generating parts…"})
-            raw = SERVER.sample_union(ctx + parts.SUBPART_FEWSHOT + f"What are the main parts of a {thing}?\nAnswer:",
+            raw = SERVER.sample_union(ctx + parts.SUBPART_FEWSHOT + parts.subpart_prompt(thing, ancestors) + "\nAnswer:",
                                       samples=4, n_predict=50, max_words=3)
             cand = parts.embed_dedup(raw)
             yield sse({"type": "status", "message": f"verifying {len(cand)} parts…"})
