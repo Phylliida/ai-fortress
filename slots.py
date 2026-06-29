@@ -143,8 +143,8 @@ def site_counts(server, species, have, desc=None):
     clamp = lambda c: max(1, min(c, MAX_SLOT_COUNT))
     counts = {}
     for site in MULTI_SITES:
-        if have.get(site) and site not in DIGIT_SITES:
-            counts[site] = clamp(extract_count(server, species, site, desc) or MULTI_SITES[site])
+        if have.get(site) and site not in DIGIT_SITES:         # robust limb count (they're the multipliers)
+            counts[site] = clamp(robust_count(server, species, site, desc) or MULTI_SITES[site])
     for digit, (limb, limb_sg) in DIGIT_SITES.items():
         if have.get(digit):                                     # robust per-limb digit count (median+verify+retry)
             per = robust_count(server, species, digit, desc, per_of=limb_sg) or MULTI_SITES[digit] // 2
