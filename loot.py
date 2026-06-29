@@ -133,3 +133,61 @@ def dress(server, entity, desc=None):
     import slots
     skeleton = slots.species_slots(server, entity["species"], desc)
     return fill_worn(server, entity, skeleton)
+
+
+# ---------- carried inventory (the bag): category-conditioned lists + coins as a wealth-tier amount ----------
+INVENTORY_CATEGORIES = [
+    ("weapons",     "spare weapons"),
+    ("tools",       "tools or useful gear"),
+    ("consumables", "food, drink, or potions"),
+    ("valuables",   "valuables or trinkets"),
+    ("personal",    "personal belongings"),
+]
+
+# one exemplar per category — explicit subject, Question:/Answer:, multi-answer VARYING counts (2/3/3/1/2),
+# articles dropped, wealth/role spread. Empty categories fall out naturally (a jeweler carries no spare weapons).
+CARRY_FEWSHOT = (
+    "Question: What spare weapons does a poor goblin raider carry?\nAnswer: throwing knives, rusty shiv\n"
+    "Question: What tools or useful gear does a wealthy elf merchant carry?\nAnswer: brass scale, abacus, wax seal\n"
+    "Question: What food, drink, or potions does a poor human soldier carry?\nAnswer: hardtack, dried meat, waterskin\n"
+    "Question: What valuables or trinkets does a destitute beggar carry?\nAnswer: chipped glass bead\n"
+    "Question: What personal belongings does a modest human farmer carry?\nAnswer: wooden charm, folded letter\n")
+# plausibility verify: would THIS entity actually carry it? (a beggar wouldn't have a crown). Y N N Y.
+CARRY_VERIFY_FEWSHOT = (
+    "Question: Would a poor goblin raider carry a rat skull?\nAnswer: Yes\n"
+    "Question: Would a destitute beggar carry a golden crown?\nAnswer: No\n"
+    "Question: Would a peasant farmer carry a royal scepter?\nAnswer: No\n"
+    "Question: Would a wealthy merchant carry a coin purse?\nAnswer: Yes\n")
+# coins as a CATEGORICAL amount (categories beat numbers for base models), wealth-graded. Keeps its article.
+COINS_FEWSHOT = (
+    "Question: How much money does a destitute beggar carry?\nAnswer: a few copper coins\n"
+    "Question: How much money does a wealthy merchant carry?\nAnswer: a heavy purse of gold\n"
+    "Question: How much money does a modest farmer carry?\nAnswer: a handful of silver\n"
+    "Question: How much money does a poor soldier carry?\nAnswer: a small pouch of copper\n")
+
+
+def carry_category(server, entity, noun, samples=4, threshold=0.5, max_words=4):
+    """Items in one carry category for this entity: sample-union (recall) -> embed-dedup -> per-item plausibility
+    verify (would they actually carry it?). Articles stripped. Empty list when they'd carry nothing of the kind."""
+    subj = _subj(entity)
+    raw = server.sample_union(CARRY_FEWSHOT + f"Question: What {noun} does {subj} carry?\nAnswer:",
+                              samples=samples, n_predict=40, max_words=max_words, reject=lambda k: k in parts.NULL_TOKENS)
+    out = []
+    for it in parts.embed_dedup([_strip_article(x) for x in raw]):
+        if server.yes_no_prob(CARRY_VERIFY_FEWSHOT + f"Question: Would {subj} carry {it}?\nAnswer:") >= threshold:
+            out.append(it)
+    return out
+
+
+def carry_coins(server, entity):
+    """A wealth-graded coin amount as a descriptive phrase ('a heavy purse of gold' / 'a few copper coins')."""
+    subj = _subj(entity)
+    raw = server.gen_text(COINS_FEWSHOT + f"Question: How much money does {subj} carry?\nAnswer:",
+                          stop=["\n", "."], n_predict=12)
+    return raw.strip().strip(".,").strip() or None
+
+
+def carry_inventory(server, entity):
+    """The whole bag: coins (wealth-tier amount) + items per category."""
+    return {"coins": carry_coins(server, entity),
+            "categories": {cat: carry_category(server, entity, noun) for cat, noun in INVENTORY_CATEGORIES}}
