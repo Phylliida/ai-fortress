@@ -808,15 +808,14 @@ def api_dress():
             yield sse({"type": "status", "message": "building the paper-doll skeleton…"})
             skeleton = slots_mod.species_slots(SERVER, entity["species"], desc)
             yield sse({"type": "status", "message": f"dressing the {entity['species']}…"})
-            n = 0
-            for s in skeleton:                              # presence-gate then fill, streamed
-                if not loot_mod.has_slot(SERVER, entity, s["slot"], s["kind"]):
-                    continue
-                item = loot_mod.fill_slot(SERVER, entity, s["slot"], s["kind"])
+            filled = 0
+            for s in skeleton:                              # stream EVERY slot (empty too), filled or not
+                item = (loot_mod.fill_slot(SERVER, entity, s["slot"], s["kind"])
+                        if loot_mod.has_slot(SERVER, entity, s["slot"], s["kind"]) else None)
                 if item:
-                    n += 1
-                    yield sse({"type": "item", "slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item})
-            yield sse({"type": "done", "n": n})
+                    filled += 1
+                yield sse({"type": "item", "slot": s["slot"], "kind": s["kind"], "count": s["count"], "item": item})
+            yield sse({"type": "done", "filled": filled, "total": len(skeleton)})
         except Exception as e:
             yield sse({"type": "error", "message": f"{type(e).__name__}: {e}"})
 
