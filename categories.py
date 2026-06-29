@@ -14,20 +14,44 @@ high-similarity item that ISN'T means whole-item similarity doesn't order member
 """
 import baseModelPrimitives as bmp
 
-# --- component extraction ("made from"): ingredients for foods, materials for objects. Interleaved
-#     few-shot (multi / single / multi — patterns not grouped, the single example not stranded last). ---
+# --- component extraction ("made from"): ingredients for foods, materials for objects. Interleaved few-shot
+#     (multi / single / multi — patterns not grouped, the single example not stranded last); now also with
+#     Question:/Answer: labels + the counterfactual "if … were real" so made-up items (a magma sword) extract. ---
 ING_FEWSHOT = (
-    "What is a beef stew mainly made from? List the main ingredients.\nAnswer: beef, potatoes, carrots, onion, broth\n"
-    "What is a strawberry mainly made from? List the main ingredients.\nAnswer: strawberry\n"
-    "What is a chocolate chip cookie mainly made from? List the main ingredients.\nAnswer: flour, butter, sugar, chocolate chips, eggs\n")
+    "Question: If a beef stew were real, what would it mainly be made from?\nAnswer: beef, potatoes, carrots, onion, broth\n"
+    "Question: If a strawberry were real, what would it mainly be made from?\nAnswer: strawberry\n"
+    "Question: If a chocolate chip cookie were real, what would it mainly be made from?\nAnswer: flour, butter, sugar, chocolate chips, eggs\n")
 
 
 def extract_ingredients(server, item, samples=4):
     """Ingredients as a sample-union (server.sample_union): one draw sometimes drops the defining ingredient
     (mole sauce without 'chocolate'), the union reliably catches it. The embed-match takes the max over
-    ingredients, so extra union terms don't hurt precision."""
-    prompt = ING_FEWSHOT + f"What is a {item} mainly made from? List the main ingredients.\nAnswer:"
+    ingredients, so extra union terms don't hurt precision. NO verify on purpose — recall is strictly good for
+    the compositional-category matching this feeds (see verified_ingredients for the display-side verified one)."""
+    prompt = ING_FEWSHOT + f"Question: If a {item} were real, what would it mainly be made from?\nAnswer:"
     return server.sample_union(prompt, samples=samples, n_predict=50)
+
+
+# display-side ingredient verify (the /item page wants a CLEAN list, unlike the recall-tuned category matching).
+# Counterfactual for made-up items; mixed Y/N, high-perplexity (Y N N Y); cheese-free so verifying a wheel of
+# cheese stays an honest test.
+ING_VERIFY_FEWSHOT = (
+    "Question: If a loaf of bread were real, would it be made from flour?\nAnswer: Yes\n"
+    "Question: If a steel sword were real, would it be made from chocolate?\nAnswer: No\n"
+    "Question: If a wool sweater were real, would it be made from plastic?\nAnswer: No\n"
+    "Question: If a glass bottle were real, would it be made from sand?\nAnswer: Yes\n")
+
+
+def ingredient_fits(server, item, ingredient, threshold=0.5):
+    """Y/N: is `ingredient` really a main ingredient/material of `item`?"""
+    q = f"If a {item} were real, would it be made from {ingredient}?"
+    return server.yes_no_prob(ING_VERIFY_FEWSHOT + f"Question: {q}\nAnswer:") >= threshold
+
+
+def verified_ingredients(server, item, samples=4, threshold=0.5):
+    """extract_ingredients (recall) -> per-ingredient Y/N verify. For DISPLAY — drops hallucinated draws so the
+    'made from' list is clean (the underlying extract_ingredients stays recall-only for category matching)."""
+    return [x for x in extract_ingredients(server, item, samples=samples) if ingredient_fits(server, item, x, threshold)]
 
 
 # --- surface membership Y/N. Generic "is X a {category}?", varied categories, high-perplexity answer

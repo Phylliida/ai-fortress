@@ -1044,7 +1044,7 @@ def api_item():
             yield sse({"type": "emission", "emission": tr["emission"]})
 
             yield sse({"type": "status", "message": "ingredients…"})
-            ingr = categories_mod.extract_ingredients(SERVER, subject)
+            ingr = categories_mod.verified_ingredients(SERVER, subject)   # recall -> per-ingredient Y/N verify
             yield sse({"type": "ingredients", "items": ingr})
 
             yield sse({"type": "status", "message": "composition…"})
