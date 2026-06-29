@@ -11,6 +11,7 @@ The output is a list of {slot, site, kind, count}: the empty skeleton later pass
 clothing/inventory item per slot.
 """
 import re
+import statistics
 import parts
 
 # Master human paper-doll. Each slot lives at a body SITE; the SITE is what we prune/count on (many slots
@@ -60,6 +61,12 @@ COUNT_FEWSHOT = (
     "How many legs does a spider have?\nAnswer: 8\n"
     "How many fingers does a human have on each hand?\nAnswer: 5\n"
     "How many arms does an octopus have?\nAnswer: 8\n")
+# verify a proposed digit count Y/N (the robust loop retries on rejection). Mixed Y/N, high-perplexity (Y N N Y).
+COUNT_VERIFY_FEWSHOT = (
+    "Question: Does a human have 5 fingers on each hand?\nAnswer: Yes\n"
+    "Question: Does a spider have 6 legs?\nAnswer: No\n"
+    "Question: Does a human have 12 toes on each foot?\nAnswer: No\n"
+    "Question: Does an octopus have 8 arms?\nAnswer: Yes\n")
 
 # the spots we already cover — passed AS CONTEXT so the generator names only NEW ones (known-slots trick, same
 # as the parts diff). Joined once, reused in the few-shot + query.
@@ -104,6 +111,31 @@ def extract_count(server, species, site, desc=None, per_of=None):
     return int(m.group()) if m else None
 
 
+def verify_count(server, species, site, n, desc=None, per_of=None):
+    """Y/N: does `species` really have `n` of `site` (per `per_of` if given)?"""
+    ctx = f"{species} is {desc}.\n" if desc else ""
+    q = f"Does a {species} have {n} {site} on each {per_of}?" if per_of else f"Does a {species} have {n} {site}?"
+    return server.yes_no_prob(ctx + COUNT_VERIFY_FEWSHOT + f"Question: {q}\nAnswer:") >= 0.5
+
+
+def robust_count(server, species, site, desc=None, per_of=None, rounds=4, batch=4):
+    """Robust digit count (Danielle): each round draw `batch` samples and take their median, then verify it
+    Y/N; on rejection draw another round (up to `rounds`). Return the first VERIFIED median, else the median of
+    ALL samples drawn. `per_of` makes it per-limb ('fingers ... on each hand'). Used for finger/toe counts,
+    which are fuzziest and multiply, so an off-by-one matters most."""
+    allc = []
+    for _ in range(rounds):
+        batch_c = [c for _ in range(batch)
+                   if (c := extract_count(server, species, site, desc, per_of=per_of)) is not None]
+        if not batch_c:
+            continue
+        allc += batch_c
+        med = round(statistics.median(batch_c))
+        if verify_count(server, species, site, med, desc, per_of):
+            return med
+    return round(statistics.median(allc)) if allc else None
+
+
 def site_counts(server, species, have, desc=None):
     """Per-site counts for the inherently-multiple sites (used by species_slots AND the webui). Direct
     'how many X' for limbs (2 hands, 2 feet); DIGIT sites (fingers) are per-limb × limb-count — 'how many
@@ -114,8 +146,8 @@ def site_counts(server, species, have, desc=None):
         if have.get(site) and site not in DIGIT_SITES:
             counts[site] = clamp(extract_count(server, species, site, desc) or MULTI_SITES[site])
     for digit, (limb, limb_sg) in DIGIT_SITES.items():
-        if have.get(digit):
-            per = extract_count(server, species, digit, desc, per_of=limb_sg) or MULTI_SITES[digit] // 2
+        if have.get(digit):                                     # robust per-limb digit count (median+verify+retry)
+            per = robust_count(server, species, digit, desc, per_of=limb_sg) or MULTI_SITES[digit] // 2
             counts[digit] = clamp(per * (counts.get(limb) or MULTI_SITES.get(limb, 1)))
     return counts
 
