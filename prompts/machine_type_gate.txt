@@ -1,0 +1,27 @@
+# machine gate — can a crafting machine use this TYPE? (calibrated Y/N)
+# example args: ('ore','furnace')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: Can a furnace use ore to make something?
+Answer: Yes
+Question: Can an anvil use flour to make something?
+Answer: No
+Question: Can an oven use flour to make something?
+Answer: Yes
+Question: Can a sawmill use wood to make something?
+Answer: Yes
+Question: Can a kiln use ore to make something?
+Answer: No
+Question: Can a sewing machine use cloth to make something?
+Answer: Yes
+Question: Can a loom use wood to make something?
+Answer: No
+Question: Can an anvil use metal to make something?
+Answer: Yes
+Question: Can a brewing still use fruit to make something?
+Answer: Yes
+Question: Can a mill use fish to make something?
+Answer: No
+Question: Can a furnace use ore to make something?
+Answer:

@@ -1,0 +1,33 @@
+# crafting TYPE — general material type for crafting (open-ended, multi-sample vote)
+# example args: ('umber hulk carapace')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+Question: For crafting, what general type of material is iron ore?
+Answer: ore
+Question: For crafting, what general type of material is water?
+Answer: water
+Question: For crafting, what general type of material is salmon?
+Answer: fish
+Question: For crafting, what general type of material is oak log?
+Answer: wood
+Question: For crafting, what general type of material is steel sword?
+Answer: product
+Question: For crafting, what general type of material is wheat flour?
+Answer: flour
+Question: For crafting, what general type of material is sawdust?
+Answer: sawdust
+Question: For crafting, what general type of material is sunset?
+Answer: not a material
+Question: For crafting, what general type of material is copper ore?
+Answer: ore
+Question: For crafting, what general type of material is wooden chair?
+Answer: product
+Question: For crafting, what general type of material is grapes?
+Answer: fruit
+Question: For crafting, what general type of material is dragon scale?
+Answer: scale
+Question: For crafting, what general type of material is pine log?
+Answer: wood
+Question: For crafting, what general type of material is umber hulk carapace?
+Answer:

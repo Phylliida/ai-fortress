@@ -43,7 +43,7 @@
 <body>
 <header>
   <h1>Item Lab</h1>
-  <small>weight · size · rarity · worth · source · emission · ingredients · needs filled</small>
+  <small>crafting type · weight · size · rarity · worth · source · emission · ingredients · needs filled</small>
   <div class="links"><a href="/dress">loot →</a><a href="/decompose">take apart →</a><a href="/parts">innards →</a></div>
 </header>
 
@@ -62,7 +62,7 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const TRAITS = [['weight_g','weight'],['size_cm','size'],['rarity','rarity'],['worth','worth'],['source','source']];
+const TRAITS = [['crafting_type','crafting type'],['weight_g','weight'],['size_cm','size'],['rarity','rarity'],['worth','worth'],['source','source']];
 const RARITY_WORDS = [[0,'everywhere'],[2.5,'common'],[5,'uncommon'],[7.5,'rare'],[10,'legendary']];
 const WORTH_WORDS  = [[0,'worthless'],[2.5,'cheap'],[5,'valuable'],[7.5,'precious'],[10,'priceless']];
 let es = null, HISTORY = [];

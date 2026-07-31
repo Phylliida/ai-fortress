@@ -1,0 +1,46 @@
+# crafting TYPE verification — adversarial Y/N on a voted type
+# example args: ('oak log','wood')  |  ('sunset','not a material')  |  ('steel sword','product')
+# (reference snapshot — regenerate with dump_prompts.py)
+#==============================================================================
+
+### ordinary type ###
+Question: For crafting, is birch log a type of wood?
+Answer: Yes
+Question: For crafting, is iron ore a type of fruit?
+Answer: No
+Question: For crafting, is wooden chair a type of liquid?
+Answer: No
+Question: For crafting, is molasses a type of sweetener?
+Answer: Yes
+Question: For crafting, is gravel a type of metal?
+Answer: No
+Question: For crafting, is catfish a type of fish?
+Answer: Yes
+Question: For crafting, is oak log a type of wood?
+Answer:
+
+
+### 'not a material' (inverted) ###
+Question: Is gravel a crafting material?
+Answer: Yes
+Question: Is happiness a crafting material?
+Answer: No
+Question: Is lullaby a crafting material?
+Answer: No
+Question: Is linen a crafting material?
+Answer: Yes
+Question: Is sunset a crafting material?
+Answer:
+
+
+### 'product' ###
+Question: Is wooden chair a manufactured product?
+Answer: Yes
+Question: Is iron ore a manufactured product?
+Answer: No
+Question: Is gravel a manufactured product?
+Answer: No
+Question: Is wool sweater a manufactured product?
+Answer: Yes
+Question: Is steel sword a manufactured product?
+Answer:

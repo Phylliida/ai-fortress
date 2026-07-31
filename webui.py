@@ -24,6 +24,7 @@ import slots as slots_mod
 import loot as loot_mod
 import traits as traits_mod
 import categories as categories_mod
+import crafting_type as crafting_mod
 import sim
 import store
 
@@ -1016,7 +1017,8 @@ def api_item_history():
 
 @app.route("/api/item")
 def api_item():
-    """Run every per-item analysis we have, streamed: traits (weight/size/rarity/worth/source/emission, traits.py),
+    """Run every per-item analysis we have, streamed: crafting type (crafting_type.py — material type,
+    product, or not-a-material), traits (weight/size/rarity/worth/source/emission, traits.py),
     ingredients (categories.py 'made from'), composition (needs.classify_food_type), and which needs it fills
     (needs.bake_item_affordances over the recurring-need vocabulary). Persists each item to item_history.jsonl."""
     name = request.args.get("item", "").strip()
@@ -1029,8 +1031,11 @@ def api_item():
             yield sse({"type": "error", "message": "Enter an item."}); return
         T = traits_mod
         try:
+            yield sse({"type": "status", "message": "categorizing…"})
+            ct = crafting_mod.extract_crafting_type(SERVER, subject)
+            tr = {"crafting_type": ct["type"] or "—"}
+            yield sse({"type": "trait", "key": "crafting_type", "value": tr["crafting_type"]})
             yield sse({"type": "status", "message": "weighing & appraising…"})
-            tr = {}
             for key, fn in [
                 ("weight_g", lambda: T.bake_number(SERVER, T.WEIGHT_Q, T.WEIGHT_ANCHORS, T.WEIGHT_UNITS, subject)),
                 ("size_cm",  lambda: T.bake_number(SERVER, T.SIZE_Q, T.SIZE_ANCHORS, T.SIZE_UNITS, subject)),
@@ -1066,7 +1071,7 @@ def api_item():
             record = {"id": uuid.uuid4().hex[:12],
                       "ts": datetime.datetime.now().isoformat(timespec="seconds"),
                       "name": name, "desc": desc, "subject": subject,
-                      "traits": tr, "decomposable": decomp, "ingredients": ingr, "parts": plist,
+                      "traits": tr, "crafting_type": ct, "decomposable": decomp, "ingredients": ingr, "parts": plist,
                       "food": food, "needs": served}
             _append_item(record)
             yield sse({"type": "done", "record": record})

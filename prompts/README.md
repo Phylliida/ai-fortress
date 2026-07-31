@@ -28,3 +28,6 @@ Full rendered prompts (few-shot + a representative query) for every extraction i
 | [traits_emission_gate.txt](traits_emission_gate.txt) | emission — does the item give off light/heat/sound? (yes/no per channel) |
 | [traits_emission_strength.txt](traits_emission_strength.txt) | emission STRENGTH — gen_percent over intensity WORDS (faint..blinding) |
 | [traits_emission_radius.txt](traits_emission_radius.txt) | emission RADIUS in cells (gen_number_median) |
+| [crafting_type.txt](crafting_type.txt) | crafting TYPE — general material type for crafting (open-ended, multi-sample vote) |
+| [crafting_type_verify.txt](crafting_type_verify.txt) | crafting TYPE verification — adversarial Y/N on a voted type |
+| [machine_type_gate.txt](machine_type_gate.txt) | machine gate — can a crafting machine use this TYPE? (calibrated Y/N) |

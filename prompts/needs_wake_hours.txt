@@ -3,6 +3,11 @@
 # (reference snapshot — regenerate with dump_prompts.py)
 #==============================================================================
 
-A hardworking baker who rises before dawn.
-On a typical day, how many hours is this person awake (not asleep)?
+Question: On a typical day, how many hours is a weary night-shift worker awake?
+Answer: 8
+Question: On a typical day, how many hours is an energetic young child awake?
+Answer: 13
+Question: On a typical day, how many hours is a busy office worker awake?
+Answer: 16
+Question: On a typical day, how many hours is A hardworking baker who rises before dawn. awake?
 Answer:

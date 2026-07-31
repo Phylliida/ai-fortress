@@ -6,6 +6,7 @@ traits.py. Re-run this after editing a prompt to refresh the snapshot.
 import os, json
 import needs as N
 import traits as T
+import crafting_type as CT
 
 os.makedirs("prompts", exist_ok=True)
 fav = {s["name"]: s for s in json.load(open("species_favorites.json"))}
@@ -78,6 +79,17 @@ add("traits_emission_strength.txt", "emission STRENGTH — gen_percent over inte
     T._cat_prompt(T.EMIT_STRENGTH["light"][0], T.EMIT_STRENGTH["light"][1], "a candle"))
 add("traits_emission_radius.txt", "emission RADIUS in cells (gen_number_median)",
     "light channel, ('a candle')", T.EMIT_RADIUS_FS.format(ch="light", x="a candle"))
+
+# ---------------- crafting_type.py ----------------
+add("crafting_type.txt", "crafting TYPE — general material type for crafting (open-ended, multi-sample vote)",
+    "('umber hulk carapace')", CT.crafting_type_prompt("umber hulk carapace"))
+add("crafting_type_verify.txt", "crafting TYPE verification — adversarial Y/N on a voted type",
+    "('oak log','wood')  |  ('sunset','not a material')  |  ('steel sword','product')",
+    "### ordinary type ###\n" + CT.type_verify_prompt("oak log", "wood") +
+    "\n\n\n### 'not a material' (inverted) ###\n" + CT.type_verify_prompt("sunset", "not a material") +
+    "\n\n\n### 'product' ###\n" + CT.type_verify_prompt("steel sword", "product"))
+add("machine_type_gate.txt", "machine gate — can a crafting machine use this TYPE? (calibrated Y/N)",
+    "('ore','furnace')", CT.machine_gate_prompt("ore", "furnace"))
 
 for fn, desc, note, text in items:
     with open(f"prompts/{fn}", "w") as f:
