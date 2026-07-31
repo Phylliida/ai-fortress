@@ -3,7 +3,12 @@ crafting_type.py — elicit an item's general CRAFTING-MATERIAL TYPE from the ba
 "iron ore" -> ore, "oak log" -> wood, "wheat flour" -> flour, "salmon" -> fish.
 
 Why: the recipe design keys discovery on raw-material TYPES, not item names — one "ore"
-use-list covers every ore, so the item x station matrix never materializes. This module is
+use-list covers every ore, so the item x station matrix never materializes. Two independent
+advantages (see ONBOARDING.md for the full note): (1) CACHING — the type is a cache key;
+a new item costs one extraction (~7 queries) and inherits its type's machine row, use-list,
+and recipes. (2) SELF-SUFFICIENT past ~6-7 stations — type-keyed costs ~7*I + T*M vs I*M
+direct; types saturate (1000 items -> 207 types, T/I shrinks with corpus growth), so the
+breakeven approaches the extraction overhead regardless of reuse. This module is
 the layer that maps item -> type. The type vocabulary is DELIBERATELY OPEN: answers are
 elicited free-form and are never collapsed into a fixed list — a novel material must be
 able to get a novel type word, so there is NO canon/merge step and no fixed-option

@@ -131,6 +131,20 @@ calibration), `primitivesDeterminism.py` (determinism guardrails).
   machines, never items × machines. `validate-machine` = held-out check, `matrix` bakes
   `machine_type_matrix.json` over all verified material types (special labels excluded).
 
+**Why the crafting-type layer pays (recorded 2026-07-31):**
+1. **Caching for similar items.** The type is a cache key: every item that maps to "ore"
+   shares ore's machine-acceptance row (and later, ore's use-list and recipes). A new item
+   costs one type extraction (~7 queries: 5 votes + 1–2 verifies) and inherits everything
+   its type already knows. Since the bake is global, the reuse compounds across worlds.
+2. **It wins on query count alone once distinct crafting stations pass ~6–7, even with
+   zero reuse.** Direct item×machine gating costs I×M reads. Type-keyed costs ~7·I (one
+   extraction per item) + T×M (the matrix), so breakeven is M > 7·I/(I−T). Types saturate
+   — the 1000-item corpus produced only 207 material types (~50 common) — so T/I shrinks
+   as the corpus grows and the breakeven approaches the ~7-query extraction overhead.
+   Measured: I=1000, T=207, M=14 → direct 14,000 reads vs type-keyed ~7,000 + ~2,900 ≈
+   9,900, already ~30% cheaper; every added item or world widens the gap, and the caching
+   above is then pure profit.
+
 **Pattern to copy**: propose-then-adversarially-verify everywhere; "inherit defaults, store diffs"
 (body plans, slot templates, diet filter); one generative pass per species + cheap category→item
 resolution — never the species×item grid.
